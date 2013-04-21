@@ -1,7 +1,7 @@
 Fachhochschule Köln - Campus Gummersbach  
 Web-basierte Anwendung 2: Verteilte Systeme  
 
-<a id="top"></a>
+<a name="top"></a>
 
 #Dokumentation 
 
@@ -15,9 +15,9 @@ Web-basierte Anwendung 2: Verteilte Systeme
 ##<a id="idee"></a>Idee
 
 
-<a class="right" href="#wiki-top">^ Top ^</a>
+<a class="right" href="#wiki-top">^ Top</a>
 
 ##<a id="szenarien"></a>Szenarien
 
 
-<a class="right" href="#wiki-top">^ Top ^</a>
+<a href="#top">^ top</a>
