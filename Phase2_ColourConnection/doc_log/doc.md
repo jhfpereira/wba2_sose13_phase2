@@ -38,10 +38,18 @@ BenutzerIn A bemerkt, dass das die Platform noch über sehr wenige Farbeinträge
 Dazu gibt er/sie zu einer Farbe dessen Farbcode ein oder wählt sie über einen Farbwähler aus. Mit dem Absenden des Fabcodes wird auf der Platform ein eindeutiger Eintrag für diese Farbe erzeugt.
 Der Eintrag wird mit dem Namen des Erzeugers verknüpft.
 
+**Sequenz-Diagramm**
+![Create colour](images/create_colour.png)
+
+
 ###<a name="szenarien_lieblingsfarbe_festlegen"></a>2.2 Farbe als Lieblingsfarbe festlegen
 BenutzerIn A möchte gerne eine Farbe als eine Lieblingsfarbe angeben. Dazu gibt er/sie den Farbcode der Farbe an oder wählt sie über einen Farbwähler aus.
 Da die Farbe noch nicht bekannt ist und nicht bekannte Farben nicht als Lieblingsfarbe gesetzt werden können, wird für sie vorher ein neuer eindeutiger Eintrag erzeugt und mit dem Namen des Erzeugers verknüpft.
 Erst jetzt kann die Farbe als Lieblingsfarbe des/der Benutzers/in gesetzt werden.
+
+**Sequenz-Diagramm**
+![Set colour as favourite](images/set_colour_as_favourite.png)
+
 
 ###<a name="szenarien_farbpalette_erstellen"></a>2.3 Farbpalette erstellen
 BenutzerIn B möchte eine neue Farbpalette erstellen und legt mindestens 3 Farben fest, da es die Mindestanzahl der Farben einer Farbpalette entspricht.
@@ -50,21 +58,44 @@ Wenn zu einer der verwendeten Farben noch kein Eintrag existiert, wird dieser au
 Die Platform überprüft, gleichzeitig zum Erstellen der Farbpalette, ob eine der Farben die Lieblingsfarbe mehrerer BenutzerInnen ist und informiert diese über die soeben erzeugte Farbpalette, die deren Lieblingsfarbe verwendet.
 In diesem Fall ergab die Überprüfung der verwendeten Faben, dass eine der Farben gleichzeitig die Lieblingsfarbe von BenutzerIn A ist. BenutzerIn A erhält eine Meldung bezüglich der neuen Farbpalette.
 
+**Sequenz-Diagramm**
+![Create colour palette](images/create_colour_palette.png)
+
+
 ###<a name="szenarien_lieblingsfarbpalette_festlegen"></a>2.4 Farbpalette als Lieblingspalette festlegen
 BenutzerIn A gefällt eine Farbpalette so sehr, dass er/sie zu seinen/ihren Favoriten bzw. Lieblingspaletten hinzufügt.
+
+**Sequenz-Diagramm**
+![Set colour palette as favourite](images/set_colour_palette_as_favourite.png)
+
 
 ###<a name="szenarien_farbe_farbpalette_kommentieren"></a>2.5 Farbe oder Farbpalette kommentieren
 BenutzerIn A ist von einer Farbpalette von BenutzerIn B so begeistert, dass er/sie ein Kommentar zu dieser verfasst und hinzufügt.
 
+**Sequenz-Diagramm**
+![Create comment for colour/palette](images/create_comment_for_colour_colourpalette.png)
+
+
 ###<a name="szenarien_lieblingsfarben_eines_benutzers_anzeigen"></a>2.6 Lieblingsfarben eines Benutzers anzeigen
 BenutzerIn B lässt sich alle Lieblingsfarben von BenutzerIn A anzeigen.
+
+**Sequenz-Diagramm**
+![Get favourite colours](images/get_favourite_colours.png)
+
 
 ###<a name="szenarien_erzeugten_farbpaletten_eines_benutzers_anzeigen"></a>2.7. Erzeugten Farbpaletten eines Benutzers anzeigen
 BenutzerIn A vermutet, dass BenutzerIn B neben einer ihrer Lieblingspaletten auch weitere schöne Farbpaletten erzeugt hat. Deshalb lässt sie sich alle von BenutzerIn B erzeugten Farbpaletten anzeigen.
 
+**Sequenz-Diagramm**
+![Get created palettes](images/get_created_palettes.png)
+
+
 ###<a name="szenarien_anderen_benutzer_abonnieren"></a>2.8. Anderen Benutzer abonnieren
 Benutzer A ist von den von BenutzerIn B erzeugeten Paletten so sehr begeistert, dass sie auch in Zukunft über Farbpaletten von BenutzerIn B benachrichtig werden will.
 Deshalb abonniert sie alle Erzeugnisse von BenutzerIn B. 
+
+**Sequenz-Diagramm**
+![Set user as follower](images/set_user_as_follower.png)
 
 
 <a href="#top">^ top</a>
