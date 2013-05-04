@@ -8,6 +8,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-04-15 | **Kickoff: Ideen- / Problemfindung**](#2013_04_15)
 * [2013-04-22 | **Konzeptioneller Meilensein - Kommunikationsabläufe und Interaktionen**](#2013_04_22)
 * [2013-04-27 | Benutzerauthentifizierung bezogen auf ein RESTful Webservice](#2013_04_27)
+* [2013-04-29 | Ressourcen und URI Design](#2013_04_29)
 * [2013-05-08 | **Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_08)
 * [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)
@@ -42,25 +43,52 @@ Obwohl solche Authentifizierungs-Mechanismen in den Vorlesungen noch nicht behan
 Generell wird immer gesagt, dass Kommunikationsabläufe die einen Benutzer authentifizieren, über SSL/TLS (Secure Socket Layer bzw. Transport Layer Security) laufen sollten. Somit würde man hier direkt auf HTTPS setzen. Dies erlaubt es sensible Daten (Passwörter), die normalerweise im quasi Klartext übertragen werden, geschützt zu übertragen. Der Einsatz von SSL/TLS würde das Risiko extrem minimieren, Opfer einer `Man-In-The-Middle`-Attacke zu werden.
 Als Beispiel für eine Authentifizierung per Klartext, könnte das "Basic Authentication"-Verfahren genannt werden, welches direkter Bestandteil des `Hyptertext Transfer Protocol` ist. Hier werden Benutzername und Passwort mittels eines `Authorization-Headers` im Klartext übertragen. Das Mitlesen dieser sensiblen Daten ist sehr leicht möglich. Mit dem Einsatz von SSL/TLS kann aber eine sichere Übertragung durch eine schützende Kapselung der Daten gewährleistet werden.
 Als Alternative zum "Basic Authentication"-Verfahren, bietet sich das "Digest Access Authenticaon"-Verfahren an. Hier werden nie wirklich sensible Daten verschickt, es wird anstattdessen ein Hashcode versendet, welcher zuvor mittels einer Hashfunktion, angedwandt auf die sensiblen Daten sowie weiteren vom Server gegebenen Daten, errechnet wurde. Die Gegenstelle muss demnach den Hashcode dann nur noch mit einem selbst berechneten Hashcode auf Übereinstimmung prüfen.
-Bevor ich mich für eines dieser Verfahren entscheide, und anhand dieser Entscheidung das Proejkt für Phase 2 weiter ausarbeite, werde ich warten, bis das Thema Authentifizierung in einer Vorlesung behandelt wird und auch bekannt gegeben wird, welches Verfahren letztendlich verwendet werden soll. Evtl. können wir auch frei entscheiden, auf welches Verfahren wir setzen wollen.
+Bevor ich mich für eines dieser Verfahren entscheide, und anhand dieser Entscheidung das Projekt für Phase 2 weiter ausarbeite, werde ich warten, bis das Thema Authentifizierung in einer Vorlesung behandelt wird und auch bekannt gegeben wird, welches Verfahren letztendlich verwendet werden soll. Evtl. können wir auch frei entscheiden, auf welches Verfahren wir schlussendlich setzen.
 
 
 <a href="#top">^ top</a>  
 
 
-<a name="2013_05_08"></a>**2013-05-08** | Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen und die Semantik der HTTP-Operationen
+<a name="2013_04_29"></a>**2013-04-29** | Ressourcen und URI Design  
+Ein wichtiger Punkt, welcher in Phase 2 näher betrachtet wird und sicherlich auch ausschlaggebend für die Qualität einer API, ist das Design der URI als Identifizierungsmechanismus für Ressourcen.
+Nach einigen Recherchen bezüglich dem Entwickeln einer guten und sauberen Semantik, kristallisiert sich eine klare Faustregel, an die man sich idealerweise richten sollte. Nomen sind gut und Verben sind schlecht. Konkret bedeutet dies, dass Ressourcen über Nomen addressiert werden.
+Sie repräsentieren ja eine Entität bzw. eine Liste von Entitäten. Als Verben setzen man nur die HTTP-Verben `GET`, `PUT`, `POST` und `DELETE` ein, die für grundlegende Operationen völlig ausreichen.
+Für ColourConnection würde eine Beispiel-URI evtl. wie folgt aussehen:  
+`/user/42`  
+`/color/333333`  
+`/user/followers`  
+`/user/followers/42`  
+`/colorpalettes`  
+`/colorpalette/815`  
+`/user/favourite/colors`  
+Wie zu sehen ist, werden in keinster Weise Verben verwendet, sondern explizit nur Nomen.  
+Ein `GET /user/42` würde man grob mit "hole mir die Ressource vom Benutzer mit der ID 42" übersetzen.
+Obwohl `PUT` und `POST` eine ähnliche Operation suggestieren, unterscheiden sie sich doch in einem kleinen Detail.
+Der `PUT`-Verb wird verwendet, wenn man eine neue Ressource erstellen bzw. eine bereits existierende Ressource aktualisieren will.
+Der `POST`-Verb hingegen setzt man ein, wenn man eine untergeordnete Ressource erstellen will. Evtl. ein neues Element einer Liste.  
+Als Beispiel:  
+`POST /colorpalettes` würde eine untergeordnete Ressource erstellen. In diesem Fall eine Ressource für eine neue Farbpalette.
+Ob ich die Erstellung einer neuen Ressource wirklich so gestalten werde, muss ich noch entscheiden, denn es würde sich auch folgender Requestaufruf anbieten: `POST /colorpalette`. Hier sei auf das fehlende "s" hingewiesen.
+Dies würde sich meiner Meinung sogar eher anbieten, da `/colorpalettes` nur auf ein `GET`-Request reagieren sollte um eine Liste zurückzugeben und `POST /colorpalette` schon mit der zuvor aufgegriffenen Semantik von `POST` klarer ausdrückt, dass man eine untergeordnete Ressource erstellen will. Einer der Enität `colorpalette` untergeordnete Ressource.
+
+
+
+<a href="#top">^ top</a> 
+
+
+<a name="2013_05_08"></a>**2013-05-08** | Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen und die Semantik der HTTP-Operationen  
 
 
 <a href="#top">^ top</a>  
 
 
-<a name="2013_05_13"></a>**2013-05-13** | Meilenstein 3 - RESTful Webservice
+<a name="2013_05_13"></a>**2013-05-13** | Meilenstein 3 - RESTful Webservice  
 
 
 <a href="#top">^ top</a>  
 
 
-<a name="2013_06_03"></a>**2013-06-03** | Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client
+<a name="2013_06_03"></a>**2013-06-03** | Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client  
 
 
 <a href="#top">^ top</a>  
