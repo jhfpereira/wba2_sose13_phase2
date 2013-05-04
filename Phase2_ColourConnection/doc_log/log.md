@@ -9,7 +9,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-04-22 | **Konzeptioneller Meilensein - Kommunikationsabläufe und Interaktionen**](#2013_04_22)
 * [2013-04-27 | Benutzerauthentifizierung bezogen auf ein RESTful Webservice](#2013_04_27)
 * [2013-04-29 | Ressourcen und URI Design](#2013_04_29)
-* [2013-05-08 | **Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_08)
+* [2013-05-06 | **Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)
 * [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)
 * [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)
@@ -76,7 +76,7 @@ Dies würde sich meiner Meinung sogar eher anbieten, da `/colorpalettes` nur auf
 <a href="#top">^ top</a> 
 
 
-<a name="2013_05_08"></a>**2013-05-08** | Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen und die Semantik der HTTP-Operationen  
+<a name="2013_05_06"></a>**2013-05-06** | Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen und die Semantik der HTTP-Operationen  
 
 
 <a href="#top">^ top</a>  
