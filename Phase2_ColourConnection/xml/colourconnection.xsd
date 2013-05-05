@@ -130,9 +130,9 @@
     
     <xsd:complexType name="Comment">
     	<xsd:sequence>
-    		<xsd:element name="creator" type="Ref" minOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:dateTime" />
-    		<xsd:element name="message" type="xsd:string" />
+    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" maxOccurs="1"/>
+    		<xsd:element name="message" type="xsd:string" minOccurs="1" maxOccurs="1" />
     	</xsd:sequence>
     	<xsd:attribute name="id" type="xsd:positiveInteger" />
     </xsd:complexType>
@@ -158,6 +158,7 @@
     <xsd:element name="favourite_colourpalettes" type="FavouriteColourPaletteList" />
     
     <xsd:element name="followers" type="Followers" />
+    <xsd:element name="comment" type="Comment"/>
     <xsd:element name="comments" type="Comments" />
     
 </xsd:schema>
