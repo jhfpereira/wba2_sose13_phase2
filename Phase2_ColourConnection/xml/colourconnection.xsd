@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:annotation>
+        <xsd:documentation xml:lang="DE">
+            ColourConnection
+            Jorge H. F. Pereira
+            FH-Köln - Campsus GM / Web-basierte Anwendungen 2 / 2013
+        </xsd:documentation>
+    </xsd:annotation>
+	
+	
+	
+	<xsd:complexType name="Ref">
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+		<xsd:attribute name="ref" type="xsd:anyURI" />
+    </xsd:complexType>
+	
+	<xsd:simpleType name="ColourID">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[0-9a-fA-F]{6}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+    <xsd:complexType name="User">
+    	<xsd:sequence>
+    		<xsd:element name="username" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_registration" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="ColourRef">
+		<xsd:attribute name="id" type="ColourID" />
+		<xsd:attribute name="ref" type="xsd:anyURI" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="Colour">
+    	<xsd:sequence>
+    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="ColourID" />
+    </xsd:complexType>
+    
+	<xsd:complexType name="ColourPalette">
+    	<xsd:sequence>
+    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="used_colours" minOccurs="1">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="colour" type="ColourRef" minOccurs="2" maxOccurs="10"/>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="FavouriteColour">
+		<xsd:complexContent>
+			<xsd:extension base="ColourRef">
+				<xsd:sequence>
+					<xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+    
+	<xsd:complexType name="FavouriteColourPalette">
+		<xsd:complexContent>
+			<xsd:extension base="Ref">
+				<xsd:sequence>
+					<xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+    
+    
+    
+    <xsd:complexType name="UserList">
+    	<xsd:sequence>
+    		<xsd:element name="user" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ColourList">
+    	<xsd:sequence>
+    		<xsd:element name="colour" type="ColourRef" minOccurs="0" maxOccurs="unbounded">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ColourPaletteList">
+    	<xsd:sequence>
+    		<xsd:element name="colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+ 
+    <xsd:complexType name="FavouriteColourList">
+    	<xsd:sequence>
+    		<xsd:element name="favourite_colour" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="FavouriteColourPaletteList">
+    	<xsd:sequence>
+    		<xsd:element name="favourite_colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    
+    
+    <xsd:complexType name="Follower">
+    	<xsd:complexContent>
+    		<xsd:extension base="Ref">
+    			<xsd:all>
+    				<xsd:element name="following_since" type="xsd:dateTime" minOccurs="1" />
+    			</xsd:all>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Followers">
+    	<xsd:sequence>
+    		<xsd:element name="follower" type="Follower" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Comment">
+    	<xsd:sequence>
+    		<xsd:element name="creator" type="Ref" minOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" />
+    		<xsd:element name="message" type="xsd:string" />
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+    </xsd:complexType>
+    
+	<xsd:complexType name="Comments">
+		<xsd:sequence>
+			<xsd:element name="comment" type="Comment" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+    
+    
+    <xsd:element name="user" type="User" />
+    <xsd:element name="colour" type="Colour" />
+    <xsd:element name="colourpalette" type="ColourPalette" />
+    <xsd:element name="favourite_colour" type="FavouriteColour" />
+    <xsd:element name="favourite_colourpalette" type="FavouriteColourPalette" />
+    
+    <xsd:element name="users" type="UserList" />
+    <xsd:element name="colours" type="ColourList" />
+    <xsd:element name="colourpalettes" type="ColourPaletteList" />
+    <xsd:element name="favourite_colours" type="FavouriteColourList" />
+    <xsd:element name="favourite_colourpalettes" type="FavouriteColourPaletteList" />
+    
+    <xsd:element name="followers" type="Followers" />
+    <xsd:element name="comments" type="Comments" />
+    
+</xsd:schema>

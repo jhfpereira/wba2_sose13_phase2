@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<comments>
+    <comment id="1">
+        <creator id="1" ref="http://localhost/user/1" />
+        <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
+        <message>Ein kleiner Kommentar</message>
+    </comment>
+    <comment id="2">
+        <creator id="3" ref="http://localhost/user/3" />
+        <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
+        <message>Ein weiterer kleiner Kommentar</message>
+    </comment>
+</comments>

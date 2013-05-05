@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colourpalette id="1">
+    <creator id="1" ref="http://localhost/user/1" />
+    <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
+    <used_colours>
+        <colour id="333333" ref="http://localhost/colour/333333" />
+        <colour id="555555" ref="http://localhost/colour/555555" />
+    </used_colours>
+</colourpalette>

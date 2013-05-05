@@ -18,6 +18,8 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 3. [URI- und Ressourcen-Design](#uri_ressourcen_design)  
     3.1. [Ressourcen](#uri_ressourcen_design_ressourcen)  
     3.2. [URI-Matrix](#uri_ressourcen_design_uri_matrix)  
+4. [XML Schema](#xml_schema)  
+    4.1. [Aufbau](#xml_schema_aufbau)  
 
 
 
@@ -115,12 +117,12 @@ Darunter fallen die Ressourcen `user`, `colour` sowie `colourpalette`.
 Basierend auf diesen drei Ressourcen bilden sich weitere abgewandelte Ressourcen aber auch untergeordnete Ressourcen.
 Als abgewandelte Ressourcen werden die Listen gezählt. Über die Ressource `users` würde man zu einer Liste aller exitierenden Benutzer gelangen. Eine Listen-Ressource ist an dem angehangenen `s` zu erkennen.
 Zu der `users`-Ressource würden sich somit noch die beiden weiteren Listen-Ressourcen `colours` und `colourpalettes` hinzugesellen.  
-Da es ganz hilfreich sein kann sich alle von einem Benutzer erstellten Farbpaletten geben zu lassen, wird der Ressource `user` die Unterressource `creations` vergeben, die sich auf einen bestimmten Benutzer bezieht. Folgende URI bietet sich an '/user/&lt;user_id>/creations'. Das `s` gibt wieder an, dass es sich um eine Listen-Ressource handelt.  
+Da es ganz hilfreich sein kann sich alle von einem Benutzer erstellten Farbpaletten geben zu lassen, wird der Ressource `user` die Unterressource `creations` vergeben, die sich auf einen bestimmten Benutzer bezieht. Folgende URI bietet sich an `/user/<user_id>/creations`. Das `s` gibt wieder an, dass es sich um eine Listen-Ressource handelt.  
 Um eine Farbe als Favorit zu setzen, würde es sich weniger anbieten dafür eine eigene First-Level-Ressource einzuführen. Es macht viel mehr Sinn das Setzen einer Lieblingsfarbe mit dem entsprechenden Benutzer zu verbinden bzw. die Verbindung zu belassen.
 Hierzu wird der `user`-Ressource eine untergeordnete Ressource mit dem Namen `favouritecolour` bzw. `favouritecolour` gegeben.
 Zum Hinzufügen oder Löschen einer Favorisierung, muss dennoch die ID der favorisierten Farbe oder der Farbpalette angegeben werden. Dies sieht dann wie folgt aus: `PUT /user/42/favouritecolour/333333` bzw. `PUT /user/42/favouritecolourpalette/20` oder `DELETE /user/42/favouritecolour/333333` bzw. `DELETE /user/42/favouritecolourpalette/20`.
-Aber auch hier soll es möglich sein sich eine Liste von allen Lieblingsfarben und Lieblingsfarbpaletten eines Benutzers geben zu lassen. Somit würde `/user/&lt;user_id>/favourite/colours` bzw. `/user/&lt;user_id>/favourite/colourpalettes` eine Liste aller Lieblingsfarben bzw. -farbpaletten liefern.
-Mit der Möglichkeit Kommentare zu einer Farbe oder einer Farbpalette zu verfassen, kann auch hier eine neue untergeordnete Ressource mit dem Namen "comment" eingeführt werden. Auch hier würde ein `/color/&lt;colour_id>/comments` eine Liste aller zu der Farbe verfassten Kommentare zurückgegeben werden. Das selbe auch mit `/colourpalette/&lt;colour_palette_id>/comments`.  
+Aber auch hier soll es möglich sein sich eine Liste von allen Lieblingsfarben und Lieblingsfarbpaletten eines Benutzers geben zu lassen. Somit würde `/user/<user_id>/favourite/colours` bzw. `/user/<user_id>/favourite/colourpalettes` eine Liste aller Lieblingsfarben bzw. -farbpaletten liefern.
+Mit der Möglichkeit Kommentare zu einer Farbe oder einer Farbpalette zu verfassen, kann auch hier eine neue untergeordnete Ressource mit dem Namen "comment" eingeführt werden. Auch hier würde ein `/color/<colour_id>/comments` eine Liste aller zu der Farbe verfassten Kommentare zurückgegeben werden. Das selbe auch mit `/colourpalette/<colour_palette_id>/comments`.  
 Zuletzt können Benutzer von anderen Benutzern gefolgt werden. Dazu wird die untergeordnete Ressource `follower` eingeführt, die sich auf den angegebenen Benutzer bezieht. `followers` wäre somit wieder eine Listen-Ressource, die alle Benutzer auflistet, die den besagten Benutzer folgen. `follower` erlaubt es jetzt Benutzer als Follower hinzufügen und auch wieder zu entfernen. Dazu muss die ID des Benutzers aber mit angegeben werden wie z.B. wie folgt: `PUT /user/42/follower/23` sowie `DELETE /user/42/follower/23`. 
 
 ![Resource-Hierarchie](images/resource_hierarchie.png)
@@ -160,3 +162,192 @@ Zuletzt können Benutzer von anderen Benutzern gefolgt werden. Dazu wird die unt
 
 
 <a href="#top">^ top</a>
+
+
+
+##<a name="xml_schema"></a>4. XML Schema
+
+Neben dem URI- und Ressourcen Design, muss auch das XML Schema, auf welches im Projekt sehr stark gesetzt wird, wohlüberlegt konzipiert werden.
+Deshalb bietet es sich an das Schema Schritt für Schritt eine solide Basis zu definieren, auf die die restliche Struktur aufsetzt. Konkret sieht das so aus, dass die im Unterpunkt 3.1 identifizierten grundlegenden Ressourcen `user`, `colour` sowie `colourpalette` als zuvor erwähnte Basis herangezogen werden.
+Sie bilden die grundlegenden Ressourcen, aus denen sich Variationen bilden. Speziell sei das Beispiel `colour` und `favourite_colour` genannt. `favourite_colour` ist an sich ebenfalls eine Ressource, die eine Ableitung von `colour` darstellt. Der einzige Unterschied besteht nur in der zusätzlichen Angabe des Zeitpunkts wann eine Farbe als Lieblingsfarbe gesetzt wurde.
+Hier kann man sich leicht der Objektorientierung bedienen, speziell der Vererbung. Dies bietet sich auch sehr gut an, da ein XML Schema einem ähnliche Möglichkeiten zur Strukturierung bzw. Aufbau bietet. Hier sei auf die Möglichkeiten der Erweiterung (`extension`) und der Restirktion (`restriction`) von komplexen Typen hingewiesen. In diesem Fall setzt man aber konkret nur auf die Möglichkeit der Erweiterung, um Typen gezielt zu spezialisieren.
+Neben Spezialisierungen von Typen bzw. Elementen, wird auch das Zusammenfassen von solchen Elementen zu Mengen betrachtet. Damit ist gemeint, dass ein übergeodnetes Element existiert, welches als Container fungiert. Dies kann man ganz gut mittels der Ressource `users` verdeutlichen. Die Ressource repräsentiert eine Liste die aus mehreren Farbressourcen (`colour`) besteht. Dadurch, dass es über die REST-Schnittstelle möglich ist eine Liste aller Benutzer anzufordern, bietet es sich auch an auf Seiten von XML ein Listen- bzw. Container-Element einzuführen.
+Listen gibt es nicht nur für Benutzer (`users`), sondern auch zur Auflistung von Farben (`colours`), Lieblingsfarben (`favourite_colours`), Lieblingsfarbpaletten (`favourite_colourpalettes`) aber auch von Benutzern die einen bestimmten Benutzer folgen, sognannte Follower (`followers`).  
+Eine Besonderheit des XML Schemas ist es, dass es Dokumente mit unterschiedlichen Wurzelelementen erfolgreich validiert. Im Gegensatz zur Phase 1, wo das konzipierte Schema nur ein Wurzelelement vorsah, ist dieses Schema der Phase 2 sehr viel flexibler gestaltet. In Phase 1 wurden die Daten so modelliert, dass eine Dokumenteninstanz wirklich alle aufgekommenen Daten enthielt. Für den Anwendungsfall ist dies sicherlich die beste herangehensweise, doch für Phase 2 nicht mehr. Hier sollten nur Daten zwischen einem Clienten und einem Server transportiert werden, die entsprechend des Kontexts relevant sind.
+Mit Kontext ist hiermit die Semantik der HTTP-Operationen gemeint. Es ist somit weniger sinnvoll wenn ein Request wie z.B. `GET /user/1` einem Clienten neben den Informationen zum Benutzer mit der ID 1, auch alle anderen Informationen bzw. Daten des Systems liefert, die nichts mit der klar identifizierten Ressource zu tun hat. Es würde völlig ausreichen nur den relevanten Teil der kompletten Datenstruktur zurückzugeben. Dafür muss das Schema mit den Anwendungsfällen im Hinterkopf entsprechend ausgearbeitet werden.  
+Generell ist das Schema dieses Projekts sehr modular aufgebaut und stützt sich verstärkt auf Referenzierung von Elementen. Die Idee der Referenzierung hat sich auch in die Struktur einer Dokumenteninstanz ausgebreitet. Als Beispiel soll die Ressource `colour` angeführt werden. Ein Request wie z.B. `GET /color/333333` würde sämtliche Informationen über die Farbe mit dem Farbcode `333333` liefern. Darunter fallen der Zeitpunkt wann die Ressource im System erstellt wurde, aber auch von welchem Benutzer. Anstatt sich bei einem Request neben den Farbinformationen auch alle Infromationen des Benutzers liefern zu lassen,
+würde es völlig ausreichen, wenn der Benutzer nur über eine ID referenziert wird. Interessiert sich ein Client dann noch näher für den Benutzer, dann würde ein zusätzlicher Request initiiert werden, um die Benutzer-Ressource anhand der ID anzusprechen. Der Vorteil dabei ist, dass nicht unnötig Daten übertragen werden, die evtl. garnicht benötigt werden. Der Nachteil könnte in den zusätzlichen Requests gesehen werden, die die Beziehung der relevanten Date, je nach Gegebenheit des Netzes, spürbar verzögert. Es wurde sich aber bewusst für die Referenzierung bzw. "Verlinkung" von Ressourcen untereinander entschieden,
+da dessen Vorteile für sich sprechen. Kleinere Datenmengen führen zu schnelleren und effizienteren Datenübertragungen. Zusätzlich erhält der Client nur die für die Operation relevanten Daten und muss sie nicht vorher in einer wohlmöglich sehr großen Datenstruktur finden und dann noch extrahieren.
+
+###<a name="xml_schema_aufbau"></a>4.1 Aufbau
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <xsd:annotation>
+        <xsd:documentation xml:lang="DE">
+            ColourConnection
+            Jorge H. F. Pereira
+            FH-Köln - Campsus GM / Web-basierte Anwendungen 2 / 2013
+        </xsd:documentation>
+    </xsd:annotation>
+	
+	
+	
+	<xsd:complexType name="Ref">
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+		<xsd:attribute name="ref" type="xsd:anyURI" />
+    </xsd:complexType>
+	
+	<xsd:simpleType name="ColourID">
+		<xsd:restriction base="xsd:string">
+			<xsd:pattern value="[0-9a-fA-F]{6}" />
+		</xsd:restriction>
+	</xsd:simpleType>
+	
+    <xsd:complexType name="User">
+    	<xsd:sequence>
+    		<xsd:element name="username" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_registration" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="ColourRef">
+		<xsd:attribute name="id" type="ColourID" />
+		<xsd:attribute name="ref" type="xsd:anyURI" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="Colour">
+    	<xsd:sequence>
+    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="ColourID" />
+    </xsd:complexType>
+    
+	<xsd:complexType name="ColourPalette">
+    	<xsd:sequence>
+    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="used_colours" minOccurs="1">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="colour" type="ColourRef" minOccurs="2" maxOccurs="10"/>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+    </xsd:complexType>
+    
+    <xsd:complexType name="FavouriteColour">
+		<xsd:complexContent>
+			<xsd:extension base="ColourRef">
+				<xsd:sequence>
+					<xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+    
+	<xsd:complexType name="FavouriteColourPalette">
+		<xsd:complexContent>
+			<xsd:extension base="Ref">
+				<xsd:sequence>
+					<xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+				</xsd:sequence>
+			</xsd:extension>
+		</xsd:complexContent>
+    </xsd:complexType>
+    
+    
+    
+    <xsd:complexType name="UserList">
+    	<xsd:sequence>
+    		<xsd:element name="user" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ColourList">
+    	<xsd:sequence>
+    		<xsd:element name="colour" type="ColourRef" minOccurs="0" maxOccurs="unbounded">
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ColourPaletteList">
+    	<xsd:sequence>
+    		<xsd:element name="colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+ 
+    <xsd:complexType name="FavouriteColourList">
+    	<xsd:sequence>
+    		<xsd:element name="favourite_colour" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="FavouriteColourPaletteList">
+    	<xsd:sequence>
+    		<xsd:element name="favourite_colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    
+    
+    <xsd:complexType name="Follower">
+    	<xsd:complexContent>
+    		<xsd:extension base="Ref">
+    			<xsd:all>
+    				<xsd:element name="following_since" type="xsd:dateTime" minOccurs="1" />
+    			</xsd:all>
+    		</xsd:extension>
+    	</xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Followers">
+    	<xsd:sequence>
+    		<xsd:element name="follower" type="Follower" minOccurs="0" maxOccurs="unbounded"/>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Comment">
+    	<xsd:sequence>
+    		<xsd:element name="creator" type="Ref" minOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" />
+    		<xsd:element name="message" type="xsd:string" />
+    	</xsd:sequence>
+    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+    </xsd:complexType>
+    
+	<xsd:complexType name="Comments">
+		<xsd:sequence>
+			<xsd:element name="comment" type="Comment" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+	
+    
+    
+    <xsd:element name="user" type="User" />
+    <xsd:element name="colour" type="Colour" />
+    <xsd:element name="colourpalette" type="ColourPalette" />
+    <xsd:element name="favourite_colour" type="FavouriteColour" />
+    <xsd:element name="favourite_colourpalette" type="FavouriteColourPalette" />
+    
+    <xsd:element name="users" type="UserList" />
+    <xsd:element name="colours" type="ColourList" />
+    <xsd:element name="colourpalettes" type="ColourPaletteList" />
+    <xsd:element name="favourite_colours" type="FavouriteColourList" />
+    <xsd:element name="favourite_colourpalettes" type="FavouriteColourPaletteList" />
+    
+    <xsd:element name="followers" type="Followers" />
+    <xsd:element name="comments" type="Comments" />
+    
+</xsd:schema>
+```
+
+
+<a href="#top">^ top</a>
+
+
