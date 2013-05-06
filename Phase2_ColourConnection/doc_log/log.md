@@ -9,7 +9,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-04-22 | **Konzeptioneller Meilensein - Kommunikationsabläufe und Interaktionen**](#2013_04_22)
 * [2013-04-27 | Benutzerauthentifizierung bezogen auf ein RESTful Webservice](#2013_04_27)
 * [2013-04-29 | Ressourcen und URI Design](#2013_04_29)
-* [2013_05_04 | Ressourcen-Identifizierung, Ausarbeitung der Semantik der HTTP-Operationen und Umsetzung eines XML-Schema](#2013_05_04)  
+* [2013-05-04 | Ressourcen-Identifizierung, Ausarbeitung der Semantik und Umsetzung eines XML-Schema](#2013_05_04)  
 * [2013-05-06 | **Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)
 * [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)
@@ -77,7 +77,7 @@ Dies würde sich meiner Meinung sogar eher anbieten, da `/colorpalettes` nur auf
 <a href="#top">^ top</a> 
 
 
-<a name="2013_05_04"></a>**2013-05-04** | Ressourcen-Identifizierung, Ausarbeitung der Semantik der HTTP-Operationen und Umsetzung eines XML-Schema  
+<a name="2013_05_04"></a>**2013-05-04** | Ressourcen-Identifizierung, Ausarbeitung der Semantik und Umsetzung eines XML-Schema  
 Für die Identifizierung der Ressourcen, habe ich mir erstmal klar gemacht, was im System alles eine grundlegende Entität repräsentiert. Nach einer kurzen Zeit stand fest, dass es drei grundlegende Entitäten gibt. Ein Benutzer (`user`), eine Farbe (`colour`) und eine Farbpalette (`colourpalette`).
 Von diesen drei Basis-Entitäten bzw. -Ressourcen, leiten sich dann leicht abweichende/erweiterte Ressourcen ab. Alle anderen Ressourcen stehen zuletzt nur im Zusammenhang mit den Basis-Ressourcen. Diese Abhängigkeiten und Abwandlungen, basierend auf die Basis-Ressourcen, ermöglichen die Einführung von einer Art Referenz. Referenzen können dazu genutzt werden um anzugeben, mit welchem anderen Element sie in Beziehung stehen. Sei es, dass es eine Spezialisierung einer Ressource ist,
 oder die Ressource nur im Kontext mit der referenzierten Ressource Sinn macht bzw. nur im Zusammenspiel mit dieser an Relevanz gewinnt. Diese Idee hat sich im Endeffekt auch komplett auf den Aufbau des XML-Schemas ausgewirkt. Elemente nutzen Referenzen, um andere Elemente im System zu referenzieren.  
