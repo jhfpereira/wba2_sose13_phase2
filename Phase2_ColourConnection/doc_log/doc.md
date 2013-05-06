@@ -170,14 +170,17 @@ Zuletzt können Benutzer von anderen Benutzern gefolgt werden. Dazu wird die unt
 Neben dem URI- und Ressourcen Design, muss auch das XML Schema, auf welches im Projekt sehr stark gesetzt wird, wohlüberlegt konzipiert werden.
 Deshalb bietet es sich an das Schema Schritt für Schritt eine solide Basis zu definieren, auf die die restliche Struktur aufsetzt. Konkret sieht das so aus, dass die im Unterpunkt 3.1 identifizierten grundlegenden Ressourcen `user`, `colour` sowie `colourpalette` als zuvor erwähnte Basis herangezogen werden.
 Sie bilden die grundlegenden Ressourcen, aus denen sich Variationen bilden. Speziell sei das Beispiel `colour` und `favourite_colour` genannt. `favourite_colour` ist an sich ebenfalls eine Ressource, die eine Ableitung von `colour` darstellt. Der einzige Unterschied besteht nur in der zusätzlichen Angabe des Zeitpunkts wann eine Farbe als Lieblingsfarbe gesetzt wurde.
-Hier kann man sich leicht der Objektorientierung bedienen, speziell der Vererbung. Dies bietet sich auch sehr gut an, da ein XML Schema einem ähnliche Möglichkeiten zur Strukturierung bzw. Aufbau bietet. Hier sei auf die Möglichkeiten der Erweiterung (`extension`) und der Restirktion (`restriction`) von komplexen Typen hingewiesen. In diesem Fall setzt man aber konkret nur auf die Möglichkeit der Erweiterung, um Typen gezielt zu spezialisieren.
+Hier kann man sich leicht der Objektorientierung bedienen, speziell der Vererbung. Dies bietet sich auch sehr gut an, da ein XML Schema einem ähnliche Möglichkeiten zur Strukturierung bzw. Aufbau bietet. Hier sei auf die Möglichkeiten der Erweiterung (`extension`) und der Restriktion (`restriction`) von komplexen Typen hingewiesen. In diesem Fall setzt man aber konkret nur auf die Möglichkeit der Erweiterung, um Typen gezielt zu spezialisieren.
 Neben Spezialisierungen von Typen bzw. Elementen, wird auch das Zusammenfassen von solchen Elementen zu Mengen betrachtet. Damit ist gemeint, dass ein übergeodnetes Element existiert, welches als Container fungiert. Dies kann man ganz gut mittels der Ressource `users` verdeutlichen. Die Ressource repräsentiert eine Liste die aus mehreren Farbressourcen (`colour`) besteht. Dadurch, dass es über die REST-Schnittstelle möglich ist eine Liste aller Benutzer anzufordern, bietet es sich auch an auf Seiten von XML ein Listen- bzw. Container-Element einzuführen.
 Listen gibt es nicht nur für Benutzer (`users`), sondern auch zur Auflistung von Farben (`colours`), Lieblingsfarben (`favourite_colours`), Lieblingsfarbpaletten (`favourite_colourpalettes`) aber auch von Benutzern die einen bestimmten Benutzer folgen, sognannte Follower (`followers`).  
 Eine Besonderheit des XML Schemas ist es, dass es Dokumente mit unterschiedlichen Wurzelelementen erfolgreich validiert. Im Gegensatz zur Phase 1, wo das konzipierte Schema nur ein Wurzelelement vorsah, ist dieses Schema der Phase 2 sehr viel flexibler gestaltet. In Phase 1 wurden die Daten so modelliert, dass eine Dokumenteninstanz wirklich alle aufgekommenen Daten enthielt. Für den Anwendungsfall ist dies sicherlich die beste herangehensweise, doch für Phase 2 nicht mehr. Hier sollten nur Daten zwischen einem Clienten und einem Server transportiert werden, die entsprechend des Kontexts relevant sind.
 Mit Kontext ist hiermit die Semantik der HTTP-Operationen gemeint. Es ist somit weniger sinnvoll wenn ein Request wie z.B. `GET /user/1` einem Clienten neben den Informationen zum Benutzer mit der ID 1, auch alle anderen Informationen bzw. Daten des Systems liefert, die nichts mit der klar identifizierten Ressource zu tun hat. Es würde völlig ausreichen nur den relevanten Teil der kompletten Datenstruktur zurückzugeben. Dafür muss das Schema mit den Anwendungsfällen im Hinterkopf entsprechend ausgearbeitet werden.  
 Generell ist das Schema dieses Projekts sehr modular aufgebaut und stützt sich verstärkt auf Referenzierung von Elementen. Die Idee der Referenzierung hat sich auch in die Struktur einer Dokumenteninstanz ausgebreitet. Als Beispiel soll die Ressource `colour` angeführt werden. Ein Request wie z.B. `GET /color/333333` würde sämtliche Informationen über die Farbe mit dem Farbcode `333333` liefern. Darunter fallen der Zeitpunkt wann die Ressource im System erstellt wurde, aber auch von welchem Benutzer. Anstatt sich bei einem Request neben den Farbinformationen auch alle Infromationen des Benutzers liefern zu lassen,
-würde es völlig ausreichen, wenn der Benutzer nur über eine ID referenziert wird. Interessiert sich ein Client dann noch näher für den Benutzer, dann würde ein zusätzlicher Request initiiert werden, um die Benutzer-Ressource anhand der ID anzusprechen. Der Vorteil dabei ist, dass nicht unnötig Daten übertragen werden, die evtl. garnicht benötigt werden. Der Nachteil könnte in den zusätzlichen Requests gesehen werden, die die Beziehung der relevanten Date, je nach Gegebenheit des Netzes, spürbar verzögert. Es wurde sich aber bewusst für die Referenzierung bzw. "Verlinkung" von Ressourcen untereinander entschieden,
-da dessen Vorteile für sich sprechen. Kleinere Datenmengen führen zu schnelleren und effizienteren Datenübertragungen. Zusätzlich erhält der Client nur die für die Operation relevanten Daten und muss sie nicht vorher in einer wohlmöglich sehr großen Datenstruktur finden und dann noch extrahieren.
+würde es völlig ausreichen, wenn der Benutzer nur über eine ID referenziert wird. Interessiert sich ein Client dann noch näher für den Benutzer, dann würde ein zusätzlicher Request initiiert werden, um die Benutzer-Ressource anhand der ID anzusprechen. Der Vorteil dabei ist, dass nicht unnötig Daten übertragen werden, die evtl. garnicht benötigt werden. Der Nachteil könnte in den zusätzlichen Requests gesehen werden, die das Liefern der relevanten Daten, je nach Gegebenheit des Netzes, spürbar verzögert. Es wurde sich aber bewusst für die Referenzierung bzw. "Verlinkung" von Ressourcen untereinander entschieden,
+da dessen Vorteile für sich sprechen. Kleinere Datenmengen führen zu schnelleren und effizienteren Datenübertragungen. Zusätzlich erhält der Client nur die für die Operation relevanten Daten und muss sie nicht vorher in einer wohlmöglich sehr großen Datenstruktur finden und aus ihr dann noch extrahieren.  
+Neben der Möglichkeit einzelne Element-Fragmente erfolgreich zu validieren, wurde das Schema um die Möglichkeit erweitert, eine größere zusammenhängende XML-Struktur zu validieren. Mit großer XML-Struktur ist eine Struktur gemeint, die alle relevanten Daten des Systems auf einmal führen kann. Die Möglichkeit der Bildung einer solchen allumfassenden Struktur, ist für die komplette Datenaufnahme wichtig. Somit gibt es auf sietens des Servers eine einzige XML-Dokumenten-Instanz, die alle Daten enthält. Es müssen somit nicht unnötig viele kleine XML-Dokumente mit Datenfragementen auf dem Data Layer organisiert werden.
+Es können Vergleiche zwischen der großen XML-Dokumenten-Instanz und einer Datenbank bzw. Datenbankdatei (sqlite) gezogen werden.  
+Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man implementieren kann. Schwieriger wird es dann aber, wenn es um das Löschen von Daten bzw. Datensätzen geht. Speziell Datensätze, die an einer anderern Stelle referenziert werden. Es stellt sich nun die Frage, wie mit solchen Elementen umgegangen werden soll, die nicht mehr auf ein existierendes Element referenzieren, geschweige sie als erstes zu suchen und auch zu finden. In der momentanen Form bietet es sich nur an die komplette Struktur zu traversieren und wirklich alle Elemente auf eventuelle Referenzen zu prüfen und sie ggf. zu löschen.
 
 ###<a name="xml_schema_aufbau"></a>4.1 Aufbau
 
@@ -314,9 +317,9 @@ da dessen Vorteile für sich sprechen. Kleinere Datenmengen führen zu schneller
     
     <xsd:complexType name="Comment">
     	<xsd:sequence>
-    		<xsd:element name="creator" type="Ref" minOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:dateTime" />
-    		<xsd:element name="message" type="xsd:string" />
+    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" maxOccurs="1"/>
+    		<xsd:element name="message" type="xsd:string" minOccurs="1" maxOccurs="1" />
     	</xsd:sequence>
     	<xsd:attribute name="id" type="xsd:positiveInteger" />
     </xsd:complexType>
@@ -327,6 +330,79 @@ da dessen Vorteile für sich sprechen. Kleinere Datenmengen führen zu schneller
 		</xsd:sequence>
 	</xsd:complexType>
 	
+    
+    
+    <xsd:complexType name="ColourConnection">
+    	<xsd:sequence>
+    		<xsd:element name="users" minOccurs="1" maxOccurs="1">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="user" minOccurs="0" maxOccurs="unbounded">
+    						<xsd:complexType>
+    							<xsd:complexContent>
+    								<xsd:extension base="User">
+    									<xsd:sequence>
+    										<xsd:element ref="favourite_colours" minOccurs="1" maxOccurs="1"/>
+    										<xsd:element ref="favourite_colourpalettes" minOccurs="1" maxOccurs="1"/>
+    										<xsd:element ref="followers" minOccurs="1" maxOccurs="1" />
+    										<xsd:element name="creations" type="ColourPaletteList" minOccurs="1" maxOccurs="1" />
+    									</xsd:sequence>
+    								</xsd:extension>
+    							</xsd:complexContent>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    		<xsd:element name="colours" minOccurs="1" maxOccurs="1">
+    		    <xsd:complexType>
+    		    	<xsd:sequence>
+    					<xsd:element name="colour" minOccurs="0" maxOccurs="unbounded">
+    						<xsd:complexType>
+    							<xsd:complexContent>
+    								<xsd:extension base="Colour">
+    									<xsd:sequence>
+    										<xsd:element name="comments" minOccurs="1" maxOccurs="1">
+    											<xsd:complexType>
+    												<xsd:sequence>
+    													<xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+    												</xsd:sequence>
+    											</xsd:complexType>
+    										</xsd:element>
+    									</xsd:sequence>
+    								</xsd:extension>
+    							</xsd:complexContent>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    		<xsd:element name="colourpalettes" minOccurs="1" maxOccurs="1">
+    		    <xsd:complexType>
+    		    	<xsd:sequence>
+    					<xsd:element name="colourpalette" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+    							<xsd:complexContent>
+    								<xsd:extension base="ColourPalette">
+    									<xsd:sequence>
+    										<xsd:element name="comments" minOccurs="1" maxOccurs="1">
+    											<xsd:complexType>
+    												<xsd:sequence>
+    													<xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+    												</xsd:sequence>
+    											</xsd:complexType>
+    										</xsd:element>
+    									</xsd:sequence>
+    								</xsd:extension>
+    							</xsd:complexContent>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
     
     
     <xsd:element name="user" type="User" />
@@ -342,7 +418,10 @@ da dessen Vorteile für sich sprechen. Kleinere Datenmengen führen zu schneller
     <xsd:element name="favourite_colourpalettes" type="FavouriteColourPaletteList" />
     
     <xsd:element name="followers" type="Followers" />
+    <xsd:element name="comment" type="Comment"/>
     <xsd:element name="comments" type="Comments" />
+
+	<xsd:element name="colour_connection" type="ColourConnection" />    
     
 </xsd:schema>
 ```

@@ -145,6 +145,79 @@
 	
     
     
+    <xsd:complexType name="ColourConnection">
+    	<xsd:sequence>
+    		<xsd:element name="users" minOccurs="1" maxOccurs="1">
+    			<xsd:complexType>
+    				<xsd:sequence>
+    					<xsd:element name="user" minOccurs="0" maxOccurs="unbounded">
+    						<xsd:complexType>
+    							<xsd:complexContent>
+    								<xsd:extension base="User">
+    									<xsd:sequence>
+    										<xsd:element ref="favourite_colours" minOccurs="1" maxOccurs="1"/>
+    										<xsd:element ref="favourite_colourpalettes" minOccurs="1" maxOccurs="1"/>
+    										<xsd:element ref="followers" minOccurs="1" maxOccurs="1" />
+    										<xsd:element name="creations" type="ColourPaletteList" minOccurs="1" maxOccurs="1" />
+    									</xsd:sequence>
+    								</xsd:extension>
+    							</xsd:complexContent>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    		<xsd:element name="colours" minOccurs="1" maxOccurs="1">
+    		    <xsd:complexType>
+    		    	<xsd:sequence>
+    					<xsd:element name="colour" minOccurs="0" maxOccurs="unbounded">
+    						<xsd:complexType>
+    							<xsd:complexContent>
+    								<xsd:extension base="Colour">
+    									<xsd:sequence>
+    										<xsd:element name="comments" minOccurs="1" maxOccurs="1">
+    											<xsd:complexType>
+    												<xsd:sequence>
+    													<xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+    												</xsd:sequence>
+    											</xsd:complexType>
+    										</xsd:element>
+    									</xsd:sequence>
+    								</xsd:extension>
+    							</xsd:complexContent>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    		<xsd:element name="colourpalettes" minOccurs="1" maxOccurs="1">
+    		    <xsd:complexType>
+    		    	<xsd:sequence>
+    					<xsd:element name="colourpalette" minOccurs="0" maxOccurs="unbounded">
+							<xsd:complexType>
+    							<xsd:complexContent>
+    								<xsd:extension base="ColourPalette">
+    									<xsd:sequence>
+    										<xsd:element name="comments" minOccurs="1" maxOccurs="1">
+    											<xsd:complexType>
+    												<xsd:sequence>
+    													<xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+    												</xsd:sequence>
+    											</xsd:complexType>
+    										</xsd:element>
+    									</xsd:sequence>
+    								</xsd:extension>
+    							</xsd:complexContent>
+    						</xsd:complexType>
+    					</xsd:element>
+    				</xsd:sequence>
+    			</xsd:complexType>
+    		</xsd:element>
+    	</xsd:sequence>
+    </xsd:complexType>
+    
+    
+    
     <xsd:element name="user" type="User" />
     <xsd:element name="colour" type="Colour" />
     <xsd:element name="colourpalette" type="ColourPalette" />
@@ -160,5 +233,7 @@
     <xsd:element name="followers" type="Followers" />
     <xsd:element name="comment" type="Comment"/>
     <xsd:element name="comments" type="Comments" />
+
+	<xsd:element name="colour_connection" type="ColourConnection" />    
     
 </xsd:schema>
