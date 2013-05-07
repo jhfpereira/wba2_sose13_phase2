@@ -37,7 +37,7 @@
     <xsd:complexType name="Colour">
     	<xsd:sequence>
     		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
     	</xsd:sequence>
     	<xsd:attribute name="id" type="ColourID" />
     </xsd:complexType>

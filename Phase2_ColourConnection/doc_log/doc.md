@@ -199,7 +199,7 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
 	
 	<xsd:complexType name="Ref">
     	<xsd:attribute name="id" type="xsd:positiveInteger" />
-		<xsd:attribute name="ref" type="xsd:anyURI" />
+		<xsd:attribute name="ref" type="xsd:string" />
     </xsd:complexType>
 	
 	<xsd:simpleType name="ColourID">
@@ -218,7 +218,7 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
     
     <xsd:complexType name="ColourRef">
 		<xsd:attribute name="id" type="ColourID" />
-		<xsd:attribute name="ref" type="xsd:anyURI" />
+		<xsd:attribute name="ref" type="xsd:string" />
     </xsd:complexType>
     
     <xsd:complexType name="Colour">
