@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <colours>
-    <colour id="333333" ref="http://localhost/colour/333333" />
-    <colour id="555555" ref="http://localhost/colour/555555" />
-    <colour id="125530" ref="http://localhost/colour/125530" />
+    <colour id="333333" ref="/colour/333333" />
+    <colour id="555555" ref="/colour/555555" />
+    <colour id="125530" ref="/colour/125530" />
 </colours>

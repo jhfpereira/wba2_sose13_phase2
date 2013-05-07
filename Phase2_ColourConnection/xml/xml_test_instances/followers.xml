@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <followers>
-    <follower id="1" ref="http://localhost/user/1">
+    <follower id="1" ref="/user/1">
         <following_since>2002-02-10T19:20:45.000+01:00</following_since>
     </follower>
 </followers>

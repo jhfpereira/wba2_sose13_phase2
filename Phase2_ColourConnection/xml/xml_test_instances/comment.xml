@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <comment>
-    <creator id="1" ref="http://localhost/user/1" />
+    <creator id="1" ref="/user/1" />
     <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
     <message>Ein kleiner Kommentar</message>
 </comment>

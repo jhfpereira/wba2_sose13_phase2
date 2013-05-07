@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <users>
-    <user id="1" ref="http://localhost/user/1" />
+    <user id="1" ref="/user/1" />
 </users>

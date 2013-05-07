@@ -5,41 +5,41 @@
             <username>Peter</username>
             <date_of_registration>2002-02-10T19:20:45.000+01:00</date_of_registration>
             <favourite_colours>
-                <favourite_colour id="333333" ref="http://localhost/favourite_colour/333333" />
-                <favourite_colour id="555555" ref="http://localhost/favourite_colour/555555" />
+                <favourite_colour id="333333" ref="/favourite_colour/333333" />
+                <favourite_colour id="555555" ref="/favourite_colour/555555" />
             </favourite_colours>
             <favourite_colourpalettes>
-                <favourite_colourpalette id="1" ref="http://localhost/colourpalette/1" />
+                <favourite_colourpalette id="1" ref="/colourpalette/1" />
             </favourite_colourpalettes>
             <followers>
-                <follower id="1" ref="http://localhost/user/1">
+                <follower id="1" ref="/user/1">
                     <following_since>2002-02-10T19:20:45.000+01:00</following_since>
                 </follower>
             </followers>
             <creations>
-                <colourpalette id="1" ref="http://localhost/colourpalette/1" />
-                <colourpalette id="2" ref="http://localhost/colourpalette/2" />
+                <colourpalette id="1" ref="/colourpalette/1" />
+                <colourpalette id="2" ref="/colourpalette/2" />
             </creations>
         </user>
     </users>
     <colours>
         <colour id="333333">
-            <creator id="1" ref="http://localhost/user/1" />
+            <creator id="1" ref="/user/1" />
             <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
             <comments>
                 <comment id="1">
-                    <creator id="1" ref="http://localhost/user/1" />
+                    <creator id="1" ref="/user/1" />
                     <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
                     <message>Ein kleiner Kommentar</message>
                 </comment>
             </comments>
         </colour>
         <colour id="555555">
-            <creator id="1" ref="http://localhost/user/1" />
+            <creator id="1" ref="/user/1" />
             <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
             <comments>
                 <comment id="1">
-                    <creator id="1" ref="http://localhost/user/1" />
+                    <creator id="1" ref="/user/1" />
                     <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
                     <message>Ein kleiner Kommentar</message>
                 </comment>
@@ -48,15 +48,15 @@
     </colours>
     <colourpalettes>
         <colourpalette id="1">
-            <creator id="1" ref="http://localhost/user/1" />
+            <creator id="1" ref="/user/1" />
             <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
             <used_colours>
-                <colour id="333333" ref="http://localhost/colour/333333" />
-                <colour id="555555" ref="http://localhost/colour/555555" />
+                <colour id="333333" ref="/colour/333333" />
+                <colour id="555555" ref="/colour/555555" />
             </used_colours>
             <comments>
                 <comment id="1">
-                    <creator id="1" ref="http://localhost/user/1" />
+                    <creator id="1" ref="/user/1" />
                     <date_of_creation>2002-02-10T19:20:45.000+01:00</date_of_creation>
                     <message>Ein kleiner Kommentar</message>
                 </comment>

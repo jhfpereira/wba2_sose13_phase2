@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <favourite_colours>
-    <favourite_colour id="333333" ref="http://localhost/favourite_colour/333333" />
-    <favourite_colour id="555555" ref="http://localhost/favourite_colour/555555" />
+    <favourite_colour id="333333" ref="/favourite_colour/333333" />
+    <favourite_colour id="555555" ref="/favourite_colour/555555" />
 </favourite_colours>

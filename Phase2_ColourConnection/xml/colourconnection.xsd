@@ -12,7 +12,7 @@
 	
 	<xsd:complexType name="Ref">
     	<xsd:attribute name="id" type="xsd:positiveInteger" />
-		<xsd:attribute name="ref" type="xsd:anyURI" />
+		<xsd:attribute name="ref" type="xsd:string" />
     </xsd:complexType>
 	
 	<xsd:simpleType name="ColourID">
@@ -31,7 +31,7 @@
     
     <xsd:complexType name="ColourRef">
 		<xsd:attribute name="id" type="ColourID" />
-		<xsd:attribute name="ref" type="xsd:anyURI" />
+		<xsd:attribute name="ref" type="xsd:string" />
     </xsd:complexType>
     
     <xsd:complexType name="Colour">

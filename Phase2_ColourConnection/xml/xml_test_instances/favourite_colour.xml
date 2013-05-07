@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<favourite_colour id="333333" ref="http://localhost/colour/333333">
+<favourite_colour id="333333" ref="/colour/333333">
     <favourite_since>2002-02-10T19:20:45.000+01:00</favourite_since>
 </favourite_colour>
