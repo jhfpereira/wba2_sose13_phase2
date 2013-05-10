@@ -157,7 +157,7 @@ Zuletzt können Benutzer von anderen Benutzern gefolgt werden. Dazu wird die unt
 | /colourpalette/&lt;colourpalette&#95;id> | Informationen über die Farbpalette zurückgeben | - | - | Farbpalette löschen |  
 | /colourpalette/&lt;colourpalette&#95;id>/comment | - | - | Kommentar erstellen | - |  
 | /colourpalette/&lt;colourpalette&#95;id>/comment/&lt;comment&#95;id> | - | - | - | Kommentar löschen |  
-| /colourpalette/&lt;colourpalette&#95;id>/comments | Liste aller Kommentare zu einer Farbplalette zurückgeben | - | - | - |  
+| /colourpalette/&lt;colourpalette&#95;id>/comments | Liste aller Kommentare zu einer Farbpalette zurückgeben | - | - | - |  
 | /colourpalettes | Liste aller Farbpaletten zurückgeben | - | - | - |   
 
 
@@ -171,7 +171,7 @@ Neben dem URI- und Ressourcen Design, muss auch das XML Schema, auf welches im P
 Deshalb bietet es sich an das Schema Schritt für Schritt eine solide Basis zu definieren, auf die die restliche Struktur aufsetzt. Konkret sieht das so aus, dass die im Unterpunkt 3.1 identifizierten grundlegenden Ressourcen `user`, `colour` sowie `colourpalette` als zuvor erwähnte Basis herangezogen werden.
 Sie bilden die grundlegenden Ressourcen, aus denen sich Variationen bilden. Speziell sei das Beispiel `colour` und `favourite_colour` genannt. `favourite_colour` ist an sich ebenfalls eine Ressource, die eine Ableitung von `colour` darstellt. Der einzige Unterschied besteht nur in der zusätzlichen Angabe des Zeitpunkts wann eine Farbe als Lieblingsfarbe gesetzt wurde.
 Hier kann man sich leicht der Objektorientierung bedienen, speziell der Vererbung. Dies bietet sich auch sehr gut an, da ein XML Schema einem ähnliche Möglichkeiten zur Strukturierung bzw. Aufbau bietet. Hier sei auf die Möglichkeiten der Erweiterung (`extension`) und der Restriktion (`restriction`) von komplexen Typen hingewiesen. In diesem Fall setzt man aber konkret nur auf die Möglichkeit der Erweiterung, um Typen gezielt zu spezialisieren.
-Neben Spezialisierungen von Typen bzw. Elementen, wird auch das Zusammenfassen von solchen Elementen zu Mengen betrachtet. Damit ist gemeint, dass ein übergeodnetes Element existiert, welches als Container fungiert. Dies kann man ganz gut mittels der Ressource `users` verdeutlichen. Die Ressource repräsentiert eine Liste die aus mehreren Farbressourcen (`colour`) besteht. Dadurch, dass es über die REST-Schnittstelle möglich ist eine Liste aller Benutzer anzufordern, bietet es sich auch an auf Seiten von XML ein Listen- bzw. Container-Element einzuführen.
+Neben Spezialisierungen von Typen bzw. Elementen, wird auch das Zusammenfassen von solchen Elementen zu Mengen betrachtet. Damit ist gemeint, dass ein übergeodnetes Element existiert, welches als Container fungiert. Dies kann man ganz gut mittels der Ressource `users` verdeutlichen. Die Ressource repräsentiert eine Liste die aus mehreren User-Ressourcen (`user`) besteht. Dadurch, dass es über die REST-Schnittstelle möglich ist eine Liste aller Benutzer anzufordern, bietet es sich auch an auf Seiten von XML ein Listen- bzw. Container-Element einzuführen.
 Listen gibt es nicht nur für Benutzer (`users`), sondern auch zur Auflistung von Farben (`colours`), Lieblingsfarben (`favourite_colours`), Lieblingsfarbpaletten (`favourite_colourpalettes`) aber auch von Benutzern die einen bestimmten Benutzer folgen, sognannte Follower (`followers`).  
 Eine Besonderheit des XML Schemas ist es, dass es Dokumente mit unterschiedlichen Wurzelelementen erfolgreich validiert. Im Gegensatz zur Phase 1, wo das konzipierte Schema nur ein Wurzelelement vorsah, ist dieses Schema der Phase 2 sehr viel flexibler gestaltet. In Phase 1 wurden die Daten so modelliert, dass eine Dokumenteninstanz wirklich alle aufgekommenen Daten enthielt. Für den Anwendungsfall ist dies sicherlich die beste herangehensweise, doch für Phase 2 nicht mehr. Hier sollten nur Daten zwischen einem Clienten und einem Server transportiert werden, die entsprechend des Kontexts relevant sind.
 Mit Kontext ist hiermit die Semantik der HTTP-Operationen gemeint. Es ist somit weniger sinnvoll wenn ein Request wie z.B. `GET /user/1` einem Clienten neben den Informationen zum Benutzer mit der ID 1, auch alle anderen Informationen bzw. Daten des Systems liefert, die nichts mit der klar identifizierten Ressource zu tun hat. Es würde völlig ausreichen nur den relevanten Teil der kompletten Datenstruktur zurückzugeben. Dafür muss das Schema mit den Anwendungsfällen im Hinterkopf entsprechend ausgearbeitet werden.  
@@ -224,7 +224,7 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
     <xsd:complexType name="Colour">
     	<xsd:sequence>
     		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
     	</xsd:sequence>
     	<xsd:attribute name="id" type="ColourID" />
     </xsd:complexType>
@@ -232,7 +232,7 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
 	<xsd:complexType name="ColourPalette">
     	<xsd:sequence>
     		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:string" minOccurs="1" maxOccurs="1" />
+    		<xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
     		<xsd:element name="used_colours" minOccurs="1">
     			<xsd:complexType>
     				<xsd:sequence>
