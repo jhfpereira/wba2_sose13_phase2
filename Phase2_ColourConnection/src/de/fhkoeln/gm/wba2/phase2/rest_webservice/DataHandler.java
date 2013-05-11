@@ -36,22 +36,20 @@ public class DataHandler {
 		cc_file= new File(Config.datafile_path);
 		
 		try {
-			
 			cc_context = JAXBContext.newInstance(ColourConnection.class);
 			
 			if(!cc_file.exists()) {
 				cc_file.createNewFile();
 				
 				// creating an empty document structure
-	            Marshaller m = cc_context.createMarshaller();
-	            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-	            
-	            m.marshal(new ObjectFactory().createColourConnection(new ColourConnection()), cc_file);
+				Marshaller m = cc_context.createMarshaller();
+				m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+				m.marshal(new ObjectFactory().createColourConnection(new ColourConnection()), cc_file);
 			}
 			
 			Unmarshaller um = cc_context.createUnmarshaller();
-        	cc_base = (ColourConnection) um.unmarshal(new StreamSource(cc_file), ColourConnection.class).getValue();
-        	
+			cc_base = (ColourConnection) um.unmarshal(new StreamSource(cc_file), ColourConnection.class).getValue();
+			
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -88,21 +86,19 @@ public class DataHandler {
 		
 		// date set by the system; more reliable
 		GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
-
-        XMLGregorianCalendar currGregCal;
-        try {
-            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            cc_user.setDateOfRegistration(currGregCal);
-        } catch (DatatypeConfigurationException e) {}
-
-        
-        cc_user.setFavouriteColours(new FavouriteColourList());
-        cc_user.setFavouriteColourpalettes(new FavouriteColourPaletteList());
-        cc_user.setFollowers(new Followers());
-        cc_user.setCreations(new ColourPaletteList());
-        
-        
+		c.setTime(new Date());
+		
+		XMLGregorianCalendar currGregCal;
+		try {
+			currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			cc_user.setDateOfRegistration(currGregCal);
+		} catch (DatatypeConfigurationException e) {}
+		
+		cc_user.setFavouriteColours(new FavouriteColourList());
+		cc_user.setFavouriteColourpalettes(new FavouriteColourPaletteList());
+		cc_user.setFollowers(new Followers());
+		cc_user.setCreations(new ColourPaletteList());
+		
 		cc_base.getUsers().getUser().add(cc_user);
 		
 		marshall_cc();
@@ -264,17 +260,17 @@ public class DataHandler {
 			
 			// set the date since when the follower is a follower
 			GregorianCalendar c = new GregorianCalendar();
-	        c.setTime(new Date());
+			c.setTime(new Date());
 
-	        XMLGregorianCalendar currGregCal = null;
-	        try {
-	            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-	        } catch (DatatypeConfigurationException e) {}
-
-	        new_follower.setFollowingSince(currGregCal);
-	        
-	        getUserObj(bi_user_id).getFollowers().getFollower().add(new_follower);
-	        
+			XMLGregorianCalendar currGregCal = null;
+			try {
+				currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			} catch (DatatypeConfigurationException e) {}
+			
+			new_follower.setFollowingSince(currGregCal);
+			
+			getUserObj(bi_user_id).getFollowers().getFollower().add(new_follower);
+			
 			marshall_cc();
 			return true;
 		}
@@ -345,12 +341,12 @@ public class DataHandler {
 		BigInteger bi_user_id = BigInteger.valueOf(Long.parseLong(user_id));
 		
 		GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
+		c.setTime(new Date());
 		
 		XMLGregorianCalendar currGregCal = null;
-        try {
-            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-        } catch (DatatypeConfigurationException e) {}
+		try {
+			currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+		} catch (DatatypeConfigurationException e) {}
 		
 		// create colour if it doesn't exist already
 		if(getColourObj(colour_id) == null) {
@@ -382,10 +378,10 @@ public class DataHandler {
 			new_favourite_colour.setRef("/colour/" + colour_id);
 
 			// set date for when the colour was set as a favourite
-	        new_favourite_colour.setFavouriteSince(currGregCal);
+			new_favourite_colour.setFavouriteSince(currGregCal);
 			
-	        getUserObj(bi_user_id).getFavouriteColours().getFavouriteColour().add(new_favourite_colour);
-	        
+			getUserObj(bi_user_id).getFavouriteColours().getFavouriteColour().add(new_favourite_colour);
+			
 			marshall_cc();
 			return true;
 		}
@@ -469,16 +465,16 @@ public class DataHandler {
 
 			// set date for when the colourpalette was set as a favourite
 			GregorianCalendar c = new GregorianCalendar();
-	        c.setTime(new Date());
+			c.setTime(new Date());
 			
 			XMLGregorianCalendar currGregCal = null;
-	        try {
-	            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-	        } catch (DatatypeConfigurationException e) {}
-	        new_favourite_colourpalette.setFavouriteSince(currGregCal);
+			try {
+				currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			} catch (DatatypeConfigurationException e) {}
+			new_favourite_colourpalette.setFavouriteSince(currGregCal);
 			
-	        getUserObj(bi_user_id).getFavouriteColourpalettes().getFavouriteColourpalette().add(new_favourite_colourpalette);
-	        
+			getUserObj(bi_user_id).getFavouriteColourpalettes().getFavouriteColourpalette().add(new_favourite_colourpalette);
+			
 			marshall_cc();
 			return true;
 		}
@@ -592,23 +588,23 @@ public class DataHandler {
 		creator_ref.setId(given_colour.getCreator().getId());
 		creator_ref.setRef("/user/" + creator_ref.getId().toString());
 		
-        cc_colour.setCreator(creator_ref);
-        
+		cc_colour.setCreator(creator_ref);
+		
 		// date given by the client
 		//cc_colour.setDateOfCreation(given_colour.getDateOfCreation());
 		
 		// date set by the system; more reliable
 		GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
+		c.setTime(new Date());
 
-        XMLGregorianCalendar currGregCal;
-        try {
-            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            cc_colour.setDateOfCreation(currGregCal);
-        } catch (DatatypeConfigurationException e) {}
-        
-        cc_colour.setComments(new ColourConnection.Colours.Colour.Comments());
-        
+		XMLGregorianCalendar currGregCal;
+		try {
+			currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			cc_colour.setDateOfCreation(currGregCal);
+		} catch (DatatypeConfigurationException e) {}
+		
+		cc_colour.setComments(new ColourConnection.Colours.Colour.Comments());
+		
 		cc_base.getColours().getColour().add(cc_colour);
 		
 		marshall_cc();
@@ -649,14 +645,14 @@ public class DataHandler {
 		
 		// date set by the system; more reliable
 		GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
+		c.setTime(new Date());
 
-        XMLGregorianCalendar currGregCal;
-        try {
-            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            given_comment.setDateOfCreation(currGregCal);
-        } catch (DatatypeConfigurationException e) {}
-
+		XMLGregorianCalendar currGregCal;
+		try {
+			currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			given_comment.setDateOfCreation(currGregCal);
+		} catch (DatatypeConfigurationException e) {}
+		
 		found_colour.getComments().getComment().add(given_comment);
 		
 		marshall_cc();
@@ -801,58 +797,57 @@ public class DataHandler {
 		creator_ref.setId(given_colourpalette.getCreator().getId());
 		creator_ref.setRef("/user/" + creator_ref.getId().toString());
 		
-        cc_colourpalette.setCreator(creator_ref);
-        
-        // add creation
-        Ref colourpalette_ref = new Ref();
-        colourpalette_ref.setId(cc_colourpalette.getId());
-        colourpalette_ref.setRef("/colourpalette/" + cc_colourpalette.getId().toString());
-        getUserObj(given_colourpalette.getCreator().getId()).getCreations().getColourpalette().add(colourpalette_ref);
-        
+		cc_colourpalette.setCreator(creator_ref);
+		
+		// add creation
+		Ref colourpalette_ref = new Ref();
+		colourpalette_ref.setId(cc_colourpalette.getId());
+		colourpalette_ref.setRef("/colourpalette/" + cc_colourpalette.getId().toString());
+		getUserObj(given_colourpalette.getCreator().getId()).getCreations().getColourpalette().add(colourpalette_ref);
+		
 		// date given by the client
 		//cc_colourpalette.setDateOfCreation(given_colourpalette.getDateOfCreation());
 		
 		// date set by the system; more reliable
 		GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
+		c.setTime(new Date());
+		
+		XMLGregorianCalendar currGregCal = null;
+		try {
+			currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+		} catch (DatatypeConfigurationException e) {}
 
-        XMLGregorianCalendar currGregCal = null;
-        try {
-            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-        } catch (DatatypeConfigurationException e) {}
+		cc_colourpalette.setDateOfCreation(currGregCal);
+		
+		// create an empty creations list
+		cc_colourpalette.setUsedColours(new ColourPalette.UsedColours());
+		
+		// create an empty comments list
+		cc_colourpalette.setComments(new ColourConnection.Colourpalettes.Colourpalette.Comments());
+		
+		// check if the used colours exist
+		for(ColourRef curr_colour: given_colourpalette.getUsedColours().getColour()) {
+			
+			if(getColourObj(curr_colour.getId()) == null) {
 
-        cc_colourpalette.setDateOfCreation(currGregCal);
-        
-        // create an empty creations list
-        cc_colourpalette.setUsedColours(new ColourPalette.UsedColours());
-        
-        // create an empty comments list
-        cc_colourpalette.setComments(new ColourConnection.Colourpalettes.Colourpalette.Comments());
-        
-        
-        // check if the used colours exist
-        for(ColourRef curr_colour: given_colourpalette.getUsedColours().getColour()) {
-        	
-        	if(getColourObj(curr_colour.getId()) == null) {
-
-        		// the colour doesn't exist; so we're gonna create it now
-        		ColourConnection.Colours.Colour new_colour = new ColourConnection.Colours.Colour();
-        		new_colour.setId(curr_colour.getId());
-        		new_colour.setCreator(creator_ref);
-        		new_colour.setDateOfCreation(currGregCal);
-        		new_colour.setComments(new ColourConnection.Colours.Colour.Comments());
-        		
-        		cc_base.getColours().getColour().add(new_colour);
-        	}
-        	
-        	cc_colourpalette.getUsedColours().getColour().add(curr_colour);
-        }
-        
-        // add the colourpalette to the list
+				// the colour doesn't exist; so we're gonna create it now
+				ColourConnection.Colours.Colour new_colour = new ColourConnection.Colours.Colour();
+				new_colour.setId(curr_colour.getId());
+				new_colour.setCreator(creator_ref);
+				new_colour.setDateOfCreation(currGregCal);
+				new_colour.setComments(new ColourConnection.Colours.Colour.Comments());
+				
+				cc_base.getColours().getColour().add(new_colour);
+			}
+			
+			cc_colourpalette.getUsedColours().getColour().add(curr_colour);
+		}
+		
+		// add the colourpalette to the list
 		cc_base.getColourpalettes().getColourpalette().add(cc_colourpalette);
 		
 		marshall_cc();
-
+		
 		return cc_colourpalette.getId();
 	}
 	
@@ -914,14 +909,14 @@ public class DataHandler {
 		
 		// date set by the system; more reliable
 		GregorianCalendar c = new GregorianCalendar();
-        c.setTime(new Date());
+		c.setTime(new Date());
 
-        XMLGregorianCalendar currGregCal;
-        try {
-            currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
-            given_comment.setDateOfCreation(currGregCal);
-        } catch (DatatypeConfigurationException e) {}
-
+		XMLGregorianCalendar currGregCal;
+		try {
+			currGregCal = DatatypeFactory.newInstance().newXMLGregorianCalendar(c);
+			given_comment.setDateOfCreation(currGregCal);
+		} catch (DatatypeConfigurationException e) {}
+		
 		found_colourpalette.getComments().getComment().add(given_comment);
 		
 		marshall_cc();
@@ -1010,11 +1005,9 @@ public class DataHandler {
 		Object element = null;
 		
 		try {
-			
 			JAXBContext context = JAXBContext.newInstance(c);
 			Unmarshaller um = context.createUnmarshaller();
-        	element = um.unmarshal(new StreamSource(new StringReader(str)), c).getValue();
-        	
+			element = um.unmarshal(new StreamSource(new StringReader(str)), c).getValue();
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
@@ -1084,17 +1077,15 @@ public class DataHandler {
 		}
 		
 		try {
-			
 			JAXBContext context = JAXBContext.newInstance(instance.getClass());
-            Marshaller m = context.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            
-            ByteArrayOutputStream string_out = new ByteArrayOutputStream();
-
-            m.marshal(jaxbe, string_out);
-            
-            str = string_out.toString();
-            
+			Marshaller m = context.createMarshaller();
+			m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+			
+			ByteArrayOutputStream string_out = new ByteArrayOutputStream();
+			
+			m.marshal(jaxbe, string_out);
+			
+			str = string_out.toString();
 		} catch (JAXBException e) {
 			e.printStackTrace();
 		}
