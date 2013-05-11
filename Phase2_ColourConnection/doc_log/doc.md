@@ -154,7 +154,7 @@ Zuletzt können Benutzer von anderen Benutzern gefolgt werden. Dazu wird die unt
 | /colours | Liste aller Farben zurückgeben | - | - | - |  
 |  | **GET** | **PUT** | **POST** | **DELETE** |  
 | /colourpalette | - | - | Farbpalette erstellen | - |  
-| /colourpalette/&lt;colourpalette&#95;id> | Informationen über die Farbpalette zurückgeben | - | - | Farbpalette löschen |  
+| /colourpalette/&lt;colourpalette&#95;id> | Informationen über die Farbpalette zurückgeben | - | - | - |  
 | /colourpalette/&lt;colourpalette&#95;id>/comment | - | - | Kommentar erstellen | - |  
 | /colourpalette/&lt;colourpalette&#95;id>/comment/&lt;comment&#95;id> | - | - | - | Kommentar löschen |  
 | /colourpalette/&lt;colourpalette&#95;id>/comments | Liste aller Kommentare zu einer Farbpalette zurückgeben | - | - | - |  
