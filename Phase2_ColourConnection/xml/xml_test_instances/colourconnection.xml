@@ -5,11 +5,17 @@
             <username>Peter</username>
             <date_of_registration>2002-02-10T19:20:45.000+01:00</date_of_registration>
             <favourite_colours>
-                <favourite_colour id="333333" ref="/favourite_colour/333333" />
-                <favourite_colour id="555555" ref="/favourite_colour/555555" />
+                <favourite_colour id="333333" ref="/colour/333333">
+                    <favourite_since>2002-02-10T19:20:45.000+01:00</favourite_since>
+                </favourite_colour>
+                <favourite_colour id="555555" ref="/colour/555555">
+                    <favourite_since>2002-02-10T19:20:45.000+01:00</favourite_since>
+                </favourite_colour>
             </favourite_colours>
             <favourite_colourpalettes>
-                <favourite_colourpalette id="1" ref="/colourpalette/1" />
+                <favourite_colourpalette id="1" ref="/colourpalette/1">
+                    <favourite_since>2002-02-10T19:20:45.000+01:00</favourite_since>
+                </favourite_colourpalette>
             </favourite_colourpalettes>
             <followers>
                 <follower id="1" ref="/user/1">

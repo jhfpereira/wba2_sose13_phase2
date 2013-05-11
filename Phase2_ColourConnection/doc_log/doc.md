@@ -287,13 +287,13 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
  
     <xsd:complexType name="FavouriteColourList">
     	<xsd:sequence>
-    		<xsd:element name="favourite_colour" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    		<xsd:element name="favourite_colour" type="FavouriteColour" minOccurs="0" maxOccurs="unbounded" />
     	</xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="FavouriteColourPaletteList">
     	<xsd:sequence>
-    		<xsd:element name="favourite_colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+    		<xsd:element name="favourite_colourpalette" type="FavouriteColourPalette" minOccurs="0" maxOccurs="unbounded" />
     	</xsd:sequence>
     </xsd:complexType>
     
