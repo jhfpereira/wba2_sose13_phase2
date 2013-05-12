@@ -463,9 +463,6 @@ Eine weitere wichtige Überlegung betrifft die Statuscodes. Nach jedem Request m
 Nach Betrachtung der HTTP-Operationen wurde sich für die folgenden Statuscodes entschieden:  
 
 
-**200 OK** - Operation war erfolgreich, die Ressource wurde gefunden und der Inhalt wird im Body mitgegeben
-**201 No Content** - 
-
 | Statuscode | Bedeutung | Einsatz |
 | :---: | :---: | :---: |
 | **200** | OK | Rückgabe einer Ressource bzw. von Daten (Benutzer-, Farb-, Farbpaletteninformationen usw.) |  
