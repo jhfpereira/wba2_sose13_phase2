@@ -11,6 +11,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-04-29 | Ressourcen und URI Design](#2013_04_29)
 * [2013-05-04 | Ressourcen-Identifizierung, Ausarbeitung der Semantik und Umsetzung eines XML-Schema](#2013_05_04)  
 * [2013-05-06 | **Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)
+* [2013-05-11 | Umsetzung des RESTful Webservice](#2013_05_11)  
 * [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)
 * [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)
@@ -21,6 +22,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 ***
 
 <a name="2013_04_15"></a>**2013-04-15** | Kickoff: Ideen- / Problemfindung  
+
 Es stellte sich heraus, dass es nicht so leicht war zu einer guten und interessanten Idee zu kommen. Viele Ideen mussten verworfen werden, weil sie schon von anderen Gruppen aufgegriffen wurden.
 Es sehr spät ergab sich die Überlegung, angelehnt an die Seite [ColourLovers](http://www.colourlovers.com), eine kleine Platform zu realisieren, wo Farben den Mittelpunkt darstellten. Alles soll sich um Farben drehen. Farben sollen geteilt und aufgegriffen werden, um neue Erzeugnisse zu kreiern.
 Dies soll zu einer großen Variation an Farbpaletten führen, die für eventuelle Medienerzeugnisse herangezogen werden können. Darunter fallen Farbschemen, an die sich orientiet werden kann, wenn z.B. eine gute Farbkombination für die Gestaltung einer Webseite benötigt wird.
@@ -30,6 +32,7 @@ Es soll auch als Anlaufstelle dienen, um sich von frischen und dem Trend folgend
 
 
 <a name="2013_04_22"></a>**2013-04-22** | Konzeptioneller Meilensein - Kommunikationsabläufe und Interaktionen  
+
 Bevor es zur eigentlichen Umsetzung des Projekts kommt, sollte man sich im klaren sein, wie die Kommunikations- sowie Interaktionsabläufe aufgebaut sein sollten. Dies ist empfehlenswert, um schon im Vorfeld eventuell auftretende Probleme sowie Unstimmigkeiten identifizieren zu können.
 Es wurde sich dazu entschlossen kleine simple Szenarien zu verfassen, die die wichtigsten Kommunikationsabläufe verdeutlichen sollen. Darunter fielen die Schritte zum Erstellen eines Farberessource, dem Festlegen einer Lieblingsfarbe, aber auch der Vorgang des Abonnierens einer bestimmten Farbe. Speziell bei Letzterem kann parallel zueinander ein synchroner und asynchroner Kommunikationsablauf festgestellt werden.
 Solch ein Ablauf ist nicht nur beim Setzen einer Lieblingsfarbe relevant, sondern auch beim "Folgen" eines Benutzers und seiner Erzeugnisse. Der asynchrone Aspekt ist dadurch gegeben, dass ein Benutzer nicht immer wieder selbst überprüfen muss, ob ein anderer Benutzer, den er folgt, neue Farbpaletten erzeugt hat, sondern eine entsprechende Benachrichtigung erhält. Hier muss eins dieser Erzeugnisse nicht einmal eine der eigenen Lieblingsfarben verwenden. Dies kann somit als Möglichkeit dienen, neue interessante Farben zu finden, die dann evtl. als Lieblingsfarben festgelegt werden können.
@@ -39,6 +42,7 @@ Sonst wäre man nur auf die zusätzlichen Farben einer Farbpalette beschränkt, 
 
 
 <a name="2013_04_27"></a>**2013-04-27** | Benutzerauthentifizierung bezogen auf ein RESTful Webservice  
+
 Als ein sehr interessantes Thema bezüglich RESTful Webservices empfinde ich die Möglichkeiten der Benutzerauthentifizierung. Bezogen auf das Projekt der Phase2, könnte es relevant sein, eine Benutzerauthentifizierungsschnittstelle einzuführen, um die Rechte eines Benutzers konkret zu bestimmen.
 Obwohl solche Authentifizierungs-Mechanismen in den Vorlesungen noch nicht behandelt wurden, war das Interesse so groß, dass ich nach solchen auf eigene Faust recherchiert habe.
 Generell wird immer gesagt, dass Kommunikationsabläufe die einen Benutzer authentifizieren, über SSL/TLS (Secure Socket Layer bzw. Transport Layer Security) laufen sollten. Somit würde man hier direkt auf HTTPS setzen. Dies erlaubt es sensible Daten (Passwörter), die normalerweise im quasi Klartext übertragen werden, geschützt zu übertragen. Der Einsatz von SSL/TLS würde das Risiko extrem minimieren, Opfer einer `Man-In-The-Middle`-Attacke zu werden.
@@ -51,6 +55,7 @@ Bevor ich mich für eines dieser Verfahren entscheide, und anhand dieser Entsche
 
 
 <a name="2013_04_29"></a>**2013-04-29** | Ressourcen und URI Design  
+
 Ein wichtiger Punkt, welcher in Phase 2 näher betrachtet wird und sicherlich auch ausschlaggebend für die Qualität einer API, ist das Design der URI als Identifizierungsmechanismus für Ressourcen.
 Nach einigen Recherchen bezüglich dem Entwickeln einer guten und sauberen Semantik, kristallisiert sich eine klare Faustregel, an die man sich idealerweise richten sollte. Nomen sind gut und Verben sind schlecht. Konkret bedeutet dies, dass Ressourcen über Nomen addressiert werden.
 Sie repräsentieren ja eine Entität bzw. eine Liste von Entitäten. Als Verben setzen man nur die HTTP-Verben `GET`, `PUT`, `POST` und `DELETE` ein, die für grundlegende Operationen völlig ausreichen.
@@ -78,6 +83,7 @@ Dies würde sich meiner Meinung sogar eher anbieten, da `/colorpalettes` nur auf
 
 
 <a name="2013_05_04"></a>**2013-05-04** | Ressourcen-Identifizierung, Ausarbeitung der Semantik und Umsetzung eines XML-Schema  
+
 Für die Identifizierung der Ressourcen, habe ich mir erstmal klar gemacht, was im System alles eine grundlegende Entität repräsentiert. Nach einer kurzen Zeit stand fest, dass es drei grundlegende Entitäten gibt. Ein Benutzer (`user`), eine Farbe (`colour`) und eine Farbpalette (`colourpalette`).
 Von diesen drei Basis-Entitäten bzw. -Ressourcen, leiten sich dann leicht abweichende/erweiterte Ressourcen ab. Alle anderen Ressourcen stehen zuletzt nur im Zusammenhang mit den Basis-Ressourcen. Diese Abhängigkeiten und Abwandlungen, basierend auf die Basis-Ressourcen, ermöglichen die Einführung von einer Art Referenz. Referenzen können dazu genutzt werden um anzugeben, mit welchem anderen Element sie in Beziehung stehen. Sei es, dass es eine Spezialisierung einer Ressource ist,
 oder die Ressource nur im Kontext mit der referenzierten Ressource Sinn macht bzw. nur im Zusammenspiel mit dieser an Relevanz gewinnt. Diese Idee hat sich im Endeffekt auch komplett auf den Aufbau des XML-Schemas ausgewirkt. Elemente nutzen Referenzen, um andere Elemente im System zu referenzieren.  
@@ -87,9 +93,21 @@ Auch die Ausarbeitung der Semantik der HTTP-Operationen hat von Identifizierung 
 
 
 <a name="2013_05_06"></a>**2013-05-06** | Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen und die Semantik der HTTP-Operationen  
+
 Die Abnahme des ersten und zweiten Meilensteins verlief recht gut. Fragen bezüglich der eventuellen Löschung von Elementen mit noch existierenden Refernezen auf dieses Element, wurde damit beantwortet, dass es mehrere Möglichkeiten gibt. Meine Idee, alle Elemente in einer allumfassenden Struktur zu traversieren, und Elemente mit übereinstimmenden Referenzen löschen, wäre eine Möglichkeit.
 So wird höchstwahrscheinlich auch meine Vorgehensweise aussehen. Evtl. lasse ich die Lösch-Operationen auch komplett unimplementiert. Dies werde ich erst im Verlauf der Umsetzung des REST Webservice entscheiden, je nachdem wie sich der Zeitdruck bemerkbar macht.  
 Heute habe ich zudem das Schema um die Möglichkeit erweitert, eine allumfassende Struktur zu validieren (auch Java-Klassen mittels JAXB generieren zu lassen), die es erlaubt alle Daten des Systems aufzunehmen. Dies wird für die Umsetzung des REST Webservice wichtig sein, da irgendwo die Daten gespeichert sein müssen. Idealerweise in nur einer einzigen XML-Dokumenten-Instanz, anstatt viele kleine XML-Dokumente zu organisieren, die die jeweiligen Ressourcen wiederspiegeln.
+
+<a href="#top">^ top</a>  
+
+
+<a name="2013_05_11"></a>**2013-05-11** | Umsetzung des RESTful Webservice  
+
+Als nächster Schritt war vorgesehen, aufbauend auf Jersey als Referenzimplementation für JAX-RS und Grizzly als HTTP-Server, den RESTful Webservice umzusetzen. Vorteilhaft war, dass ich mich schon vor einigen Wochen mit Jersey und Grizzly beschäftigt hatte und somit sehr schnell in die Entwicklung einsteigen konnte. Dadurch, dass man in Phase 1 schon Erfahrung mit JAXB gesammelt hat bzw. den Umgang mit den von JXB generierten Klassen, konnte beides wunderbar miteinander recht schnell kombiniert werden.
+Als etwas schwierig stellte sich aber die Lagerunge der Daten auf der Serverseite. Datensätze zu Benutzern, Farben, Farbpaletten und ihren Kommentaren, musste auf umständliche Weise in eine vom Schema ebenfalls beschriebenen XML-Struktur eingebettet werden. Durch die kleinen Unterschiede in den aus den complex types generierten Klassen, mussten viele Datensätze immer wieder umgebettet werden, um erst dann an den Request-Handler zurückzureichen bzw. vorher zu marshallen. Diese Umständlichkeiten wurden aber in Kauf genommen,
+da der Sinn der Umsetzung des Webservice darin lag, dass Daten marshalled bzw. unmarshalled werden. Somit existiert auf der Serverseite eine einzige Instanz eines XML Dokuments, wo alle dem System bekannten Datensätze eingepflegt oder entnommen werden. Sie fungiert quasi als Datenbankdatei.  
+Neben der Umsetzung des RESTful-Webservice, habe ich mich schon etwas über das PubSub-Prinzip informiert. Dazu auch die Seminararbeit `Ereignisgesteuerte Systeme im Web` von Benjamin Krumnow leicht überflogen, die im Medieninformatik-Wiki die auf der Aufgabenseite von Phase2 verlinkt wurde. Ich habe vorgesehen, mich bis zum nächsten Milestone näher mit dieser Seminararbeit zu beschäftigen, speziell mit den Kapiteln "2.1 Publish Subscribe" und "3.1 XMPP".  
+Hinzu habe ich mich auch nach Beispielcode für SMACK umgeschaut und bin auch fündig geworden. In den gefundenen Beispielcodes wird die Verwendung des vom XMPP unterstützten PubSub-Verfahrens veranschaulicht, genauer der Erstellung von Nodes, dem Versehen vom Payload und der Erstellung von Listenern. 
 
 <a href="#top">^ top</a>  
 

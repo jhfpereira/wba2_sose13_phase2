@@ -88,7 +88,7 @@ public class UserResource {
 		if(success)
 			return Response.noContent().build();
 		else {
-			return Response.notModified().build();
+			return Response.status(404).build();
 		}
 		
 	}
@@ -109,7 +109,7 @@ public class UserResource {
 		if(success)
 			return Response.noContent().build();
 		else {
-			return Response.notModified().build();
+			return Response.status(404).build();
 		}
 		
 	}
