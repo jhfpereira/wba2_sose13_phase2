@@ -440,7 +440,7 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
 ##<a name="restful_webservice"></a>5. RESTful Webservice  
 Schon in Punkt 3 wird auf das Thema `Resource` leicht eingegangen. Konkret in die Erstellung, dem Löschen und dem Zurückgeben einer Resource, oder allgemein der Verwaltung dieser.  
 Der RESTful Webservice soll nun über die zuvor in Punkt 4 ausgearbeiteten HTTP-Operationen den Zugriff auf dieser Resourcen ermöglichen. Das bedeutet, dass die HTTP-Operationen in konkreten Code überführt, oder besser gesagt, Handler erzeugt werden müssen, die eingehende Requests im Sinne von z.B. "GET /user/1" erkennen und die damit symbolisierte Operation auf den Bestand der Resourcen ausführt.  
-Für die Umsetzung des RESTful Webservice wird auf Jersey als Referenzimplementation von JAX-RS (Java API for Restful Web Services) und Grizzly als HTTP-Server gesetzt. Jersey ermöglicht auf seitens des Servers die Abbildung eines Requests (abhängig von dem HTTP-Verb, URI und akzeptierten Formaten) auf Java-eigene Klassen und Methoden. Vor allem das Abgreifen von Path- und Query-Parametern gestaltet die Umsetzung des Webservice einfacher.
+Für die Umsetzung des RESTful Webservice wird auf Jersey als Referenzimplementation von JAX-RS (Java API for Restful Web Services) und Grizzly als HTTP-Server gesetzt. Jersey ermöglicht auf der Seite des Servers die Abbildung eines Requests (abhängig von dem HTTP-Verb, URI und akzeptierten MIME-Types) auf Java-eigene Klassen bzw. Methoden. Vor allem das Abgreifen von Path- und Query-Parametern gestaltet die Umsetzung des Webservice einfacher.
 Im Falle von Path-Parametern werden zu einer Resource relevante eindeutige Identifizierungsinformationen (evtl. eine ID) im Pfad eingebettet (`localhost/user/1`, wobei 1 die Identifizierungsinformation darstellt). Query-Parameter werden hingegen im Bereich des Query-Strings mitgereicht, wobei hier die Reihenfolge der Parameter keine Rolle spielt, da der mitgereichte Wert über einen zusätzlichen Schlüssel identifiziert wird (`...?key=value`).  
 Doch zu aller erst werden mit dem Programm `xcj` aus dem entwickelten XML-Schema die nötigen Java-Klassen generiert, um sie zum marshallen und unmarshallen der übertragenden Daten zu nutzen. Jersey und JAXB werden somit zusammen eingesetzt, zumal sie beide sehr gut miteinander arbeiten.
 
@@ -450,21 +450,21 @@ Doch zu aller erst werden mit dem Programm `xcj` aus dem entwickelten XML-Schema
 ###<a name="restful_webservice_vorueberlegungen"></a>5.1. Vorüberlegungen  
 Vor der Umsetzung des Webservice, sollte überlegt werden, wie die Prozesse auf seitens des Servers ablaufen sollen. Zudem ist es sinnvoll eine klare Trennung der Vorgänge zu gewährleisten, um den Code im Nachhinein besser und einfacher warten zu können oder komplett zu ersetzen. Hier sollten die Vorteile einer einheitlichen Schnittstelle hervorgehoben werden.  
 Für diese Phase ist es vorgesehen, dass die ganzen dem System bekannten Daten innerhalb von XML-Dokument-Instanzen, bzw. einer einzigen Instanz, gelagert werden. Angenommen es wird sich irgendwann später dafür entschieden die Datensätze in entsprechende externe Datenbanken zu verlagern, kann durch den evtl. modular aufgebauten Code und der einheitlichen Schnitttstelle gewährleistet werden, dass die Anpassung des Codes sich nur auf den Bereich des Datahandlings beschränkt. Die Logik bezüglich des Requesthandlings bleibt somit unangetastet.  
-Man hat hier schon einen Schritt in Richtung klarer Trennung unterschiedlicher Vorgänge gemacht. Diese Trennung wurde leicht von Punkt 2 (Szenarien) mitgenommen. Wie in den dortigen Sequenz-Diagrammen zu sehen, herrschte schon beid er Entwicklung der Szenarien eine klare logische Trennung der Vorgänge. Es ergaben sich Rollen. Zum einen der Client der sich außerhalb des Servers befindet, der Request-Handler welcher sich um die Annahme von Request bzw. der Beatnwortung dieser kümmert und dem eigentlichen Data-Handling, wo die Daten, in diesem Fall, in eine exitierende XML-Struktur einpflegt bzw. aus dieser Daten entnimmt.
-Der Aufbau sieht wie volgt aus:  
+Man hat hier schon einen Schritt in Richtung klarer Trennung unterschiedlicher Vorgänge gemacht. Diese Trennung wurde leicht von Punkt 2 (Szenarien) mitgenommen. Wie in den dortigen Sequenz-Diagrammen zu sehen, herrschte schon bei der Entwicklung der Szenarien eine klare logische Trennung der Vorgänge. Es ergaben sich Rollen. Zum einen der Client der sich außerhalb des Servers befindet, der Request-Handler welcher sich um die Annahme von Request bzw. der Beatnwortung dieser kümmert und dem eigentlichen Data-Handling, wo die Daten, in diesem Fall, in eine exitierende XML-Struktur einpflegt bzw. aus dieser Daten entnimmt.
+Der grobe Aufbau sieht wie folgt aus:  
 
 
 **Client**  <--->  **Request-Handler**  <--->  **Data-Handler**
   
 
-Jede Rolle kommuniziert nur mit einer seiner Nachbar-Rollen. Das bedeutet z.B., dass der Client keine direkte Kommunikation mit dem Data-Handler führen kann, sondern den Weg über den Request-Handler gehen muss und erst dieser mit dem Data-Handler kommuniziert bzw. eine Nachricht schickt.  
+Jede Rolle kommuniziert nur mit einer seiner Nachbar-Rollen. Das bedeutet, dass z.B. der Client keine direkte Kommunikation mit dem Data-Handler führen kann, sondern den Weg über den Request-Handler gehen muss und erst dieser mit dem Data-Handler kommuniziert bzw. der Rolle/Instanz eine Nachricht schickt.  
 
 Eine weitere wichtige Überlegung betrifft die Statuscodes. Nach jedem Request muss mit einem entsprechenden Repsonse geantwortet werden. Je nach Erfolg oder Misserfolg der Operation, muss ein entsprechender HTTP-Statuscode zurückgegeben werden.
-Nach Betrachtung der HTTP-Operationen wurde sich für die folgenden Statuscodes entschieden:  
+Nach Betrachtung der HTTP-Operationen, wurde sich für die folgenden Statuscodes entschieden:  
 
 
 | Statuscode | Bedeutung | Einsatz |
-| :---: | :---: | :---: |
+| :---: | :---: | :--- |
 | **200** | OK | Rückgabe einer Ressource bzw. von Daten (Benutzer-, Farb-, Farbpaletteninformationen usw.) |  
 | **201** | Created | Die Erstellung einer Ressource war erfolgreich und der Ort der neuen Resource wird im Header mitgegeben |  
 | **204** | No Content | Ressource wird aktualisiert oder gelöscht; keine nennenswerten Daten als Rückgabe |  
@@ -479,11 +479,11 @@ Nach Betrachtung der HTTP-Operationen wurde sich für die folgenden Statuscodes 
 ![Code Diagramm](images/code_diagram.png)  
 
 Das Diagramm zeigt die im src-Baum existierenden Klassen (JAXB-Klassen nicht betrachtet, da sie generiert werden).  
-Der Haupteinstieg befindet sich in der Klasse `RestWebserviceMain`. Hier wird der HTTP-Server Grizzly gestartet und Jersey initialisiert. Der Pfeil in Richtung `RequestLayer` deutet an, dass die Ressourcen-Klassen von Jersey (in der RestWebserviceMain initialisiert) gefunden und für das "matchen" der Request-URIs eingebunden werden.  
-Die `RequestLayer`-Gruppe enthält alle von Jersey gefundenen Klassen, die sich um die Abwicklung der Requests kümmern. In diesen werden die gesendeten Daten abgefangen und den DataHandler weitergereicht. Sie entscheiden auch was für ein Response auf ein Request an einen Clienten zurückgesendet wird. Wichtig ist hierbei der Statuscode (200, 201, 404, etc.), der auf der Clientseite als Fehlercode verwendet werden soll, um auf bestimmte Fehler entsprechend reagieren zu können.  
-De Klasse `DataHandler` kümmert sich um das marshallen bzw. unmarshallen aller XML-Dokumente, aber auch um das einbetten von neuen Datensätzen bzw. löschen dieser in der datentragenden XML-Struktur, die alle vom System bekannten Daten, beinhaltet. Wird ein bestimmter Datensatz von einer Klasse aus der `RequestLayer`-Gruppe angefordert, kümmert sich die `DataHandler` darum diesen speziellen Datensatz aus der XML-Struktur zu extrahieren und in eine Struktur umzubetten, die für die Übertragung der Daten vorgesehen ist.
-Das Besondere an der `DataHandler`-Klasse ist, dass es von ihr nur eine einzoge Instanz zu jeglichem Zeitpunkt geben kann. Hier sei das das Stichwort `Singleton-Pattern` gennant. Der Vorteil hierbei ist der, dass sich nicht mehrere unnötige Instanzen der Klasse im Speicher befinden, da alle Objekte so oder so immer auf den selben Datenbestand zugreifen würden. Somit sind mehrere Instanzen unnötig.  
-Zuletzt gibt es noch die Klasse `Config`, die nur statische Attribute besitzt. In ihr sind Daten wie der `Hostname` un die verwendetet `Portnummer` angegeben. Diese Daten sind für das Aufbauen eines URI-Strings, aber auch für die Initialisierung des Grizzly-Servers nötig. Deshalb auch die beiden Verbindungen aus beiden Richtungen hin zur `Config`-Klasse.
+Der Haupteinstieg befindet sich in der Klasse `RestWebserviceMain`. Hier wird der HTTP-Server Grizzly gestartet und Jersey initialisiert. Der Pfeil in Richtung `RequestLayer` deutet an, dass die Ressourcen-Klassen von Jersey (Name des Packages, wo Jersy nach entsprechenden Klassen suchen soll, wird als Initialisierungsparameter mitgereicht) gefunden und für das "Matchen" der Request-URIs eingebunden werden.  
+Die `RequestLayer`-Gruppe enthält alle von Jersey gefundenen Klassen, die sich um die Abwicklung der Requests kümmern. In diesen werden die gesendeten Daten abgefangen und dem DataHandler weitergereicht. Sie entscheiden auch darüber was für ein Response auf ein Request an ein Client zurückgesandt wird. Wichtig ist hierbei der Statuscode (200, 201, 404, etc.), der auf der Clientseite als Fehlercode verwendet werden soll, um auf bestimmte Fehler entsprechend reagieren zu können.  
+Die Klasse `DataHandler` kümmert sich um das marshallen bzw. unmarshallen aller XML-Dokumente, aber auch um das Einbetten von neuen Datensätzen bzw. Löschen dieser in der datentragenden XML-Struktur, die alle vom System bekannten Daten führt. Wird ein bestimmter Datensatz von einer Klasse aus der `RequestLayer`-Gruppe angefordert, kümmert sich die `DataHandler` darum diesen speziellen Datensatz aus der XML-Struktur zu extrahieren und in eine Struktur umzubetten, die für die Übertragung der Daten vorgesehen ist.
+Das Besondere an der `DataHandler`-Klasse ist, dass es von ihr nur eine einzige Instanz zu jedem Zeitpunkt geben kann. Hier sei das das Stichwort `Singleton-Pattern` gennant. Der Vorteil hierbei ist der, dass sich nicht mehrere unnötige Instanzen der Klasse im Speicher befinden, da alle Objekte so oder so immer auf den selben Datenbestand zugreifen würden. Somit wären mehrere Instanzen unnötig.  
+Zuletzt gibt es noch die Klasse `Config`, die nur statische Attribute besitzt. In ihr sind Daten wie der `Hostname` un die verwendete `Portnummer` angegeben. Diese Daten sind für das Aufbauen eines URI-Strings, aber auch für die Initialisierung des Grizzly-Servers nötig. Deshalb auch die beiden Verbindungen aus beiden Richtungen hin zur `Config`-Klasse.
 
 <a href="#top">^ top</a>
 
@@ -514,9 +514,9 @@ public Response deleteUserFollower(@PathParam("user_id") String user_id, @PathPa
 ```  
 
 Diese Methode wird aufgerufen, wenn ein Request des Formats `DELETE /user/1/follower/2` gesendet wird.
-Als Path-Parameter werden die beiden IDs der Benutzer mitgegeben. Die erste ID ist die ID des gefolgten Benutzers und die zweite ID ist die ID des Beutzers der folgt.  
-Über die Methode `deleteUserFollower` werden dem DataHandler beide IDs als Parameter mitgereicht. Wurde die Ressource erfolgreich gelöscht, dann gibt die Methode ein `true` zurück, ansonsten ein `false`.
-Je nach Wert, wird ein entsprechendes Response-Objekt mit entsprechendem Statuscode "gebaut", welcher zurückgegeben wird. 
+Als Path-Parameter werden die beiden IDs der Benutzer mitgegeben. Die erste ID ist die ID des gefolgten Benutzers und die zweite ID ist die ID des Benutzers welcher folgt.  
+Über die Methode `deleteUserFollower` werden dem DataHandler beide IDs als Parameter mitgereicht. Wurde die Ressource erfolgreich gelöscht, gibt die Methode ein `true` zurück, ansonsten ein `false`.
+Je nach Wert wird ein entsprechendes Response-Objekt mit entsprechendem Statuscode "gebaut", welcher dann zurückgegeben wird. 
   
   
 
@@ -552,8 +552,8 @@ public boolean deleteUserFollower(String user_id, String follower_id) {
 ```
 
 Diese Methode, die über die gleichnamige Methode `deleteUserFollower` der Klasse `UserResource` aufgerufen wird, kümmert sich zum einen darum den Eintrag zu finden,
-der die Verbindung zwischen den beiden Benutzern verdeutlicht und zum anderen darum, diesen Eintrag dann auch zu löschen, wenn er ihn findet.
-Wurde der Eintrag erfolgreich gelöscht, wird der Inhalt der XML-Struktur mit dem gesmten Datenbestand marshalled. Somit enthält das XML-Dokument ebenfalls den momentan aktuellen Stand.
+der die Verbindung zwischen den beiden Benutzern verdeutlicht und zum anderen auch darum diesen Eintrag dann zu löschen, sofern er ihn findet.
+Wurde der Eintrag erfolgreich gelöscht, wird der Inhalt der XML-Struktur mit dem gesamten Datenbestand marshalled. Somit enthält die XML-Dokumenten-Instanz ("Datenbankdatei") ebenfalls den momentan aktuellen Stand.
 Zuletzt wird `true` zurückgegeben, um der aufrufenden Methode mittzuteilen, dass das Löschen erfolgreich war. War es nicht erfolgreich, wird dementsprechend `false` zurückgegeben.
 
 <a href="#top">^ top</a>
