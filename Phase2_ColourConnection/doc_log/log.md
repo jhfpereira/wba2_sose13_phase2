@@ -10,9 +10,10 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-04-27 | Benutzerauthentifizierung bezogen auf ein RESTful Webservice](#2013_04_27)
 * [2013-04-29 | Ressourcen und URI Design](#2013_04_29)
 * [2013-05-04 | Ressourcen-Identifizierung, Ausarbeitung der Semantik und Umsetzung eines XML-Schema](#2013_05_04)  
-* [2013-05-06 | **Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)
+* [2013-05-06 | **Meilenstein 1 + 2 - XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)
 * [2013-05-11 | Umsetzung des RESTful Webservice](#2013_05_11)  
 * [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)
+* [2013-05-18 | Openfire lokal eingerichtet / Einarbeitung in die Smack-API](#2013_05_18)  
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)
 * [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)
 
@@ -92,7 +93,7 @@ Auch die Ausarbeitung der Semantik der HTTP-Operationen hat von Identifizierung 
 <a href="#top">^ top</a> 
 
 
-<a name="2013_05_06"></a>**2013-05-06** | Meilenstein 1 + 2 - Projektspezifisches XML Schema, Ressourcen und die Semantik der HTTP-Operationen  
+<a name="2013_05_06"></a>**2013-05-06** | Meilenstein 1 + 2 - XML Schema, Ressourcen und die Semantik der HTTP-Operationen  
 
 Die Abnahme des ersten und zweiten Meilensteins verlief recht gut. Fragen bezüglich der eventuellen Löschung von Elementen mit noch existierenden Refernezen auf dieses Element, wurde damit beantwortet, dass es mehrere Möglichkeiten gibt. Meine Idee, alle Elemente in einer allumfassenden Struktur zu traversieren, und Elemente mit übereinstimmenden Referenzen löschen, wäre eine Möglichkeit.
 So wird höchstwahrscheinlich auch meine Vorgehensweise aussehen. Evtl. lasse ich die Lösch-Operationen auch komplett unimplementiert. Dies werde ich erst im Verlauf der Umsetzung des REST Webservice entscheiden, je nachdem wie sich der Zeitdruck bemerkbar macht.  
@@ -113,9 +114,18 @@ Hinzu habe ich mich auch nach Beispielcode für SMACK umgeschaut und bin auch f�
 
 
 <a name="2013_05_13"></a>**2013-05-13** | Meilenstein 3 - RESTful Webservice  
-
+Die Abnahme des dritten Meilensteins verlief sehr gut. Es gab keine Probleme und ich kann somit die Meilensteine 4 + 5 angehen. Dafür habe ich mich, wie schon im Eintrag ["Umsetzung des RESTful Webservice"](#2013_05_11) erwähnt, in die Kapitel zu den Grundlagen zu ereignisgesteuerten Systemen im Web und PubSub eingelesen.
 
 <a href="#top">^ top</a>  
+
+
+<a name="2013_05_18"></a>**2013-05-18** | Openfire lokal eingerichtet / Einarbeitung in die Smack-API  
+Um den XMPP-Clienten umsetzen zu können, musste ich zuerst den Openfire-Server aufsetzen und einrichten. Dies ging auch recht schnell, wodurch ich auch sofort die SMACK-API ausprobieren konnte, um mit dem Openfire-Server kommunizieren zu können. Zu aller erst habe ich versucht Benutzer über einen Beispiel-Code am Server zu registieren, um sich danach direkt über die Anmeldedaten einzuloggen. Auch dies ging sehr schnell und ohne Probleme.
+Erst als es darum ging LeafNodes zu erstellen, sie zu veröffentlichen (publish) und auf der anderen Seite zu abonnieren (subscribe) kam es zu vielen Fehlermeldungen und Exceptions-Würfen (SMACK setzt stark auf Routinen zur Fehlerbehandlung und weniger auf die Auswertung von Rückgabewerten). Nach einer intensiven Suche nach der Lösung zu meinem Problem, wurde klar, dass um explizit LeafNodes zu veröffentlichen und zu abonnieren bzw. den reibungslosen Zugriff auf die Nodes zu ermöglichen, beim Verbindungsaufbau als JID (Jabber-ID) `pubsub.<hostname>` angegeben werden muss. Zu aller erst hatte ich versucht nur über den `<hostname>` (in meinem Fall `localhost`) auf den Server zuzugreifen.
+Dies gelang am anfang auch ohne nennenswerte Probleme. Erst als es darum ging die Existenz von LeafNodes abzufragen, kam es zu Fehlern und Exceptions, da nicht die entprechende JID angegeben wurde. Diese muss aber explizit angegeben werden, um die PubSub-Funktionalität ohne Probleme verwenden zu können. Mit der Lösung dieses Problems war es dann auch möglich ohne Probleme LeafNodes zu veröffentlichen. Dies sogar mit oder ohne Payload (Fat Ping und Light Ping). Als nächstes werde ich mich stärker mit Swing beschäftigen, um die grafische Oberfläche des XMPP-Clienten zusammenstellen zu können.
+
+<a href="#top">^ top</a>  
+
 
 
 <a name="2013_06_03"></a>**2013-06-03** | Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client  
