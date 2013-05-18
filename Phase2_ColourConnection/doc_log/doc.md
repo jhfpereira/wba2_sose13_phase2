@@ -24,7 +24,14 @@ Web-basierte Anwendungen 2: Verteilte Systeme
     5.1. [Vorüberlegungen](#restful_webservice_vorueberlegungen)  
     5.2. [Aufbau](#restful_webservice_aufbau)  
     5.3. [Code-Ausschnitte](#restful_webservice_code_ausschnitte)  
-    5.4. [Besonderheiten](#restful_webservice_besonderheiten)
+    5.4. [Besonderheiten](#restful_webservice_besonderheiten)  
+6. [XMPP-Server und Publish Subscribe](#xmpp_server_publish_subscribe)  
+    6.1. [Eingesetzte Softwarepakete/APIs](#xmpp_server_publish_subscribe_eingesetzte_softwarepakete_apis)  
+    6.2. [Publish-Subscribe](#xmpp_server_publish_subscribe_pubsub)  
+        6.2.1 [Leafs \(Topics\)](#xmpp_server_publish_subscribe_pubsub_leafs)  
+        6.2.2 [Publisher und Subscriber](#xmpp_server_publish_subscribe_pubsub_publisher_subscriber)  
+
+X. [Literatur](#literatur)  
 
 
 
@@ -491,7 +498,7 @@ Zuletzt gibt es noch die Klasse `Config`, die nur statische Attribute besitzt. I
 ###<a name="restful_webservice_code_ausschnitte"></a>5.4. Code-Ausschnitte  
 
 Die Methode `deleteUserFollower` aus ***src/de/fhkoeln/gm/wba2/phase2/rest_webservice/resources/UserResource.java***
-```
+```java
 /**
  * Let a user unfollow a certain user
  * 
@@ -501,7 +508,8 @@ Die Methode `deleteUserFollower` aus ***src/de/fhkoeln/gm/wba2/phase2/rest_webse
  */
 @DELETE
 @Path("/{user_id}/follower/{follower_id}")
-public Response deleteUserFollower(@PathParam("user_id") String user_id, @PathParam("follower_id") String follower_id) {
+public Response deleteUserFollower(@PathParam("user_id") String user_id,
+                                   @PathParam("follower_id") String follower_id) {
 	
 	boolean success = dh.deleteUserFollower(user_id, follower_id);
 	
@@ -521,7 +529,7 @@ Je nach Wert wird ein entsprechendes Response-Objekt mit entsprechendem Statusco
   
 
 Die Methode `deleteUserFollower` aus ***src/de/fhkoeln/gm/wba2/phase2/rest_webservice/DataHandler.java***
-```
+```java
 /**
  * Delete the entry representing a follwoing user
  * 
@@ -567,7 +575,7 @@ Die URI würde wie folgt aussehen:
 `/localhost/user/1/follower?follower_id=2`
 
 
-```
+```java
 /**
  * Let a user unfollow a certain user (QueryParam is used instead of PathParam)
  * 
@@ -577,7 +585,8 @@ Die URI würde wie folgt aussehen:
  */
 @DELETE
 @Path("/{user_id}/follower")
-public Response deleteUserFollowerByQueryParam(@PathParam("user_id") String user_id, @QueryParam("follower_id") String follower_id) {
+public Response deleteUserFollowerByQueryParam(@PathParam("user_id") String user_id,
+                                               @QueryParam("follower_id") String follower_id) {
 	
 	boolean success = dh.deleteUserFollower(user_id, follower_id);
 	
@@ -591,4 +600,49 @@ public Response deleteUserFollowerByQueryParam(@PathParam("user_id") String user
 
 <a href="#top">^ top</a>
 
+
+
+##<a name="xmpp_server_publish_subscribe"></a>6. XMPP-Server und Publish Subscribe
+
+<a href="#top">^ top</a>
+
+
+###<a name="xmpp_server_publish_subscribe_eingesetzte_softwarepakete_apis"></a>6.1 Eingesetzte Softwarepakete/APIs
+* Als XMPP-Server wird Openfire in der Version 3.8.1 eingesetzt
+* Für den Zugriff auf den XMPP-Server kommt die Smack(x)-API in der Version 3.3 zum Einsatz
+
+<a href="#top">^ top</a>
+
+
+###<a name="xmpp_server_publish_subscribe_pubsub"></a>6.2 Publish-Subscribe
+Publish-Subscribe ist ein Pattern, welches es ermöglicht Nachrichten zwischen mehreren Entitäten auszutauschen, ohne eine direkte Verbindung zwischen diesen aufbauen zu müssen.
+Auf der einen Seite gibt es es den Abonnierer (Subscriber), der bestimmte `Topics` / Themen abonniert, für die er Interesse hegt. Auf der anderen Seite gibt dann noch den Veröffentlicher (Publisher), der Nachrichten zu einem bestimmten `Topic` / Thema veröffentlicht.
+Zwischen beiden existiert nun ein Vermittler (Message Broker; auch Event Dispatcher genannt) \[[1](#ref_1)\], welcher die Nachricht an die Empfänger/Abonnierer des betroffenen `Topics` weiterleitet.
+
+<a href="#top">^ top</a>
+
+
+####<a name="xmpp_server_publish_subscribe_pubsub_leafs"></a>6.2.1 Leafs \(Topics\)
+Unter Leafs sind die Topics zu verstehen, die man abonnieren kann und unter denen man veröffentlicht.
+Ein Benutzer kann somit interesse für ein Topics / Thema bekannt geben und erhält jedes Mal eine asynchrone Benachrichtigung, wenn jemand etwas über diesen Topic / Thema veröffentlicht.
+Unter Openfire bzw. Smack(x), wird ein Topic über ein `LeafNode` repräsentiert. Ein `LeafNode` wird dann über den eindeutigen Topic-Bezeichner "addressiert". Neben dem `LeafNode`, gibt es auch den Typen `CollectionNode`, welches, wie der Name schon andeutet, erlaubt eine Kollektion von Nodes zu erstellen.
+Eine Besonderheit hierbei ist nun, dass die `CollectionNode`, wie `LeafNode`, über ein Topic-Bezeichner verfügt und somit ebenfalls abonniert werden kann. Es ergibt sich somit die Möglichkeit eine Gruppe von Topics bzw. `LeafNodes` über einen übergeordnetes `Node` zu abonnieren. Es besteht ebenfalls die Möglichkeit `CollectionNodes` ineinander zu verschachteln.
+Einfacher ausgedrückt: Ein `CollectionNode` kann merhere `LeafNode`s aber auch mehrere `CollectionNode`s enthalten.
+
+<a href="#top">^ top</a>
+
+####<a name="xmpp_server_publish_subscribe_pubsub_publisher_subscriber"></a>6.2.2 Publisher und Subscriber
+Dadurch, dass ein Benutzer Farben als Favoriten setzen, aber auch Farbpaletten erstellen kann, ist er Publisher (Farbpalette erstellen) und Subscriber (Farbe als Lieblingsfarbe setzen) in einem.
+Durch diese Gegebenheit, wird ein Benutzer über die eigens erstellte Farbpalette asynchron beanchrichtigt, wenn eine eigene Lieblingsfarbe verwendet wurde.
+Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu abonnieren, da dies unnötig ist.
+
+<a href="#top">^ top</a>
+
+
+
+
+##<a name="literatur"></a>X. Literatur
+<a name="ref_1"></a>\[1\] Benjamin Krumnow. Ereignisgesteuerte Systeme im Web, Juli 2012
+
+<a href="#top">^ top</a>
 
