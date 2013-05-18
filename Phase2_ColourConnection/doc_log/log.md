@@ -114,12 +114,14 @@ Hinzu habe ich mich auch nach Beispielcode für SMACK umgeschaut und bin auch f�
 
 
 <a name="2013_05_13"></a>**2013-05-13** | Meilenstein 3 - RESTful Webservice  
+
 Die Abnahme des dritten Meilensteins verlief sehr gut. Es gab keine Probleme und ich kann somit die Meilensteine 4 + 5 angehen. Dafür habe ich mich, wie schon im Eintrag ["Umsetzung des RESTful Webservice"](#2013_05_11) erwähnt, in die Kapitel zu den Grundlagen zu ereignisgesteuerten Systemen im Web und PubSub eingelesen.
 
 <a href="#top">^ top</a>  
 
 
 <a name="2013_05_18"></a>**2013-05-18** | Openfire lokal eingerichtet / Einarbeitung in die Smack-API  
+
 Um den XMPP-Clienten umsetzen zu können, musste ich zuerst den Openfire-Server aufsetzen und einrichten. Dies ging auch recht schnell, wodurch ich auch sofort die SMACK-API ausprobieren konnte, um mit dem Openfire-Server kommunizieren zu können. Zu aller erst habe ich versucht Benutzer über einen Beispiel-Code am Server zu registieren, um sich danach direkt über die Anmeldedaten einzuloggen. Auch dies ging sehr schnell und ohne Probleme.
 Erst als es darum ging LeafNodes zu erstellen, sie zu veröffentlichen (publish) und auf der anderen Seite zu abonnieren (subscribe) kam es zu vielen Fehlermeldungen und Exceptions-Würfen (SMACK setzt stark auf Routinen zur Fehlerbehandlung und weniger auf die Auswertung von Rückgabewerten). Nach einer intensiven Suche nach der Lösung zu meinem Problem, wurde klar, dass um explizit LeafNodes zu veröffentlichen und zu abonnieren bzw. den reibungslosen Zugriff auf die Nodes zu ermöglichen, beim Verbindungsaufbau als JID (Jabber-ID) `pubsub.<hostname>` angegeben werden muss. Zu aller erst hatte ich versucht nur über den `<hostname>` (in meinem Fall `localhost`) auf den Server zuzugreifen.
 Dies gelang am Anfang auch ohne nennenswerte Probleme. Erst als es darum ging die Existenz von LeafNodes abzufragen, kam es zu Fehlern und Exceptions, da nicht die entprechende JID angegeben wurde. Diese muss aber explizit angegeben werden, um die PubSub-Funktionalität ohne Probleme verwenden zu können. Mit der Lösung dieses Problems war es dann auch möglich ohne Probleme LeafNodes zu veröffentlichen. Dies sogar mit oder ohne Payload (Fat Ping und Light Ping). Als nächstes werde ich mich stärker mit Swing beschäftigen, um die grafische Oberfläche des XMPP-Clienten zusammenstellen zu können.
