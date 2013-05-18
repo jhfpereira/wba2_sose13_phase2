@@ -30,6 +30,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
     6.2. [Publish-Subscribe](#xmpp_server_publish_subscribe_pubsub)  
         6.2.1 [Leafs \(Topics\)](#xmpp_server_publish_subscribe_pubsub_leafs)  
         6.2.2 [Publisher und Subscriber](#xmpp_server_publish_subscribe_pubsub_publisher_subscriber)  
+        6.2.3 [Eigenschaften einer Benachrichtigung](#xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung)  
 
 X. [Literatur](#literatur)  
 
@@ -627,7 +628,10 @@ Unter Leafs sind die Topics zu verstehen, die man abonnieren kann und unter dene
 Ein Benutzer kann somit interesse für ein Topics / Thema bekannt geben und erhält jedes Mal eine asynchrone Benachrichtigung, wenn jemand etwas über diesen Topic / Thema veröffentlicht.
 Unter Openfire bzw. Smack(x), wird ein Topic über ein `LeafNode` repräsentiert. Ein `LeafNode` wird dann über den eindeutigen Topic-Bezeichner "addressiert". Neben dem `LeafNode`, gibt es auch den Typen `CollectionNode`, welches, wie der Name schon andeutet, erlaubt eine Kollektion von Nodes zu erstellen.
 Eine Besonderheit hierbei ist nun, dass die `CollectionNode`, wie `LeafNode`, über ein Topic-Bezeichner verfügt und somit ebenfalls abonniert werden kann. Es ergibt sich somit die Möglichkeit eine Gruppe von Topics bzw. `LeafNodes` über einen übergeordnetes `Node` zu abonnieren. Es besteht ebenfalls die Möglichkeit `CollectionNodes` ineinander zu verschachteln.
-Einfacher ausgedrückt: Ein `CollectionNode` kann merhere `LeafNode`s aber auch mehrere `CollectionNode`s enthalten.
+Einfacher ausgedrückt: Ein `CollectionNode` kann merhere `LeafNode`s aber auch mehrere `CollectionNode`s enthalten.  
+Als `Topics` werden die Farbcodes der Farben eingeführt, da sie eindeutig sind. Ein Farbcode bestimmt immer genau nur eine Farbe.  
+Hinzu kommen als `Topics` die IDs der Benutzer und zwar im Format `user_<user_id>`. Diese Topics dienen dazu alle Erzeugnisse eines Benutzers zu abonnieren, ihn somit zu "folgen".  
+Als weitere Möglichkeit würde es sich sogar ebenfalls anbieten `Topics` speziell für Kommentarbereiche einzuführen, um ggf. über neue Kommentare zu einer Farbe oder Farbpalette informiert zu werden. Sicherlich wäre dies umsetzbar, wird aber nicht weiter verfolgt, da die Funktionsweise von Publish-Subscribe schon über das Abonnieren der `Topics`, bezogen auf Farben und User, demonstriert wird.
 
 <a href="#top">^ top</a>
 
@@ -638,7 +642,15 @@ Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu ab
 
 <a href="#top">^ top</a>
 
+####<a name="xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung"></a> 6.2.3 Eigenschaften einer Benachrichtigung
+Eine Benachrichtigung erfüllt nur die Aufgabe, einen Benutzer über die Existenz einer neuen Farbpalette zu informieren. Zum einen durch das Abonnieren einer Farbe, oder eines Benutzers.
+Beides läuft darauf hinaus, dass ein Benutzer immer nur über eine neue Palette informiert wird (Lieblingsfarbe wurde in der Palette verwendet, oder abonnierter Benutzer hat eine neue Palette erzeugt).
+Da man über eine abonnierte Farbe, speziell dem Farbcode als `Topic` nicht direkt die neue Farbpalette referenziert, muss die ID der neuen Farbpalette als Payload in der Benachrichtigung mitgereicht werden.
+Somit setzt man auf einen Fat Ping, anstatt eines Light Ping. Auch wenn ein abonnierter Benutzer eine neue Farbpalette erzeugt hat, sollen die Subscriber bzw. Follower über diese mittels ihrer ID benachrichtigt werden.
+Es sollen nicht die kompletten Informationen der Farbpalette mitgereicht werden, sondern nur eine Referenz. Hierbei kann man auf das im XML-Schema definierte Element `colourpalettes` setzten, welches nur dazu verwendet wird, um eine Liste von Referenzen zu Farbpaletten-Ressourcen zu liefern.
+In diesem Fall, würde `colourpalettes` nur ein einziges Element führen, welches auf die Ressource der neu erstellten Farbpalette zeigt. Bei Interesse kann die Client-Software dann mit der mitgereichten Referenz die kompletten Informationen der Farbpalette nachträglich über den RESTful Webservice erfragen.
 
+<a href="#top">^ top</a>
 
 
 ##<a name="literatur"></a>X. Literatur
