@@ -150,7 +150,7 @@ public class ConnectionHandler {
 					// Node not found
 					try {
 						node = pubsub_man.createNode(node_id);
-						node.sendConfigurationForm(createForm(FormType.form, false, true, PublishModel.open, AccessModel.open));
+						node.sendConfigurationForm(createForm(FormType.submit, false, true, PublishModel.open, AccessModel.open));
 						
 					} catch (XMPPException e1) {
 						// Node could not be created

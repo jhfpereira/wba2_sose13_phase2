@@ -75,6 +75,7 @@ public class ClientFrame extends JFrame {
 				if(index >= 0) {
 					listSubs.clearSelection();
 					textNodeName.setText(listmodel.get(index));
+					textNodeInformation.setText(ch.getNodeInformation(listmodel.get(index)));
 				}
 			}
 		});
@@ -123,10 +124,8 @@ public class ClientFrame extends JFrame {
 				
 				if(rdbtnPublish.isSelected()) {
 					if(ch.publishWithPayload(textNodeName.getText(), textPayload.getText())) {
-						if(!listmodel.contains(textNodeName.getText()))
-							listmodel.addElement(textNodeName.getText());
-						
 						System.out.println("Publishing succeded!");
+						refreshLists();
 					}
 					else {
 						System.err.println("Publishing failed!");
