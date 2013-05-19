@@ -1,7 +1,6 @@
 package de.fhkoeln.gm.wba2.phase2.xmpp_client;
 
 
-import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -23,8 +22,6 @@ import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTextPane;
-import javax.swing.ListModel;
-import javax.swing.JScrollBar;
 
 public class ClientFrame extends JFrame {
 
