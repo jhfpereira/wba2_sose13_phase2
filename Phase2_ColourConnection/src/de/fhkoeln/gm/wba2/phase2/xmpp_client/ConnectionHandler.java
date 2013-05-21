@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.jivesoftware.smack.*;
+import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smackx.ServiceDiscoveryManager;
 import org.jivesoftware.smackx.packet.DiscoverInfo;
 import org.jivesoftware.smackx.packet.DiscoverInfo.Identity;
@@ -384,12 +385,23 @@ public class ConnectionHandler {
     public String getUsername() {
         return xmpp_conn.getUser();
     }
-
+    
+    /**
+     * Return the hostname
+     * 
+     * @return hostname
+     */
+    public String getHost() {
+        return xmpp_conn.getHost();
+    }
+    
     /**
      * Disconnect from the xmpp server
      * 
      */
     public void disconnect() {
+        Presence offline = new Presence(Presence.Type.unavailable, "", 1, Presence.Mode.away);
+        xmpp_conn.sendPacket(offline);
         xmpp_conn.disconnect();
     }
 
@@ -409,4 +421,8 @@ public class ConnectionHandler {
         return form;
     }
 
+    public void finalize() {
+        disconnect();
+        System.out.println("sf");
+    }
 }

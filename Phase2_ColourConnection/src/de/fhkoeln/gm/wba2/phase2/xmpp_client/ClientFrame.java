@@ -21,11 +21,14 @@ import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JTextPane;
+import javax.swing.SwingConstants;
 
 public class ClientFrame extends JFrame {
 
     private static final long serialVersionUID = 1L;
-
+    
+    private ConnectionFrame parentFrame;
+    
     private JPanel contentPane;
     private ConnectionHandler ch;
     private JTextField textNodeName;
@@ -45,8 +48,10 @@ public class ClientFrame extends JFrame {
     private JLabel lblMessages;
     private JButton btnSend;
     private JButton btnUpdate;
+    private JLabel labelUsername;
+    private JButton btnLogout;
 
-    public ClientFrame() {
+    public ClientFrame(ConnectionFrame parent) {
         setResizable(false);
         setVisible(true);
         setEnabled(false);
@@ -54,6 +59,8 @@ public class ClientFrame extends JFrame {
         setBounds(100, 100, 800, 600);
         setLocationRelativeTo(null);
 
+        parentFrame = parent;
+        
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
@@ -78,38 +85,41 @@ public class ClientFrame extends JFrame {
             }
         });
         listNodes.setBorder(new LineBorder(new Color(0, 0, 0)));
-        listNodes.setBounds(636, 122, 104, 219);
+        listNodes.setBounds(636, 152, 104, 219);
         contentPane.add(listNodes);
 
         textPayload = new JTextArea();
         textPayload.setLineWrap(true);
-        textPayload.setBounds(57, 190, 427, 151);
-        contentPane.add(textPayload);
+        textPayload.setBounds(57, 220, 427, 151);
+        
+        JScrollPane payloadScroll = new JScrollPane(textPayload);
+        payloadScroll.setBounds(57, 220, 427, 151);
+        contentPane.add(payloadScroll);
 
         textNodeName = new JTextField();
-        textNodeName.setBounds(57, 85, 104, 25);
+        textNodeName.setBounds(57, 115, 104, 25);
         contentPane.add(textNodeName);
         textNodeName.setColumns(10);
 
         rdbtnPublish = new JRadioButton("Publish");
         actionType.add(rdbtnPublish);
-        rdbtnPublish.setBounds(295, 86, 77, 23);
+        rdbtnPublish.setBounds(295, 116, 77, 23);
         contentPane.add(rdbtnPublish);
 
         rdbtnSubscribe = new JRadioButton("Subscribe");
         rdbtnSubscribe.setSelected(true);
         actionType.add(rdbtnSubscribe);
-        rdbtnSubscribe.setBounds(170, 86, 104, 23);
+        rdbtnSubscribe.setBounds(170, 116, 104, 23);
         contentPane.add(rdbtnSubscribe);
 
         rdbtnUnsubscribe = new JRadioButton("Unsubscribe");
         actionType.add(rdbtnUnsubscribe);
-        rdbtnUnsubscribe.setBounds(170, 122, 120, 23);
+        rdbtnUnsubscribe.setBounds(170, 152, 120, 23);
         contentPane.add(rdbtnUnsubscribe);
 
         rdbtnDelete = new JRadioButton("Delete");
         actionType.add(rdbtnDelete);
-        rdbtnDelete.setBounds(295, 120, 77, 23);
+        rdbtnDelete.setBounds(295, 150, 77, 23);
         contentPane.add(rdbtnDelete);
 
         btnSend = new JButton("Senden");
@@ -152,25 +162,28 @@ public class ClientFrame extends JFrame {
 
             }
         });
-        btnSend.setBounds(380, 83, 104, 25);
+        btnSend.setBounds(380, 113, 104, 25);
         contentPane.add(btnSend);
 
         JLabel lblPayload = new JLabel("Payload");
-        lblPayload.setBounds(56, 163, 70, 15);
+        lblPayload.setBounds(56, 193, 70, 15);
         contentPane.add(lblPayload);
 
         lblMessages = new JLabel("Empfangene Nachrichten");
-        lblMessages.setBounds(57, 370, 200, 15);
+        lblMessages.setBounds(57, 400, 200, 15);
         contentPane.add(lblMessages);
 
         JLabel lblAlle = new JLabel("Alle");
-        lblAlle.setBounds(636, 95, 91, 15);
+        lblAlle.setBounds(636, 125, 91, 15);
         contentPane.add(lblAlle);
 
         textMessages = new JTextPane();
         textMessages.setEditable(false);
-        textMessages.setBounds(57, 397, 427, 99);
-        contentPane.add(textMessages);
+        textMessages.setBounds(57, 427, 427, 99);
+        
+        JScrollPane messagesScroll = new JScrollPane(textMessages);
+        messagesScroll.setBounds(57, 427, 427, 99);
+        contentPane.add(messagesScroll);
 
         listmodelsubs = new DefaultListModel<>();
 
@@ -190,28 +203,28 @@ public class ClientFrame extends JFrame {
             }
         });
         listSubs.setBorder(new LineBorder(new Color(0, 0, 0)));
-        listSubs.setBounds(520, 123, 104, 218);
+        listSubs.setBounds(520, 153, 104, 218);
         contentPane.add(listSubs);
 
         JLabel lblAbboniert = new JLabel("Abonniert");
-        lblAbboniert.setBounds(523, 95, 91, 15);
+        lblAbboniert.setBounds(523, 125, 91, 15);
         contentPane.add(lblAbboniert);
 
         JLabel lblNodeId = new JLabel("Node ID");
-        lblNodeId.setBounds(57, 58, 70, 15);
+        lblNodeId.setBounds(57, 88, 70, 15);
         contentPane.add(lblNodeId);
 
         JLabel lblNodeInformationen = new JLabel("Node Informationen");
-        lblNodeInformationen.setBounds(523, 370, 200, 15);
+        lblNodeInformationen.setBounds(523, 400, 200, 15);
         contentPane.add(lblNodeInformationen);
 
         textNodeInformation = new JTextArea();
-        textNodeInformation.setBounds(520, 397, 220, 99);
-        contentPane.add(textNodeInformation);
+        textNodeInformation.setEditable(false);
+        textNodeInformation.setBounds(520, 427, 220, 99);
 
-        JScrollPane scrollpane = new JScrollPane(textNodeInformation);
-        scrollpane.setBounds(520, 397, 220, 99);
-        contentPane.add(scrollpane);
+        JScrollPane nodeInformationScroll = new JScrollPane(textNodeInformation);
+        nodeInformationScroll.setBounds(520, 427, 220, 99);
+        contentPane.add(nodeInformationScroll);
 
         btnUpdate = new JButton("Aktu.");
         btnUpdate.addActionListener(new ActionListener() {
@@ -219,8 +232,36 @@ public class ClientFrame extends JFrame {
                 refreshLists();
             }
         });
-        btnUpdate.setBounds(380, 119, 104, 25);
+        btnUpdate.setBounds(380, 149, 104, 25);
         contentPane.add(btnUpdate);
+        
+        JLabel lblAngemeldetAls = new JLabel("Angemeldet als:");
+        lblAngemeldetAls.setHorizontalAlignment(SwingConstants.RIGHT);
+        lblAngemeldetAls.setBounds(620, 12, 120, 15);
+        contentPane.add(lblAngemeldetAls);
+        
+        labelUsername = new JLabel("");
+        labelUsername.setHorizontalAlignment(SwingConstants.RIGHT);
+        labelUsername.setBounds(380, 33, 360, 15);
+        contentPane.add(labelUsername);
+        
+        btnLogout = new JButton("Abmelden");
+        btnLogout.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                ch.disconnect();
+                setEnabled(false);
+                parentFrame.setVisible(true);
+                labelUsername.setText("");
+                listmodel.clear();
+                listmodelsubs.clear();
+                textMessages.setText("");
+                textNodeInformation.setText("");
+                textNodeName.setText("");
+                textPayload.setText("");
+            }
+        });
+        btnLogout.setBounds(623, 53, 117, 25);
+        contentPane.add(btnLogout);
     }
 
     private void refreshLists() {
@@ -245,7 +286,9 @@ public class ClientFrame extends JFrame {
         this.ch = ch;
 
         this.ch.addItemListener(new ItemLoggingListener(textMessages));
-
+        
+        labelUsername.setText(ch.getUsername() + "@" + ch.getHost());
+        
         refreshLists();
     }
 }
