@@ -5,17 +5,18 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 
 #Logbuch  
 
-* [2013-04-15 | **Kickoff: Ideen- / Problemfindung**](#2013_04_15)
-* [2013-04-22 | **Konzeptioneller Meilensein - Kommunikationsabläufe und Interaktionen**](#2013_04_22)
-* [2013-04-27 | Benutzerauthentifizierung bezogen auf ein RESTful Webservice](#2013_04_27)
-* [2013-04-29 | Ressourcen und URI Design](#2013_04_29)
+* [2013-04-15 | **Kickoff: Ideen- / Problemfindung**](#2013_04_15)  
+* [2013-04-22 | **Konzeptioneller Meilensein - Kommunikationsabläufe und Interaktionen**](#2013_04_22)  
+* [2013-04-27 | Benutzerauthentifizierung bezogen auf ein RESTful Webservice](#2013_04_27)  
+* [2013-04-29 | Ressourcen und URI Design](#2013_04_29)  
 * [2013-05-04 | Ressourcen-Identifizierung, Ausarbeitung der Semantik und Umsetzung eines XML-Schema](#2013_05_04)  
-* [2013-05-06 | **Meilenstein 1 + 2 - XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)
+* [2013-05-06 | **Meilenstein 1 + 2 - XML Schema, Ressourcen/Semantik der HTTP-Operationen**](#2013_05_06)  
 * [2013-05-11 | Umsetzung des RESTful Webservice](#2013_05_11)  
-* [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)
+* [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)  
 * [2013-05-18 | Openfire lokal eingerichtet / Einarbeitung in die Smack-API](#2013_05_18)  
-* [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)
-* [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)
+* [2013-05-26 | Benutzerauthentifizierung bezogen auf XMPP](#2013_05_26)  
+* [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)  
+* [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)  
 
 
 
@@ -47,7 +48,7 @@ Sonst wäre man nur auf die zusätzlichen Farben einer Farbpalette beschränkt, 
 Als ein sehr interessantes Thema bezüglich RESTful Webservices empfinde ich die Möglichkeiten der Benutzerauthentifizierung. Bezogen auf das Projekt der Phase2, könnte es relevant sein, eine Benutzerauthentifizierungsschnittstelle einzuführen, um die Rechte eines Benutzers konkret zu bestimmen.
 Obwohl solche Authentifizierungs-Mechanismen in den Vorlesungen noch nicht behandelt wurden, war das Interesse so groß, dass ich nach solchen auf eigene Faust recherchiert habe.
 Generell wird immer gesagt, dass Kommunikationsabläufe die einen Benutzer authentifizieren, über SSL/TLS (Secure Socket Layer bzw. Transport Layer Security) laufen sollten. Somit würde man hier direkt auf HTTPS setzen. Dies erlaubt es sensible Daten (Passwörter), die normalerweise im quasi Klartext übertragen werden, geschützt zu übertragen. Der Einsatz von SSL/TLS würde das Risiko extrem minimieren, Opfer einer `Man-In-The-Middle`-Attacke zu werden.
-Als Beispiel für eine Authentifizierung per Klartext, könnte das "Basic Authentication"-Verfahren genannt werden, welches direkter Bestandteil des `Hyptertext Transfer Protocol` ist. Hier werden Benutzername und Passwort mittels eines `Authorization-Headers` im Klartext übertragen. Das Mitlesen dieser sensiblen Daten ist sehr leicht möglich. Mit dem Einsatz von SSL/TLS kann aber eine sichere Übertragung durch eine schützende Kapselung der Daten gewährleistet werden.
+Als Beispiel für eine Authentifizierung per Klartext (angenommen, dass SSL/TLS nicht eingesetzt wird), könnte das "Basic Authentication"-Verfahren genannt werden, welches direkter Bestandteil des `Hyptertext Transfer Protocol` ist. Hier werden Benutzername und Passwort mittels eines `Authorization-Headers` im Klartext übertragen. Das Mitlesen dieser sensiblen Daten ist sehr leicht möglich. Mit dem Einsatz von SSL/TLS kann aber eine sichere Übertragung durch eine schützende Kapselung der Daten gewährleistet werden.
 Als Alternative zum "Basic Authentication"-Verfahren, bietet sich das "Digest Access Authenticaon"-Verfahren an. Hier werden nie wirklich sensible Daten verschickt, es wird anstattdessen ein Hashcode versendet, welcher zuvor mittels einer Hashfunktion, angedwandt auf die sensiblen Daten sowie weiteren vom Server gegebenen Daten, errechnet wurde. Die Gegenstelle muss demnach den Hashcode dann nur noch mit einem selbst berechneten Hashcode auf Übereinstimmung prüfen.
 Bevor ich mich für eines dieser Verfahren entscheide, und anhand dieser Entscheidung das Projekt für Phase 2 weiter ausarbeite, werde ich warten, bis das Thema Authentifizierung in einer Vorlesung behandelt wird und auch bekannt gegeben wird, welches Verfahren letztendlich verwendet werden soll. Evtl. können wir auch frei entscheiden, auf welches Verfahren wir schlussendlich setzen.
 
@@ -128,6 +129,14 @@ Dies gelang am Anfang auch ohne nennenswerte Probleme. Erst als es darum ging di
 
 <a href="#top">^ top</a>  
 
+
+<a name="2013_05_26"></a>**2013-04-26** | Benutzerauthentifizierung bezogen auf XMPP  
+
+Da der RESTful Webservice nur als Prototyp gedacht ist und auf Benutzerauthentifizierung einfachheitshalber komplett verzichtet, der XMPP-Server aber bedingt durch die Veröffentlichungsmechanismus der PubSub-Funktion eine Authentifizierung voraussetzt, stellt sich natürlich die Frage, wie man diese Bereiche zusammenführen könnte.
+Sinnvoll wäre es eine Schnittstelle einzurichten, die sich alleinig darum kümmert sich beim RESTful Webservice sowie beim XMPP-Server gleichermaßen zu registrieren bzw. anzumelden. Somit müsste sich der Client nicht an mehreren Stellen anmelden, sondern nur an einer einzigen Stelle. Diese Anmeldeschnittstelle wäre dann dafür zuständig im Hintergrund die Aktionen des Benutzers entsprechend seiner Befugnisse auszuwerten und entsprechend zu erteilen.
+Für das Projekt ist aber nur vorgesehen, dass sich der spätere Client nur am XMPP-Server anmelden muss um asynchrone Benachrichtigungen zu erhalten, aber seine Befügnisse über auf dem RESTful Webservice auf keinster Weise beschränkt werden. Dies hat damit zu tun, dass der Webservice, wie bereits erwähnt, nur als Prototyp gedacht ist. Die Konzeptionierung einer Schnittstelle zur Benutzerauthentifizierung würde die Entwicklung nur unnötig verkomplizieren. Eine Umsetzung wäre aber nach Komplementierung der Phase2 noch denkbar und möglich.
+
+<a href="#top">^ top</a>  
 
 
 <a name="2013_06_03"></a>**2013-06-03** | Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client  
