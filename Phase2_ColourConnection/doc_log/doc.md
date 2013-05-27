@@ -208,217 +208,269 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
             FH-Köln - Campsus GM / Web-basierte Anwendungen 2 / 2013
         </xsd:documentation>
     </xsd:annotation>
-	
-	
-	
-	<xsd:complexType name="Ref">
-    	<xsd:attribute name="id" type="xsd:positiveInteger" />
-		<xsd:attribute name="ref" type="xsd:string" />
+```  
+
+Hier wurden Angaben über das Schema gemacht, um es später besser zuordnen zu können.
+
+    
+```    
+    <xsd:complexType name="Ref">
+        <xsd:attribute name="id" type="xsd:positiveInteger" />
+        <xsd:attribute name="ref" type="xsd:string" />
     </xsd:complexType>
-	
-	<xsd:simpleType name="ColourID">
-		<xsd:restriction base="xsd:string">
-			<xsd:pattern value="[0-9a-fA-F]{6}" />
-		</xsd:restriction>
-	</xsd:simpleType>
-	
-    <xsd:complexType name="User">
-    	<xsd:sequence>
-    		<xsd:element name="username" type="xsd:string" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_registration" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
-    	</xsd:sequence>
-    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+```  
+
+Durch die Besonderheit, dass Elemente bzw. Datensätze in vielen Fällen nur referenziert werden, anstatt die kompletten Informationen zu übertragen, wurde der Complex Type `Ref` eingeführt.
+Dieser wird aber nur für die Referenzierung von Elementen verwendet, die auf eine fortlaufende nummerische ID setzen.
+Das Element setzt sich aus einem ID-Attribut und einem Attribut für die Ressourcen-Teil-URI vom Typ `/colourpalette/1` zusammen.
+Dieser Complextype wird überwiegend nur dafür verwendet Benutzer und Farbpaletten zu referenzieren.
+Für Colour-Elemente wird wegen der Besonderheit der gewählten ID-Form, weiter unten ein eigener Referenzierungs-Type eingeführt.
+
+
+``` 
+    <xsd:simpleType name="ColourID">
+        <xsd:restriction base="xsd:string">
+            <xsd:pattern value="[0-9a-fA-F]{6}" />
+        </xsd:restriction>
+    </xsd:simpleType>
+    
+    <xsd:complexType name="Colour">
+        <xsd:sequence>
+            <xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="ColourID" />
     </xsd:complexType>
     
     <xsd:complexType name="ColourRef">
-		<xsd:attribute name="id" type="ColourID" />
-		<xsd:attribute name="ref" type="xsd:string" />
+        <xsd:attribute name="id" type="ColourID" />
+        <xsd:attribute name="ref" type="xsd:string" />
     </xsd:complexType>
-    
-    <xsd:complexType name="Colour">
-    	<xsd:sequence>
-    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
-    	</xsd:sequence>
-    	<xsd:attribute name="id" type="ColourID" />
+```  
+
+Diese drei Types wurden einschließlich für die Kapselung, Identifizierung und Referenzierung von Farbdaten eingeführt.
+Durch die Besonderheit, dass eine Farbe über seinen HTML-Farbcode eindeutig identifiziert werden kann, wurde sich dafür entschieden diesen Farbcode auch als ID zu verwenden.
+Um sicherzustellen, dass auch wirklich ein gültiger Farbcode verwendet wird, wird dieser immer über einen entsprechenden Regulären Ausdruck geprüft. Dabei sind nur Zeichen von `0` bis `9` und von `a` bis `f`, samt den entsprechenden Großbuchstaben erlaubt, wie es aus der hexadezimalen Schreibweise von Zahlen bekannt ist.
+Zudem setzt sich ein Farbcode insgesamt aus sechs solcher Zeichen zusammen. Die ersten Zwei Zeichen geben den Rotanteil, die mittleren Zwei den Grünanteil und die letzten beiden den Blauanteil an.  
+Für eine Farbe ist nur die ID, der Ersteller und das Datum wann die Farbe im System aufgenommen wurde relevant.  
+Zuletzt wird noch der bereits weiter oben erwähnte Referenzierungs-Type für eine Farbe eingeführt. Wie zu sehen ist, wird als ID-Type der Simple Type "ColourID" verwendet, anstelle des Standard Type "positiveInteger".
+
+```
+    <xsd:complexType name="User">
+        <xsd:sequence>
+            <xsd:element name="username" type="xsd:string" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="date_of_registration" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:positiveInteger" />
     </xsd:complexType>
-    
-	<xsd:complexType name="ColourPalette">
-    	<xsd:sequence>
-    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="used_colours" minOccurs="1">
-    			<xsd:complexType>
-    				<xsd:sequence>
-    					<xsd:element name="colour" type="ColourRef" minOccurs="2" maxOccurs="10"/>
-    				</xsd:sequence>
-    			</xsd:complexType>
-    		</xsd:element>
-    	</xsd:sequence>
-    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+```  
+
+Für den User wird ebenfalls ein Element eingeführt, um für die Erstellung einer Benutzer-Ressource alle relevanten Informationen über einen neuen User mitzureichen, aber auch die Daten eines Benutzer bei einem GET-Request gekapselt ausliefern zu können.
+Dabei ist für einen User nur seine ID, sein Benutzername und das Datum seiner Registrierung relevant.
+
+```
+    <xsd:complexType name="ColourPalette">
+        <xsd:sequence>
+            <xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="date_of_creation" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="used_colours" minOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="colour" type="ColourRef" minOccurs="2" maxOccurs="10"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:positiveInteger" />
     </xsd:complexType>
-    
+```  
+
+Eine Farbpalette setzt sich zum einen aus einem Elementen welches den Ersteller referenziert (wie an dem verwendeten Elementen Type `Ref` zu sehen), dem Datum bzw. Zeitpunkt wann die Palette erstellt wurde und einer Sequenz an Elementen, die die verwendeten Farben referenzieren.
+Es wurde sich dafür entschieden, dass sich eine Farbpalette minimal aus 2 und maximal aus 10 Farben zusammensetzen kann.
+
+```
     <xsd:complexType name="FavouriteColour">
-		<xsd:complexContent>
-			<xsd:extension base="ColourRef">
-				<xsd:sequence>
-					<xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
-				</xsd:sequence>
-			</xsd:extension>
-		</xsd:complexContent>
+        <xsd:complexContent>
+            <xsd:extension base="ColourRef">
+                <xsd:sequence>
+                    <xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
     </xsd:complexType>
     
-	<xsd:complexType name="FavouriteColourPalette">
-		<xsd:complexContent>
-			<xsd:extension base="Ref">
-				<xsd:sequence>
-					<xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
-				</xsd:sequence>
-			</xsd:extension>
-		</xsd:complexContent>
+    <xsd:complexType name="FavouriteColourPalette">
+        <xsd:complexContent>
+            <xsd:extension base="Ref">
+                <xsd:sequence>
+                    <xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+                </xsd:sequence>
+            </xsd:extension>
+        </xsd:complexContent>
     </xsd:complexType>
-    
-    
-    
+```  
+
+Dadurch, dass ein Benutzer eine Farbe oder eine Farbpalette favorisieren kann, wurden zwei weitere Complex Types eingeführt, um diesen Zustand der Favorisierung festzuhalten bzw. zu verdeutlichen.
+Auch hier wird über ein Unterelement auf die entsprechende Ressource referenziert, anstatt die komplette Informationen zu einer Ressource einzubetten.
+Hinzu kommt noch die Angabe über den Zeitpunkt, wann die entsprechende Farbe oder Farbpalette favorisiert wurde.
+
+```
     <xsd:complexType name="UserList">
-    	<xsd:sequence>
-    		<xsd:element name="user" type="Ref" minOccurs="0" maxOccurs="unbounded" />
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="user" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="ColourList">
-    	<xsd:sequence>
-    		<xsd:element name="colour" type="ColourRef" minOccurs="0" maxOccurs="unbounded">
-    		</xsd:element>
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="colour" type="ColourRef" minOccurs="0" maxOccurs="unbounded">
+            </xsd:element>
+        </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="ColourPaletteList">
-    	<xsd:sequence>
-    		<xsd:element name="colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="colourpalette" type="Ref" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
     </xsd:complexType>
  
     <xsd:complexType name="FavouriteColourList">
-    	<xsd:sequence>
-    		<xsd:element name="favourite_colour" type="FavouriteColour" minOccurs="0" maxOccurs="unbounded" />
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="favourite_colour" type="FavouriteColour" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="FavouriteColourPaletteList">
-    	<xsd:sequence>
-    		<xsd:element name="favourite_colourpalette" type="FavouriteColourPalette" minOccurs="0" maxOccurs="unbounded" />
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="favourite_colourpalette" type="FavouriteColourPalette" minOccurs="0" maxOccurs="unbounded" />
+        </xsd:sequence>
     </xsd:complexType>
-    
-    
-    
+```  
+
+Um mehrere Elemente als eine Art Liste zurückgeben zu können, wurden ebenfalls Complex Types definiert, die die Aufagbe eines Container-Elements einnehmen.
+Auch hier werden zu einem Element nicht seine kompletten Daten mitgeschickt, sondern nur seine Referenz.
+
+```
     <xsd:complexType name="Follower">
-    	<xsd:complexContent>
-    		<xsd:extension base="Ref">
-    			<xsd:all>
-    				<xsd:element name="following_since" type="xsd:dateTime" minOccurs="1" />
-    			</xsd:all>
-    		</xsd:extension>
-    	</xsd:complexContent>
+        <xsd:complexContent>
+            <xsd:extension base="Ref">
+                <xsd:all>
+                    <xsd:element name="following_since" type="xsd:dateTime" minOccurs="1" />
+                </xsd:all>
+            </xsd:extension>
+        </xsd:complexContent>
     </xsd:complexType>
     
     <xsd:complexType name="Followers">
-    	<xsd:sequence>
-    		<xsd:element name="follower" type="Follower" minOccurs="0" maxOccurs="unbounded"/>
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="follower" type="Follower" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
     </xsd:complexType>
-    
+```  
+
+Durch die einem Benutzer gegebene Möglichkeit einen anderen Benutzer zu folgen, wurden ebenfalls für dieses Szenario Complex Types definiert, die es ermöglichen diese Informationen zwischen Clienten und Server auszutauschen.
+
+```
     <xsd:complexType name="Comment">
-    	<xsd:sequence>
-    		<xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
-    		<xsd:element name="date_of_creation" type="xsd:dateTime" maxOccurs="1"/>
-    		<xsd:element name="message" type="xsd:string" minOccurs="1" maxOccurs="1" />
-    	</xsd:sequence>
-    	<xsd:attribute name="id" type="xsd:positiveInteger" />
+        <xsd:sequence>
+            <xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
+            <xsd:element name="date_of_creation" type="xsd:dateTime" maxOccurs="1"/>
+            <xsd:element name="message" type="xsd:string" minOccurs="1" maxOccurs="1" />
+        </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:positiveInteger" />
     </xsd:complexType>
     
-	<xsd:complexType name="Comments">
-		<xsd:sequence>
-			<xsd:element name="comment" type="Comment" minOccurs="0" maxOccurs="unbounded"/>
-		</xsd:sequence>
-	</xsd:complexType>
-	
-    
-    
+    <xsd:complexType name="Comments">
+        <xsd:sequence>
+            <xsd:element name="comment" type="Comment" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:complexType>
+```  
+
+Zu jeder Farbe oder einer Farbpalette kann ein Benutzer einen oder mehrere Kommentare verfassen.
+Auch hierfür gibt es zwei Complex Types, die sich um die Kapselung der Daten kümmern.
+Für Kommentare wurde ebenfalls ein eigener Container Type eingeführt, um eine Liste von Kommentaren zu ermöglichen.
+
+```
     <xsd:complexType name="ColourConnection">
-    	<xsd:sequence>
-    		<xsd:element name="users" minOccurs="1" maxOccurs="1">
-    			<xsd:complexType>
-    				<xsd:sequence>
-    					<xsd:element name="user" minOccurs="0" maxOccurs="unbounded">
-    						<xsd:complexType>
-    							<xsd:complexContent>
-    								<xsd:extension base="User">
-    									<xsd:sequence>
-    										<xsd:element ref="favourite_colours" minOccurs="1" maxOccurs="1"/>
-    										<xsd:element ref="favourite_colourpalettes" minOccurs="1" maxOccurs="1"/>
-    										<xsd:element ref="followers" minOccurs="1" maxOccurs="1" />
-    										<xsd:element name="creations" type="ColourPaletteList" minOccurs="1" maxOccurs="1" />
-    									</xsd:sequence>
-    								</xsd:extension>
-    							</xsd:complexContent>
-    						</xsd:complexType>
-    					</xsd:element>
-    				</xsd:sequence>
-    			</xsd:complexType>
-    		</xsd:element>
-    		<xsd:element name="colours" minOccurs="1" maxOccurs="1">
-    		    <xsd:complexType>
-    		    	<xsd:sequence>
-    					<xsd:element name="colour" minOccurs="0" maxOccurs="unbounded">
-    						<xsd:complexType>
-    							<xsd:complexContent>
-    								<xsd:extension base="Colour">
-    									<xsd:sequence>
-    										<xsd:element name="comments" minOccurs="1" maxOccurs="1">
-    											<xsd:complexType>
-    												<xsd:sequence>
-    													<xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
-    												</xsd:sequence>
-    											</xsd:complexType>
-    										</xsd:element>
-    									</xsd:sequence>
-    								</xsd:extension>
-    							</xsd:complexContent>
-    						</xsd:complexType>
-    					</xsd:element>
-    				</xsd:sequence>
-    			</xsd:complexType>
-    		</xsd:element>
-    		<xsd:element name="colourpalettes" minOccurs="1" maxOccurs="1">
-    		    <xsd:complexType>
-    		    	<xsd:sequence>
-    					<xsd:element name="colourpalette" minOccurs="0" maxOccurs="unbounded">
-							<xsd:complexType>
-    							<xsd:complexContent>
-    								<xsd:extension base="ColourPalette">
-    									<xsd:sequence>
-    										<xsd:element name="comments" minOccurs="1" maxOccurs="1">
-    											<xsd:complexType>
-    												<xsd:sequence>
-    													<xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
-    												</xsd:sequence>
-    											</xsd:complexType>
-    										</xsd:element>
-    									</xsd:sequence>
-    								</xsd:extension>
-    							</xsd:complexContent>
-    						</xsd:complexType>
-    					</xsd:element>
-    				</xsd:sequence>
-    			</xsd:complexType>
-    		</xsd:element>
-    	</xsd:sequence>
+        <xsd:sequence>
+            <xsd:element name="users" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="user" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:complexContent>
+                                    <xsd:extension base="User">
+                                        <xsd:sequence>
+                                            <xsd:element ref="favourite_colours" minOccurs="1" maxOccurs="1"/>
+                                            <xsd:element ref="favourite_colourpalettes" minOccurs="1" maxOccurs="1"/>
+                                            <xsd:element ref="followers" minOccurs="1" maxOccurs="1" />
+                                            <xsd:element name="creations" type="ColourPaletteList" minOccurs="1" maxOccurs="1" />
+                                        </xsd:sequence>
+                                    </xsd:extension>
+                                </xsd:complexContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="colours" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="colour" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:complexContent>
+                                    <xsd:extension base="Colour">
+                                        <xsd:sequence>
+                                            <xsd:element name="comments" minOccurs="1" maxOccurs="1">
+                                                <xsd:complexType>
+                                                    <xsd:sequence>
+                                                        <xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+                                                    </xsd:sequence>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                        </xsd:sequence>
+                                    </xsd:extension>
+                                </xsd:complexContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="colourpalettes" minOccurs="1" maxOccurs="1">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="colourpalette" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType>
+                                <xsd:complexContent>
+                                    <xsd:extension base="ColourPalette">
+                                        <xsd:sequence>
+                                            <xsd:element name="comments" minOccurs="1" maxOccurs="1">
+                                                <xsd:complexType>
+                                                    <xsd:sequence>
+                                                        <xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+                                                    </xsd:sequence>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                        </xsd:sequence>
+                                    </xsd:extension>
+                                </xsd:complexContent>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:sequence>
     </xsd:complexType>
-    
-    
-    
+```  
+
+Um auf der Seite des Servers, alle Datensätze zu führen und verwalten zu können, definiert das Schema auch ein Complex Type, welcher ausschließlich für diese Aufgabe gedacht ist und nicht für die Kapselung von Daten zur Vorbereitung zu einer Datenübertragung.
+Die Idee ist die, dass ein XML-Dokument existiert, wo alle dem System bekannten Datensätze eingepflegt, entnommen oder bearbeitet werden.  
+Es wurde soweit es ging versucht existierende Complex Types und Elemente wiederzuverwenden, um das Schema klein zu halten. In einigen Fällen ist dies auch sehr gut gelungen, wie man im Bereich der Kommentar-Elemente sehen kann.
+In anderen Fällen mussten aber neue Complex Types eingeführt werden, um eine Verbindung zwischen Datensätzen herzustellen bzw. einen Datensatz einem übergeordneten Datensatz zuordnen zu können. Speziell bezogen auf den User war es sehr oft nötig von ihm erstellte Farbpaletten, Lieblingsfarben sowie Lieblingsfarbpaletten ihm zuordnen zu können.  
+Diese Herangehensweise hat aber auch seinen Nachteil. Im Hintergrund müssen Datensätze sehr oft umgebettet werden, damit diese entweder in die große Datenstruktur eingepflegt oder aus ihr entnommen werden können um ggf. einem Clienten die angeforderte Ressource in der vereinbarten Form zu liefern.
+
+```  
     <xsd:element name="user" type="User" />
     <xsd:element name="colour" type="Colour" />
     <xsd:element name="colourpalette" type="ColourPalette" />
@@ -435,10 +487,14 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
     <xsd:element name="comment" type="Comment"/>
     <xsd:element name="comments" type="Comments" />
 
-	<xsd:element name="colour_connection" type="ColourConnection" />    
+    <xsd:element name="colour_connection" type="ColourConnection" />    
     
 </xsd:schema>
-```
+```  
+
+Zuletzt werden noch die Elemente mit ihren Complex Types definiert, die innerhalb einer XML-Instanz gültige Root-Elemente darstellen.
+Dadurch, dass einzelne Grundelemente Root-Elemente sein können, wird erreicht, dass nur wirklich relevante Daten innerhalb eines dieser Elemente gekapselt übertragen werden.  
+Dies ist sinnvoll, da somit die grundlegende Idee einer Ressource gestärkt wird. Das Verlangen einer Ressource sollte einzig und allein dazu führen, dass auch nur die Daten der identifizierten Ressource zurückgegeben werden.
 
 
 <a href="#top">^ top</a>
