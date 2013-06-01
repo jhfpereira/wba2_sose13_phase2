@@ -28,12 +28,13 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 6. [XMPP-Server und Publish Subscribe](#xmpp_server_publish_subscribe)  
     6.1. [Eingesetzte Softwarepakete/APIs](#xmpp_server_publish_subscribe_eingesetzte_softwarepakete_apis)  
     6.2. [Publish-Subscribe](#xmpp_server_publish_subscribe_pubsub)  
-        6.2.1 [Leafs \(Topics\)](#xmpp_server_publish_subscribe_pubsub_leafs)  
-        6.2.2 [Publisher und Subscriber](#xmpp_server_publish_subscribe_pubsub_publisher_subscriber)  
-        6.2.3 [Eigenschaften einer Benachrichtigung](#xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung)  
+        6.2.1 [XMPP](#xmpp_server_publish_subscribe_pubsub_xmpp)  
+        6.2.2 [Leafs \(Topics\)](#xmpp_server_publish_subscribe_pubsub_leafs)  
+        6.2.3 [Publisher und Subscriber](#xmpp_server_publish_subscribe_pubsub_publisher_subscriber)  
+        6.2.4 [Eigenschaften einer Benachrichtigung](#xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung)  
 7. [Benutzerauthentifizierung](#benutzerauthentifizierung)  
 
-X. [Literatur](#literatur)  
+[Literatur](#literatur)  
 
 
 
@@ -675,12 +676,50 @@ public Response deleteUserFollowerByQueryParam(@PathParam("user_id") String user
 ###<a name="xmpp_server_publish_subscribe_pubsub"></a>6.2 Publish-Subscribe
 Publish-Subscribe ist ein Pattern, welches es ermöglicht Nachrichten zwischen mehreren Entitäten auszutauschen, ohne eine direkte Verbindung zwischen diesen aufbauen zu müssen.
 Auf der einen Seite gibt es es den Abonnierer (Subscriber), der bestimmte `Topics` / Themen abonniert, für die er Interesse hegt. Auf der anderen Seite gibt dann noch den Veröffentlicher (Publisher), der Nachrichten zu einem bestimmten `Topic` / Thema veröffentlicht.
-Zwischen beiden existiert nun ein Vermittler (Message Broker; auch Event Dispatcher genannt) \[[1](#ref_1)\], welcher die Nachricht an die Empfänger/Abonnierer des betroffenen `Topics` weiterleitet.
+Zwischen beiden existiert nun ein Vermittler (Message Broker; auch Event Dispatcher genannt) \[[1](#ref_1)\], welcher die Nachricht an die Empfänger/Abonnierer des betroffenen `Topics` weiterleitet.  
+
+
+<a href="#top">^ top</a>
+
+####<a name="xmpp_server_publish_subscribe_pubsub_xmpp"></a>6.2.1 XMPP
+Das XMPP (`Extensible Messaging and Presence Protocol`) ist ein Internetstandard der in den RFCs `6120-22` sowie `3922` und `3923` beschrieben ist. Es ermöglicht die Übertragung von XML-Daten in Echtzeit, womit auch der Haupteinsatz des Dienstes ermöglicht wird, nämlich das Versenden von Nachrichten zwischen am System (dezentral aufgebaut) angemeldeten Benutzern.
+Neben der in den RFCs beschriebenen Hauptkomponenten des XMPPs, existieren auch Protokollerweiterungen, die unter der Bezeichnung `XEP` (XMPP Extension Protocols) gelistet werden. Darunter fallen Erweiterungen wie `Last Activity` ([XEP-0012](http://xmpp.org/extensions/xep-0012.html); beschreibt wie über XMPP eine "Zuletzt aktiv"-Funktion implementiert werden kann),
+`Jingle` ([XEP-0166](http://xmpp.org/extensions/xep-0166.html); beschreibt die Erweiterung von XMPP um die Möglichkeit Peer-to-Peer Sessions zwischen zwei XMPP Entitäten zu initiieren und zu verwalten) aber auch `Publish-Subscribe` ([XEP-0060](http://xmpp.org/extensions/xep-0060.html); Umsetzung des Publish-Subscribe-Patterns über das XMPP), welches für die asynchrone Datenübertragung bzw. Benachrichtigung in dieser Phase 2 verwendet wird \[[2](#ref_2)\].
+Für die Kommunikation zwischen zwei Gegenstellen, setzt XMPP auf XML. Auch hier existiert ein Schema, welches festschreibt, wie übertragene XML-Daten aufgebaut sein sollen.
+Grundlegend kann man sagen, dass das XMPP-Streams-Schema [http://etherx.jabber.org/streams o. http://xmpp.org/schemas/streams.xsd](http://xmpp.org/schemas/streams.xsd) sich aus mehreren Schemata zusammensetzt, die speziell zum einen näher auf die Client-Seite und zum anderen näher auf die Server-Seite eingehen.  
+
+**XML-Stanzas**  
+Die Grundidee eines Verbindungsaufbaus zwischen Client und Server ist, dass ein sogenannter Stream geöffnet wird. Über diesen Stream können dann sogenannte `XML-Stanzas` vom Typ  
+
+* `message`  
+* `presence`  
+* `iq`  
+  
+ausgetauscht werden werden.  
+`message` wird überwiegend genutzt wenn es darum geht eine Nachricht von einer Entität zu einer anderen Entität zu verschicken.  
+`presence` kann man sich als eine Art Rundsende-Mechanismus vorstellen, wobei mehrere Entitäten eine Benachrichtigung bezüglich ener anderen Entität erhalten, die sie abonniert haben. Hier ist ein Publish-Subscribe-Muster zu erkennen.  
+`iq` (Abkürzung für `Info/Query`) ist ein Request-Response-Mechanismus, mit dem es einer Entität ermöglicht wird eine Anfrage an eine andere Entität zu schicken und diese Entität entsprechend auf die Anfrage antwortet. Speziell im Fall von `iq` stehen diesem grundlegende Setz- und Lese-Operationen zur Verfügung \[[3](#ref_3)\].  
+Das XEP-0060 (Publish-Subscribe) nutzt überwiegend `iq`-Stanzas, um Subscribe- und Publish-Aktionen durchzuführen. Ebenfalls auch für die Übertragung der evlt. auftretenden Fehlermeldungen.
+Obwohl alle drei Stanza-Typen unterschiedliche Semantiken besitzen, teilen sie sich alle 5 übereinstimmende Attribute.  
+  
+  
+* `to` Der Empfänger des Stanzas durch die Angabe seiner JID (JabberID)  
+* `from` Der Versender des Stanzas durch die Angabe seiner JID (JabberID)  
+* `id` ID für die interne Abwicklung der Stanzas  
+* `type` Nähere Angabe über die `message`, `presence` oder `iq`  
+* `xml:lang` Angabe über die Standardsprache der übermitttelten, von einem Menschen lesbaren, Daten  
+  
+
+**Service Discovery**  
+Im `XEP-0030 Service Discovery` ist eine Erweiterung beschrieben, die es ermöglicht Informationen zu einer im System existierenden Entität zu "entdecken". Hierbei ist es möglich zei Typen von Informationen zu einer Entität zu beziehen.  
+Zum einen können die Identifizierungsmerkmale, Möglichkeiten sowie Funktionen bzw. Protokolle, die sie unterstützen, bezogen werden, zum anderen können auch alle `Items` erfragt werden, die in Beziehung mit dieser Enität stehen.  
+In dieser Phase 2 sind die Möglichkeiten des "Service Discovery" in Hinblick auf die im XEP-0060 beschriebene "Publish-Subscribe"-Erweiterung, sehr interessant, da es Benutzern erlaubt sich existierende Leafs bzw. Topics (im System als Entitäten betrachetet) auflisten zu lassen, samt allen ihren Eigenschaften\[[4](#ref_4)\].  
+
 
 <a href="#top">^ top</a>
 
 
-####<a name="xmpp_server_publish_subscribe_pubsub_leafs"></a>6.2.1 Leafs \(Topics\)
+####<a name="xmpp_server_publish_subscribe_pubsub_leafs"></a>6.2.2 Leafs \(Topics\)
 Unter Leafs sind die Topics zu verstehen, die man abonnieren kann und unter denen man veröffentlicht.
 Ein Benutzer kann somit interesse für ein Topics / Thema bekannt geben und erhält jedes Mal eine asynchrone Benachrichtigung, wenn jemand etwas über diesen Topic / Thema veröffentlicht.
 Unter Openfire bzw. Smack(x), wird ein Topic über ein `LeafNode` repräsentiert. Ein `LeafNode` wird dann über den eindeutigen Topic-Bezeichner "addressiert". Neben dem `LeafNode`, gibt es auch den Typen `CollectionNode`, welches, wie der Name schon andeutet, erlaubt eine Kollektion von Nodes zu erstellen.
@@ -692,14 +731,14 @@ Als weitere Möglichkeit würde es sich sogar ebenfalls anbieten `Topics` spezie
 
 <a href="#top">^ top</a>
 
-####<a name="xmpp_server_publish_subscribe_pubsub_publisher_subscriber"></a>6.2.2 Publisher und Subscriber
+####<a name="xmpp_server_publish_subscribe_pubsub_publisher_subscriber"></a>6.2.3 Publisher und Subscriber
 Dadurch, dass ein Benutzer Farben als Favoriten setzen, aber auch Farbpaletten erstellen kann, ist er Publisher (Farbpalette erstellen) und Subscriber (Farbe als Lieblingsfarbe setzen) in einem.
 Durch diese Gegebenheit, wird ein Benutzer über die eigens erstellte Farbpalette asynchron beanchrichtigt, wenn eine eigene Lieblingsfarbe verwendet wurde.
 Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu abonnieren, da dies unnötig ist.
 
 <a href="#top">^ top</a>
 
-####<a name="xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung"></a> 6.2.3 Eigenschaften einer Benachrichtigung
+####<a name="xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung"></a> 6.2.4 Eigenschaften einer Benachrichtigung
 Eine Benachrichtigung erfüllt nur die Aufgabe, einen Benutzer über die Existenz einer neuen Farbpalette zu informieren. Zum einen durch das Abonnieren einer Farbe, oder eines Benutzers.
 Beides läuft darauf hinaus, dass ein Benutzer immer nur über eine neue Palette informiert wird (Lieblingsfarbe wurde in der Palette verwendet, oder abonnierter Benutzer hat eine neue Palette erzeugt).
 Da man über eine abonnierte Farbe, speziell dem Farbcode als `Topic` nicht direkt die neue Farbpalette referenziert, muss die ID der neuen Farbpalette als Payload in der Benachrichtigung mitgereicht werden.
@@ -713,7 +752,7 @@ In diesem Fall, würde `colourpalettes` nur ein einziges Element führen, welche
 ##<a name="benutzerauthentifizierung"></a>7. Benutzerauthentifizierung
 Durch die Einführung von Benutzerrelevanten Informationen und Erzeugnissen, führt kein Weg um eine Benutzerauthentifizierung herum, die die eindeutige Identifizierung eines Benutzers und seinen Daten ermöglicht. Dies ist sicherlich wichtig, da ein Benutzer nicht mehr oder gar alle Rechte haben sollte, wenn es darum geht mit dem Server zu kommunizieren und Aktionen auszuführen, die sich auf den Datenbestand des Servers auswirkt.  
 Ein Benutzer sollte nur Zugriff auf seine Daten haben und auf keine anderen. Eine Benutzerauthentifizierung stellt sich aber im Hinblick auf einen Webservice schwieriger heraus. Durch die Zustandslose Kommunikation zwischen einem Clienten und dem Server, muss die Authentifizierung etwas anders gelöst werden. Essentiell ist aber in allen Fällen, dass die Kommunikation über SSL/TLS verläuft. Dies hat den Grund, dass die Datenübertragung über das Hypertext-Transport-Protocol in Klartext erfolgt. Somit wäre das Abgreifen eines Benutzernamens samt seinem Passworts relative leicht.
-Bezogen auf den RESTful-Webservice gibt es zwei Authentifizierungsmöglichkeiten, die im RFC 2617 beschrieben sind \[[2](#ref_2)\].  
+Bezogen auf den RESTful-Webservice gibt es zwei Authentifizierungsmöglichkeiten, die im RFC 2617 beschrieben sind \[[5](#ref_5)\].  
   
 1. Basic Authentication  
 2. Digest Access Authentication  
@@ -725,7 +764,7 @@ Anstelle des Passworts wird nun diese Prüfsumme an den Server verschickt, der d
 Die zusätzliche Sicherheit gegenüber der `Basic Authentication`-Methode besteht nun hierbei darin, dass mit dem Einsatz einer zufällig vom Server generierten Zeichenfolge (`Nonce`) gewährleistet wird, dass nur der Benutzer authentifiziert wird, der auch den Authentifizierungsantrag gestellt hat und somit der Antrag nicht von einem Unbefugten "entführt" wurde.
 Der Einsatz eines `Nonce` ist ebenfalls im Bereich der Prevention von `CSRF` (Cross-Site-Request-Forgery) sehr beliebt, wo ebenfalls gilt, dass ein Server nur auf eine Anfrage korrekt reagiert, wenn mit dem Request der gegebene `Nonce` mitgeschickt wird.  
 
-Erwähnenswert ist noch, dass neben `Digest Access Authentication` ein ähnliches Verfahren mit dem Namen `Keyed-Hash Message Authentication Code` (HMAC) existiert. Der Unterschied liegt hierbei aber darin, dass `HMAC` eingesetzt wird, um auszuschließen, dass die übertragenen Daten verfälscht wurden \[[3](#ref_3)\].  
+Erwähnenswert ist noch, dass neben `Digest Access Authentication` ein ähnliches Verfahren mit dem Namen `Keyed-Hash Message Authentication Code` (HMAC) existiert. Der Unterschied liegt hierbei aber darin, dass `HMAC` eingesetzt wird, um auszuschließen, dass die übertragenen Daten verfälscht wurden \[[6](#ref_6)\].  
 
 Obwohl es nun möglich wäre einen dieser Authentifizierungsverfahren einzusetzen, wurde sich bewusst dagegen entschieden für den RESTful Webservice ein solches Verfahren zu nutzen. Durch die Natur des Projekts bzw. der Phase2, wäre es zu zeitaufwendig eine Benutzerauthentifizierung zu implementieren, da ebenfalls auf Seitens des Servers eine Benutzer- samt Rechteverwaltung existieren, die ebenfalls mit der Benutzerauthentifizierung des XMPP-Servers harmonisieren müsste.
 Deshalb wird sich der Client nur um die Anmeldung am XMPP-Server kümmern, um die PubSub-Funktionalität des XMPP-Servers nutzen zu können. Der Zugriff auf den Datenbestand des RESTful Webservice geschieht ohne Zugriffskontrolle. Es wird aber davon ausgegangen, dass ein Benutzer nur auf seine eigenen Daten zugreift und nicht versucht Datensätze anderer Benutzer zu verändern bzw. zu löschen. Der RESTful-Webservice dient hier einzig und allein der Demonstration einer synchronen Kommunikation und der Anwendung des REST-Architekturstils.
@@ -733,10 +772,13 @@ Deshalb wird sich der Client nur um die Anmeldung am XMPP-Server kümmern, um di
 <a href="#top">^ top</a>
 
 
-##<a name="literatur"></a>X. Literatur
+##<a name="literatur"></a>Literatur
 <a name="ref_1"></a>\[1\] Benjamin Krumnow. Ereignisgesteuerte Systeme im Web, Juli 2012  
-<a name="ref_2"></a>\[2\] J. Franks, P. Hallam-Baker, J. Hostetler, S. Lawrence, P. Leach, A. Luotonen, L. Stewart.  RFC2617 - HTTP Authentication: Basic and Digest Access Authentication, Juni 1999  
-<a name="ref_3"></a>\[3\] H. Krawczyk, M. Bellare, R. Canetti. RFC2104 - HMAC: Keyed-Hashing for Message Authentication, Februar 1997  
+<a name="ref_2"></a>\[2\] The XMPP Standards Foundation. XMPP Extensions.  http://xmpp.org/xmpp-protocols/xmpp-extensions/, Letzte Sichtung am 01. Juni 2013  
+<a name="ref_3"></a>\[3\] P. Saint-Andre, Ed.. Extensible Messaging and Presence Protocol (XMPP): Core, Oktober 2004  
+<a name="ref_4"></a>\[4\] The XMPP Standars Foundaton. XEP-0030 Service Discovery. 06. Juni 2008  
+<a name="ref_5"></a>\[5\] J. Franks, P. Hallam-Baker, J. Hostetler, S. Lawrence, P. Leach, A. Luotonen, L. Stewart.  RFC2617 - HTTP Authentication: Basic and Digest Access Authentication, Juni 1999  
+<a name="ref_6"></a>\[6\] H. Krawczyk, M. Bellare, R. Canetti. RFC2104 - HMAC: Keyed-Hashing for Message Authentication, Februar 1997  
 
 <a href="#top">^ top</a>
 
