@@ -15,6 +15,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-05-13 | **Meilenstein 3 - RESTful Webservice**](#2013_05_13)  
 * [2013-05-18 | Openfire lokal eingerichtet / Einarbeitung in die Smack-API](#2013_05_18)  
 * [2013-05-26 | Benutzerauthentifizierung bezogen auf XMPP](#2013_05_26)  
+* [2013-06-01 | XMPP und XML-Stanzas](#2013_06_01)  
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)  
 * [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)  
 
@@ -137,6 +138,20 @@ Sinnvoll wäre es eine Schnittstelle einzurichten, die sich alleinig darum kümm
 Für das Projekt ist aber nur vorgesehen, dass sich der spätere Client nur am XMPP-Server anmelden muss um asynchrone Benachrichtigungen zu erhalten, aber seine Befügnisse über auf dem RESTful Webservice auf keinster Weise beschränkt werden. Dies hat damit zu tun, dass der Webservice, wie bereits erwähnt, nur als Prototyp gedacht ist. Die Konzeptionierung einer Schnittstelle zur Benutzerauthentifizierung würde die Entwicklung nur unnötig verkomplizieren. Eine Umsetzung wäre aber nach Komplementierung der Phase2 noch denkbar und möglich.
 
 <a href="#top">^ top</a>  
+
+
+<a name="2013_06_01"></a>**2013-06-01** | XMPP und XML-Stanzas  
+
+Um die Dokumentation um näheres bezülich XMPP zu erweiteren, habe ich mich näher mit den RFCs beschäftigt, in denen XMPP in seinen Grundzügen beschrieben ist. Dadurch, dass XMPP auch über sogenannte XMPP Extension Protocols erweitert wird, habe ich mich auch über diese informiert. Dies war auch nötig, da einzelne Funktionen des Openfire-Servers, die man in Phase2 nutzt, nur über XEPs beschrieben sind. Als Beispiel sei das `XEP-0060` gennant, in dem XMPP um ein `Publish-Subscribe-Pattern` erweitert wird, aber auch `XEP-0030`, in dem die Möglichkeit beschrieben wird, wie Informationen über einzelne Entitäten im System bezogen werden können. Dies ist unter der Bezeichnung `Service Discovery` zusammengefasst.
+Genauer erlaubt es das "Service Discovery" nicht nur Indentifizierungsmerkmale einer Entität zu "entdecken", sondern alle von der Entität unterstützten Funktionen und Protokolle (evtl. ist die Entität ein PubSub-Node). Zusätzlich erlaubt es auch das Identifizieren von `Items`, die in Verbindung mit der Entität stehen. Abgebildet auf die Publish-Subscribe-Erweiterung sind mit `Items` die über einen Node veröffentlichten Daten (mit oder ohne Payload; Fat Ping u. Light Ping).  
+Neben dem `Service Discovery`, habe ich mich näher mit dem Aufbau von Streams und den drei XML-Stanza-Typen informiert. Hierbei war es interessant herauszufinden, dass die drei XML-Stanzas `message`, `presence` und `iq` Kommunikationsabfolgen repräsentieren.  
+  
+  
+* `message` -> verbindungslos (erwartet kein Response)  
+* `presence` -> broadcast (1:n Kommunikation; orientiert sich am Publish-Subscribe-Pattern)  
+* `iq` -> verbindungsorientiert (auf ein Request folgt Repsonse)  
+
+<a href="#top">^ top</a> 
 
 
 <a name="2013_06_03"></a>**2013-06-03** | Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client  
