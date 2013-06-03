@@ -32,6 +32,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
         6.2.2 [Leafs \(Topics\)](#xmpp_server_publish_subscribe_pubsub_leafs)  
         6.2.3 [Publisher und Subscriber](#xmpp_server_publish_subscribe_pubsub_publisher_subscriber)  
         6.2.4 [Eigenschaften einer Benachrichtigung](#xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung)  
+    6.3 [Java, Openfire und Smack\(x\)](#xmpp_server_publish_subscribe_java_openfire_smackx)  
 7. [Benutzerauthentifizierung](#benutzerauthentifizierung)  
 
 [Literatur](#literatur)  
@@ -199,9 +200,10 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
 
 ###<a name="xml_schema_aufbau"></a>4.1 Aufbau
 
-```
+```xml
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <xsd:annotation>
         <xsd:documentation xml:lang="DE">
             ColourConnection
@@ -214,7 +216,7 @@ Das Hinzufügen von Daten ist so gesehen die einfachste Operation, die man imple
 Hier wurden Angaben über das Schema gemacht, um es später besser zuordnen zu können.
 
     
-```    
+```xml
     <xsd:complexType name="Ref">
         <xsd:attribute name="id" type="xsd:positiveInteger" />
         <xsd:attribute name="ref" type="xsd:string" />
@@ -228,7 +230,7 @@ Dieser Complextype wird überwiegend nur dafür verwendet Benutzer und Farbpalet
 Für Colour-Elemente wird wegen der Besonderheit der gewählten ID-Form, weiter unten ein eigener Referenzierungs-Type eingeführt.
 
 
-``` 
+```xml
     <xsd:simpleType name="ColourID">
         <xsd:restriction base="xsd:string">
             <xsd:pattern value="[0-9a-fA-F]{6}" />
@@ -256,7 +258,7 @@ Zudem setzt sich ein Farbcode insgesamt aus sechs solcher Zeichen zusammen. Die 
 Für eine Farbe ist nur die ID, der Ersteller und das Datum wann die Farbe im System aufgenommen wurde relevant.  
 Zuletzt wird noch der bereits weiter oben erwähnte Referenzierungs-Type für eine Farbe eingeführt. Wie zu sehen ist, wird als ID-Type der Simple Type "ColourID" verwendet, anstelle des Standard Type "positiveInteger".
 
-```
+```xml
     <xsd:complexType name="User">
         <xsd:sequence>
             <xsd:element name="username" type="xsd:string" minOccurs="1" maxOccurs="1" />
@@ -269,7 +271,7 @@ Zuletzt wird noch der bereits weiter oben erwähnte Referenzierungs-Type für ei
 Für den User wird ebenfalls ein Element eingeführt, um für die Erstellung einer Benutzer-Ressource alle relevanten Informationen über einen neuen User mitzureichen, aber auch die Daten eines Benutzer bei einem GET-Request gekapselt ausliefern zu können.
 Dabei ist für einen User nur seine ID, sein Benutzername und das Datum seiner Registrierung relevant.
 
-```
+```xml
     <xsd:complexType name="ColourPalette">
         <xsd:sequence>
             <xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
@@ -289,12 +291,13 @@ Dabei ist für einen User nur seine ID, sein Benutzername und das Datum seiner R
 Eine Farbpalette setzt sich zum einen aus einem Elementen welches den Ersteller referenziert (wie an dem verwendeten Elementen Type `Ref` zu sehen), dem Datum bzw. Zeitpunkt wann die Palette erstellt wurde und einer Sequenz an Elementen, die die verwendeten Farben referenzieren.
 Es wurde sich dafür entschieden, dass sich eine Farbpalette minimal aus 2 und maximal aus 10 Farben zusammensetzen kann.
 
-```
+```xml
     <xsd:complexType name="FavouriteColour">
         <xsd:complexContent>
             <xsd:extension base="ColourRef">
                 <xsd:sequence>
-                    <xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+                    <xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1"
+                                                                            maxOccurs="1" />
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -304,7 +307,8 @@ Es wurde sich dafür entschieden, dass sich eine Farbpalette minimal aus 2 und m
         <xsd:complexContent>
             <xsd:extension base="Ref">
                 <xsd:sequence>
-                    <xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1" maxOccurs="1" />
+                    <xsd:element name="favourite_since" type="xsd:dateTime" minOccurs="1"
+                                                                            maxOccurs="1" />
                 </xsd:sequence>
             </xsd:extension>
         </xsd:complexContent>
@@ -315,7 +319,7 @@ Dadurch, dass ein Benutzer eine Farbe oder eine Farbpalette favorisieren kann, w
 Auch hier wird über ein Unterelement auf die entsprechende Ressource referenziert, anstatt die komplette Informationen zu einer Ressource einzubetten.
 Hinzu kommt noch die Angabe über den Zeitpunkt, wann die entsprechende Farbe oder Farbpalette favorisiert wurde.
 
-```
+```xml
     <xsd:complexType name="UserList">
         <xsd:sequence>
             <xsd:element name="user" type="Ref" minOccurs="0" maxOccurs="unbounded" />
@@ -337,13 +341,15 @@ Hinzu kommt noch die Angabe über den Zeitpunkt, wann die entsprechende Farbe od
  
     <xsd:complexType name="FavouriteColourList">
         <xsd:sequence>
-            <xsd:element name="favourite_colour" type="FavouriteColour" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="favourite_colour"
+                         type="FavouriteColour" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
     
     <xsd:complexType name="FavouriteColourPaletteList">
         <xsd:sequence>
-            <xsd:element name="favourite_colourpalette" type="FavouriteColourPalette" minOccurs="0" maxOccurs="unbounded" />
+            <xsd:element name="favourite_colourpalette"
+                         type="FavouriteColourPalette" minOccurs="0" maxOccurs="unbounded" />
         </xsd:sequence>
     </xsd:complexType>
 ```  
@@ -351,7 +357,7 @@ Hinzu kommt noch die Angabe über den Zeitpunkt, wann die entsprechende Farbe od
 Um mehrere Elemente als eine Art Liste zurückgeben zu können, wurden ebenfalls Complex Types definiert, die die Aufagbe eines Container-Elements einnehmen.
 Auch hier werden zu einem Element nicht seine kompletten Daten mitgeschickt, sondern nur seine Referenz.
 
-```
+```xml
     <xsd:complexType name="Follower">
         <xsd:complexContent>
             <xsd:extension base="Ref">
@@ -371,7 +377,7 @@ Auch hier werden zu einem Element nicht seine kompletten Daten mitgeschickt, son
 
 Durch die einem Benutzer gegebene Möglichkeit einen anderen Benutzer zu folgen, wurden ebenfalls für dieses Szenario Complex Types definiert, die es ermöglichen diese Informationen zwischen Clienten und Server auszutauschen.
 
-```
+```xml
     <xsd:complexType name="Comment">
         <xsd:sequence>
             <xsd:element name="creator" type="Ref" minOccurs="1" maxOccurs="1" />
@@ -392,7 +398,7 @@ Zu jeder Farbe oder einer Farbpalette kann ein Benutzer einen oder mehrere Komme
 Auch hierfür gibt es zwei Complex Types, die sich um die Kapselung der Daten kümmern.
 Für Kommentare wurde ebenfalls ein eigener Container Type eingeführt, um eine Liste von Kommentaren zu ermöglichen.
 
-```
+```xml
     <xsd:complexType name="ColourConnection">
         <xsd:sequence>
             <xsd:element name="users" minOccurs="1" maxOccurs="1">
@@ -403,10 +409,17 @@ Für Kommentare wurde ebenfalls ein eigener Container Type eingeführt, um eine 
                                 <xsd:complexContent>
                                     <xsd:extension base="User">
                                         <xsd:sequence>
-                                            <xsd:element ref="favourite_colours" minOccurs="1" maxOccurs="1"/>
-                                            <xsd:element ref="favourite_colourpalettes" minOccurs="1" maxOccurs="1"/>
+                                            <xsd:element ref="favourite_colours"
+                                                         minOccurs="1"
+                                                         maxOccurs="1"/>
+                                            <xsd:element ref="favourite_colourpalettes"
+                                                         minOccurs="1"
+                                                         maxOccurs="1"/>
                                             <xsd:element ref="followers" minOccurs="1" maxOccurs="1" />
-                                            <xsd:element name="creations" type="ColourPaletteList" minOccurs="1" maxOccurs="1" />
+                                            <xsd:element name="creations"
+                                                         type="ColourPaletteList"
+                                                         minOccurs="1"
+                                                         maxOccurs="1" />
                                         </xsd:sequence>
                                     </xsd:extension>
                                 </xsd:complexContent>
@@ -426,7 +439,9 @@ Für Kommentare wurde ebenfalls ein eigener Container Type eingeführt, um eine 
                                             <xsd:element name="comments" minOccurs="1" maxOccurs="1">
                                                 <xsd:complexType>
                                                     <xsd:sequence>
-                                                        <xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+                                                        <xsd:element ref="comment"
+                                                                     minOccurs="0"
+                                                                     maxOccurs="unbounded" />
                                                     </xsd:sequence>
                                                 </xsd:complexType>
                                             </xsd:element>
@@ -449,7 +464,9 @@ Für Kommentare wurde ebenfalls ein eigener Container Type eingeführt, um eine 
                                             <xsd:element name="comments" minOccurs="1" maxOccurs="1">
                                                 <xsd:complexType>
                                                     <xsd:sequence>
-                                                        <xsd:element ref="comment" minOccurs="0" maxOccurs="unbounded" />
+                                                        <xsd:element ref="comment"
+                                                                     minOccurs="0"
+                                                                     maxOccurs="unbounded" />
                                                     </xsd:sequence>
                                                 </xsd:complexType>
                                             </xsd:element>
@@ -471,7 +488,7 @@ Es wurde soweit es ging versucht existierende Complex Types und Elemente wiederz
 In anderen Fällen mussten aber neue Complex Types eingeführt werden, um eine Verbindung zwischen Datensätzen herzustellen bzw. einen Datensatz einem übergeordneten Datensatz zuordnen zu können. Speziell bezogen auf den User war es sehr oft nötig von ihm erstellte Farbpaletten, Lieblingsfarben sowie Lieblingsfarbpaletten ihm zuordnen zu können.  
 Diese Herangehensweise hat aber auch seinen Nachteil. Im Hintergrund müssen Datensätze sehr oft umgebettet werden, damit diese entweder in die große Datenstruktur eingepflegt oder aus ihr entnommen werden können um ggf. einem Clienten die angeforderte Ressource in der vereinbarten Form zu liefern.
 
-```  
+```xml
     <xsd:element name="user" type="User" />
     <xsd:element name="colour" type="Colour" />
     <xsd:element name="colourpalette" type="ColourPalette" />
@@ -738,13 +755,78 @@ Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu ab
 
 <a href="#top">^ top</a>
 
-####<a name="xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung"></a> 6.2.4 Eigenschaften einer Benachrichtigung
+####<a name="xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung"></a>6.2.4 Eigenschaften einer Benachrichtigung
 Eine Benachrichtigung erfüllt nur die Aufgabe, einen Benutzer über die Existenz einer neuen Farbpalette zu informieren. Zum einen durch das Abonnieren einer Farbe, oder eines Benutzers.
 Beides läuft darauf hinaus, dass ein Benutzer immer nur über eine neue Palette informiert wird (Lieblingsfarbe wurde in der Palette verwendet, oder abonnierter Benutzer hat eine neue Palette erzeugt).
 Da man über eine abonnierte Farbe, speziell dem Farbcode als `Topic` nicht direkt die neue Farbpalette referenziert, muss die ID der neuen Farbpalette als Payload in der Benachrichtigung mitgereicht werden.
 Somit setzt man auf einen Fat Ping, anstatt eines Light Ping. Auch wenn ein abonnierter Benutzer eine neue Farbpalette erzeugt hat, sollen die Subscriber bzw. Follower über diese mittels ihrer ID benachrichtigt werden.
 Es sollen nicht die kompletten Informationen der Farbpalette mitgereicht werden, sondern nur eine Referenz. Hierbei kann man auf das im XML-Schema definierte Element `colourpalettes` setzten, welches nur dazu verwendet wird, um eine Liste von Referenzen zu Farbpaletten-Ressourcen zu liefern.
 In diesem Fall, würde `colourpalettes` nur ein einziges Element führen, welches auf die Ressource der neu erstellten Farbpalette zeigt. Bei Interesse kann die Client-Software dann mit der mitgereichten Referenz die kompletten Informationen der Farbpalette nachträglich über den RESTful Webservice erfragen.
+
+<a href="#top">^ top</a>
+
+
+###<a name="xmpp_server_publish_subscribe_java_openfire_smackx"></a>6.3 Java, Openfire und Smack(x)
+
+Um mittels Java mit dem Openfire-Server kommunizieren zu können, wurde auf die von `ignite realtime` ebenfalls entwickelte Smack(x) Client-Bibliothek gesetzt.
+Der Vorteil an Smack ist, dass es als eine Art abstrahierende Schichte oberhalb der manuellen Konstruktion von Stanzas gesehen werden kann. Smack kümmert sich intern um die Umsetzung und der direkten Kommunikation mit dem XMPP-Server (in diesem Fall Openfire).  
+Smack kommt von Haus aus mit den grundlegenden Funktionen eines XMPP-Servers zurecht. In einigen Fällen geht die Client-Bibliothek soweit, dass von Releas zu Releas mehr `XEP`s unterstützt werden. Interessant ist hierbei die Unterstützung von `XEP-0060 Publish-Subscribe`, auf die in Phase 2 verstärkt gesetzt wird.  
+Mit der Unterstüzung von `XEP-0060` wurde eine Klasse mit dem Namen `PubSubManager` eingeführt, um leichter `LeafNodes` und `LeafNodeCollections` zu erstellen und über sie `Items` zu veröffentlichen und sie natürlich auch abonnieren zu können. Als Beispiel sei folgender Code gegeben:  
+
+```java
+/**
+ * Establish a connection to the xmpp server
+ *
+ * @param hostname server address
+ * @param port server port
+ * @return Successful or failed
+ */
+public boolean connect(String hostname, int port) {
+
+    if (xmpp_conn != null && xmpp_conn.isConnected()) {
+        return true;
+    }
+
+    ConnectionConfiguration config = new ConnectionConfiguration(hostname, port);
+    xmpp_conn = new XMPPConnection(config);
+    ac = new AccountManager(xmpp_conn);
+
+    try {
+        xmpp_conn.connect();
+        pubsub_man = new PubSubManager(xmpp_conn, "pubsub." + xmpp_conn.getHost());
+    } catch (XMPPException e) {
+        return false;
+    }
+
+    return true;
+}
+```
+
+Die Instanzvariable `xmpp_conn` ist vom Typ XMPPConnection und dient als Verbindungs-Handler. Über sie ist es möglich Informationen über die momentane Verbindung zu erhalten, aber auch ein Vorgang zur Benutzeranmeldung zu initiieren.  
+Als Konstruktorparameter nimmt `XMPPConnection` eine Instanz der Klasse `ConnectionConfiguration`, die wiederum die Informationen über den Hostnamen und den Port verfügt, die für die Verbindungsherstellung nötig sind.  
+Nach erfolgtem Verbindungsaufbau mittels `xmpp_conn.connect()`, wird eine neue Instanz des `PubSubManager`s erzeugt, wobei zum einen der zuvor eingerichtete Verbindungs-Handler plus der Angabe über die Publish-Subscribe-Schnittstelle des XMPP-Servers.
+Die Publish-Subscribe-Schnittstelle bzw. die Adresse der Schnittstelle lautet für gewöhnlich immer `pubsub.<hostname>`. Es ist wichtig, dass diese Zusatinformation der PubSubManager-Instanz bekannt gegeben wird, da es sonst zu unerklärlichen Fehler- sowie Warnmeldungen führt.
+Nach einem erfolgreichen Verbindungsuafbau und dem Einrichten des Publish-Subscribe-Managers, können nun über die Instanz der `PubSubManager`-Klasse neue `LeafNodes` oder `LeafNodeCollections` erstellt, gelöscht, geholt, abonniert oder über sie `Items` veröffentlicht werden.  
+Bei der Erstellung eines neuen `LeafNodes` ist es wichtig darauf zu achten, wie ein Node konfiguriert wird. Erst mit der richtigen Konfiguration verhalten sich Nodes so wie man es will. Als Beispiel seien die Methoden `setPublishModel` und `setAccessModel` der Klasse `ConfigureForm` zu erwähnen.
+Über die Klasse `ConfigureForm` kann die Konfiguration zu einem Node zuerst zusammengesetzt werden und im späteren Verlauf diesem Node zugewiesen werden. Bezüglich der erwähnten Methoden ist zu sagen, dass die die über sie gesetzten Werte ausschlaggebend dafür sind, wer alles auf ein Node zugreifen, aber viel wichtiger noch, über diesen Knoten `Items` veröffentlichen darf.
+Zum Beispiel ist es unter `ColourConnection` wichtig, dass alle Benutzer über einen bestimmten Node `Items` veröffentlichen können. Gibt man diese Bedingung in der Konfiguration nicht explizit an, dann ist es standardmäßig nur den Nodeerzeugern erlaubt über diesen Node zu veröffentlichen. 
+Der Konfigurationscode für ein Node würde für `ColourConnection` z.B. wie folgt aussehen:
+
+```java
+LeafNode node = pubsub_man.createNode("ffffff");
+
+ConfigureForm form = new ConfigureForm(FormType.submit);
+
+form.setPersistentItems(true);
+form.setDeliverPayloads(true);
+form.setPublishModel(PublishModel.open);
+form.setAccessModel(AccessModel.open);
+
+node.sendConfigurationForm(form);
+```  
+
+Wie zu sehen ist, wird mit `PublishModel.open` explizit angegeben, dass jeder über den Node veröffentlichen darf und mit `AccessModel.open` jeder ebenfalls Zugriff auf ihn hat.
+Übe die Methoden `setPersistentItems` und `setDeliveryPayloads` wird zudem festgelegt, ob über den Node übertragene `Items` im Node beharren und ob die `Items` evtl. Nutzdaten enthalten werden bzw. enthalten müssen.
 
 <a href="#top">^ top</a>
 
