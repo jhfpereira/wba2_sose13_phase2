@@ -150,6 +150,8 @@ public class ConnectionFrame extends JFrame {
                             cf.setEnabled(true);
                             cf.setConnectionHandler(ch);
                             setVisible(false);
+                            textUsername.setText("");
+                            passwordPassword.setText("");
                         } else {
                             lblStatus.setText("Anmeldung fehlgeschlagen!");
                         }
