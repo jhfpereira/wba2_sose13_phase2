@@ -28,7 +28,8 @@ public class ConnectionHandler {
     private XMPPConnection xmpp_conn;
     private AccountManager ac;
     private PubSubManager pubsub_man;
-
+    private String username;
+    private String hostname;
     private ItemEventListener<Item> listener;
 
     public ConnectionHandler() {
@@ -59,7 +60,9 @@ public class ConnectionHandler {
         } catch (XMPPException e) {
             return false;
         }
-
+        
+        this.hostname = hostname;
+        
         return true;
     }
 
@@ -77,7 +80,9 @@ public class ConnectionHandler {
         } catch (XMPPException e) {
             return false;
         }
-
+        
+        this.username = username;
+        
         return true;
     }
 
@@ -134,7 +139,12 @@ public class ConnectionHandler {
     public boolean publishWithPayload(String node_id, String payload_data) {
 
         LeafNode node = null;
-
+        
+        if(payload_data.length() == 0) {
+            System.err.println("No payload given!");
+            return false;
+        }
+        
         try {
             node = pubsub_man.getNode(node_id);
         } catch (XMPPException e) {
@@ -189,10 +199,12 @@ public class ConnectionHandler {
 
         try {
             node = pubsub_man.getNode(node_id);
+            node.subscribe(this.username + "@" + this.hostname);
+            node.addItemEventListener(listener);
         } catch (XMPPException e) {
 
             // Node was not found
-            System.err.println("Node was not found!");
+            System.err.println("Node was not found! I am gonna create one now.");
 
             if (e.getXMPPError().getCode() == 404) {
 
@@ -202,6 +214,8 @@ public class ConnectionHandler {
                     node = pubsub_man.createNode(node_id);
                     node.sendConfigurationForm(createForm(FormType.submit,
                             false, true, PublishModel.open, AccessModel.open));
+                    node.addItemEventListener(listener);
+                    // a user is automatically subscribed to a node he creates
                     return true;
                 } catch (XMPPException e1) {
                     // Node could not be created
@@ -209,19 +223,12 @@ public class ConnectionHandler {
                     return false;
                 }
             }
-        }
-
-        if (node != null) {
-            node.addItemEventListener(listener);
-
-            try {
-                node.subscribe(getUsername() + "@" + xmpp_conn.getHost());
-            } catch (XMPPException e) {
-                System.err.println("Could not subscribe!");
+            else {
+                System.err.println("Unknown errorcode: " + e.getXMPPError().getCode());
                 return false;
             }
         }
-
+        
         return true;
     }
 
@@ -236,15 +243,16 @@ public class ConnectionHandler {
 
         try {
             node = pubsub_man.getNode(node_id);
-            node.unsubscribe(getUsername() + "@" + xmpp_conn.getHost());
+            node.unsubscribe(this.username + "@" + this.hostname);
+            node.removeItemEventListener(listener);
 
             System.out.println("Unsubscribing succeded!");
 
         } catch (XMPPException e) {
-            System.out.println("Unsubscribing failed!");
+            System.err.println("Unsubscribing failed!");
             return false;
         }
-
+        
         return true;
     }
 
@@ -255,7 +263,7 @@ public class ConnectionHandler {
      * @return Successful or failed
      */
     public boolean deleteNode(String node_id) {
-
+        
         try {
             pubsub_man.deleteNode(node_id);
         } catch (XMPPException e) {
@@ -346,23 +354,22 @@ public class ConnectionHandler {
      */
     private void attachListenerToSubscribedNodes() {
 
-        List<Affiliation> affiliations;
+        List<Subscription> subs;
         try {
-            affiliations = pubsub_man.getAffiliations();
-        } catch (XMPPException e) {
-            System.err.println("Could not get Affiliations!");
+            subs = pubsub_man.getSubscriptions();
+        } catch (XMPPException e1) {
+            System.err.println("Could not get Subscriptions!");
+            e1.printStackTrace();
             return;
         }
-
-        for (Affiliation curr : affiliations) {
-            if (curr.getType() != Affiliation.Type.publisher) {
-                try {
-                    pubsub_man.getNode(curr.getNodeId()).addItemEventListener(
-                            listener);
-                } catch (XMPPException e) {
-                    System.err
-                            .println("Couldn't get Node for attaching Listener");
-                }
+        
+        for (Subscription curr : subs) {
+            try {
+                pubsub_man.getNode(curr.getNode()).addItemEventListener(
+                        listener);
+            } catch (XMPPException e) {
+                System.err
+                        .println("Couldn't get Node for attaching Listener");
             }
         }
     }
@@ -423,6 +430,5 @@ public class ConnectionHandler {
 
     public void finalize() {
         disconnect();
-        System.out.println("sf");
     }
 }
