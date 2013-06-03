@@ -751,7 +751,9 @@ Als weitere Möglichkeit würde es sich sogar ebenfalls anbieten `Topics` spezie
 ####<a name="xmpp_server_publish_subscribe_pubsub_publisher_subscriber"></a>6.2.3 Publisher und Subscriber
 Dadurch, dass ein Benutzer Farben als Favoriten setzen, aber auch Farbpaletten erstellen kann, ist er Publisher (Farbpalette erstellen) und Subscriber (Farbe als Lieblingsfarbe setzen) in einem.
 Durch diese Gegebenheit, wird ein Benutzer über die eigens erstellte Farbpalette asynchron beanchrichtigt, wenn eine eigene Lieblingsfarbe verwendet wurde.
-Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu abonnieren, da dies unnötig ist.
+Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu abonnieren, da dies unnötig ist.  
+Durch die Besonderheit, dass ein Benutzer ein Publisher ist, müsste dieser sich auch um das Veröffentlichen (publishen) von Items selbst kümmern bzw. müsste der Client sich darum kümmern. Es ist aber sinnvoller, dass der REST-Endpoint die Rolle des Publishers einnimmt und der Benutzer nur indirekt über diesen veröffentlicht.
+Der Vorteil hierbei ist, dass sich der Client nicht mehr um den zweiten Verbindungsaufbau zum XMPP-Server kümmern muss bzw. dem Publishen. Es steht nun jetzt fest, dass ein Client nur mit dem RESTful Webservice kommuniziert und auf asynchrone Nachrichten vom XMPP-Service achtet. Der Server kümmert sich dann demnach darum aus der von einem Benutzer erzeugten Farbpalette  die Farben zu extrahieren und über jeden einzelnen Farbcode (entsprechen den Topics) die Nachricht über eine neue Farbpalette zu verbreiten/zu veröffentlichen.   
 
 <a href="#top">^ top</a>
 
