@@ -71,10 +71,15 @@ public class DataHandler {
 		User given_user = (User)unmarshall(user_data, User.class);
 		ColourConnection.Users.User cc_user = new ColourConnection.Users.User();
 		int new_id = 1;
-		int arr_size = cc_base.getUsers().getUser().size();
+		List<ColourConnection.Users.User> user_list = cc_base.getUsers().getUser();
 		
-		if(arr_size > 0) {
-			ColourConnection.Users.User last_user = cc_base.getUsers().getUser().get(arr_size-1);
+		for(User curr_user: user_list) {
+		    if(curr_user.getUsername().equalsIgnoreCase(given_user.getUsername()))
+		        return null;
+		}
+		
+		if(user_list.size() > 0) {
+			ColourConnection.Users.User last_user = cc_base.getUsers().getUser().get(user_list.size()-1);
 			new_id = last_user.getId().intValue() + 1;
 		}
 		
