@@ -645,32 +645,27 @@ Zuletzt wird `true` zurückgegeben, um der aufrufenden Methode mittzuteilen, das
 
 ###<a name="restful_webservice_besonderheiten"></a>5.4. Besonderheiten  
 
-Neben der Methode `deleteUserFollower` wurde auch eine alternative Methode mit dem Namen `deleteUserFollowerByQueryParam` geschrieben, um den Einsatz von Query-Parametern zu zeigen.
-Beide Methoden sind identisch bis auf, dass diese Methode die ID des Benutzers der folgt nicht aus der Pfadangabe, sondern über den Query-String bezieht. 
-Die URI würde wie folgt aussehen:  
-`/localhost/user/1/follower?follower_id=2`
+Die Methode `getUsers` ist die einzige Methode mit der es möglich ist, anhand eines `QueryParam`, die Elemente der zurückgelieferten Liste zu filtern. Relevant wird dies, wenn man überprüfen will,
+ob ein User mit einem bestimmten Namen existiert. Dazu wird der URI der Query-Parameter `username` mit dem entsprechendne Benutzernamen aufgebaut. Als Beispiel `GET /users?username=Horst`.
+Wird kein Query-Parameter angegeben, dann weiß die Methode, dass die Einträge nicht gefiltert werden soll und liefert eine Liste aller dem System bekannten Benutzer.
 
 
 ```java
 /**
- * Let a user unfollow a certain user (QueryParam is used instead of PathParam)
+ * Return a list of all existing users
  * 
- * @param user_id id of the user being followed
- * @param follower_id id of the user following
  * @return HTTP-Response
  */
-@DELETE
-@Path("/{user_id}/follower")
-public Response deleteUserFollowerByQueryParam(@PathParam("user_id") String user_id,
-                                               @QueryParam("follower_id") String follower_id) {
-	
-	boolean success = dh.deleteUserFollower(user_id, follower_id);
-	
-	if(success)
-		return Response.noContent().build();
-	else {
-		return Response.status(404).build();
-	}
+@GET
+public Response getUsers(@DefaultValue("") @QueryParam("username") String username) {
+    
+    if(username.length() == 0)
+        username = null;
+    
+    String users_str = dh.getUsers(username);
+    
+    return Response.ok().entity(users_str).type(MediaType.APPLICATION_XML).build();
+        
 }
 ```
 

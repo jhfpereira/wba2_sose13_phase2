@@ -184,26 +184,6 @@ public class UserResource {
 	
 	/* An example how an user can be unfollowed by giving the id of a follower through QueryParam instead of PathParam */
 	
-	/**
-	 * Let a user unfollow a certain user (QueryParam is used instead of PathParam)
-	 * 
-	 * @param user_id id of the user being followed
-	 * @param follower_id id of the user following
-	 * @return HTTP-Response
-	 */
-	@DELETE
-	@Path("/{user_id}/follower")
-	public Response deleteUserFollowerByQueryParam(@PathParam("user_id") String user_id, @QueryParam("follower_id") String follower_id) {
-		
-		boolean success = dh.deleteUserFollower(user_id, follower_id);
-		
-		if(success)
-			return Response.noContent().build();
-		else {
-			return Response.status(404).build();
-		}
-	}
-	
 	
 	/**
 	 * Retrieve a list of all users following a certain user
