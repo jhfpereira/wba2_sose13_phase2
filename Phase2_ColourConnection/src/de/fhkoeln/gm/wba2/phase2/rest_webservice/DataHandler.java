@@ -72,6 +72,9 @@ public class DataHandler {
 		ColourConnection.Users.User cc_user = new ColourConnection.Users.User();
 		int new_id = 1;
 		List<ColourConnection.Users.User> user_list = cc_base.getUsers().getUser();
+
+		if(given_user.getUsername().length() == 0)
+		    return null;
 		
 		for(User curr_user: user_list) {
 		    if(curr_user.getUsername().equalsIgnoreCase(given_user.getUsername()))
@@ -148,18 +151,20 @@ public class DataHandler {
 	 * 
 	 * @return marshalled users list
 	 */
-	public String getUsers() {
+	public String getUsers(String username) {
 		
 		UserList users_arr = new UserList();
 		
 		for(ColourConnection.Users.User curr_user: cc_base.getUsers().getUser()) {
-			
-			Ref new_user_ref = new Ref();
-			
-			new_user_ref.setId(curr_user.getId());
-			new_user_ref.setRef("/user/" + curr_user.getId().toString());
-			
-			users_arr.getUser().add(new_user_ref);
+		    
+		    if(username == null || curr_user.getUsername().equalsIgnoreCase(username)) {
+    		    Ref new_user_ref = new Ref();
+    			
+    			new_user_ref.setId(curr_user.getId());
+    			new_user_ref.setRef("/user/" + curr_user.getId().toString());
+    			
+    			users_arr.getUser().add(new_user_ref);
+		    }
 		}
 		
 		return marshall(users_arr);
