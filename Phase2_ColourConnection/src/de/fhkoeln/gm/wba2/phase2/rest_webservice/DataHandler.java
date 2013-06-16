@@ -760,6 +760,7 @@ public class DataHandler {
 
 				found_colourpalette.setId(curr_colourpalette.getId());
 				found_colourpalette.setCreator(curr_colourpalette.getCreator());
+				found_colourpalette.setDateOfCreation(curr_colourpalette.getDateOfCreation());
 				found_colourpalette.setUsedColours(curr_colourpalette.getUsedColours());
 				
 				marshalled_str = marshall(found_colourpalette);
