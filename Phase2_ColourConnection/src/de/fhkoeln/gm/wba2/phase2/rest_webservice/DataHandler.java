@@ -20,7 +20,6 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.transform.stream.StreamSource;
 
 import de.fhkoeln.gm.wba2.phase2.jaxb.*;
-import de.fhkoeln.gm.wba2.phase2.jaxb.ColourConnection.Colours.Colour;
 
 public class DataHandler {
 
