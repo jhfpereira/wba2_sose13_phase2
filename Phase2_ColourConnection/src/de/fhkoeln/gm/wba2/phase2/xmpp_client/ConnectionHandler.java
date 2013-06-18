@@ -389,7 +389,7 @@ public class ConnectionHandler {
      * @return username
      */
     public String getUsername() {
-        return xmpp_conn.getUser();
+        return this.username;
     }
     
     /**
@@ -398,7 +398,7 @@ public class ConnectionHandler {
      * @return hostname
      */
     public String getHost() {
-        return xmpp_conn.getHost();
+        return this.hostname;
     }
     
     /**
