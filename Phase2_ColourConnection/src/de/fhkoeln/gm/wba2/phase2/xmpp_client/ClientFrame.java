@@ -9,6 +9,9 @@ import javax.swing.JTextField;
 import javax.swing.JList;
 import javax.swing.JTextArea;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+
 import java.awt.Color;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
@@ -68,11 +71,16 @@ public class ClientFrame extends JFrame {
         listmodel = new DefaultListModel<>();
 
         contentPane.setLayout(null);
-
+        
+        JScrollPane ln_jsp = new JScrollPane();
+        ln_jsp.setBounds(636, 152, 104, 219);
+        contentPane.add(ln_jsp);
+        
         listNodes = new JList(listmodel);
-        listNodes.addMouseListener(new MouseAdapter() {
+        listNodes.addListSelectionListener(new ListSelectionListener() {
+            
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void valueChanged(ListSelectionEvent e) {
                 JList list = (JList) e.getSource();
                 int index = list.getSelectedIndex();
 
@@ -84,10 +92,8 @@ public class ClientFrame extends JFrame {
                 }
             }
         });
-        listNodes.setBorder(new LineBorder(new Color(0, 0, 0)));
-        listNodes.setBounds(636, 152, 104, 219);
-        contentPane.add(listNodes);
-
+        ln_jsp.setViewportView(listNodes);
+        
         textPayload = new JTextArea();
         textPayload.setLineWrap(true);
         textPayload.setBounds(57, 220, 427, 151);
@@ -186,12 +192,17 @@ public class ClientFrame extends JFrame {
         contentPane.add(messagesScroll);
 
         listmodelsubs = new DefaultListModel<>();
-
+        
+        JScrollPane ls_jsp = new JScrollPane();
+        ls_jsp.setBounds(520, 153, 104, 218);
+        contentPane.add(ls_jsp);
+        
         listSubs = new JList(listmodelsubs);
-        listSubs.addMouseListener(new MouseAdapter() {
+        listSubs.addListSelectionListener(new ListSelectionListener() {
+            
             @Override
-            public void mouseClicked(MouseEvent e) {
-                JList list = (JList) e.getSource();
+            public void valueChanged(ListSelectionEvent arg) {
+                JList list = (JList) arg.getSource();
                 int index = list.getSelectedIndex();
 
                 if (index >= 0) {
@@ -200,11 +211,10 @@ public class ClientFrame extends JFrame {
                     textNodeInformation.setText(ch
                             .getNodeInformation(listmodelsubs.get(index)));
                 }
+                
             }
         });
-        listSubs.setBorder(new LineBorder(new Color(0, 0, 0)));
-        listSubs.setBounds(520, 153, 104, 218);
-        contentPane.add(listSubs);
+        ls_jsp.setViewportView(listSubs);
 
         JLabel lblAbboniert = new JLabel("Abonniert");
         lblAbboniert.setBounds(523, 125, 91, 15);

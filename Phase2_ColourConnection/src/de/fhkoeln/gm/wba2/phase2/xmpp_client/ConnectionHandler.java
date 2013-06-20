@@ -136,7 +136,7 @@ public class ConnectionHandler {
      * @return Successful or failed
      */
     public boolean publishWithPayload(String node_id, String payload_data) {
-
+        
         LeafNode node = null;
         
         if(payload_data.length() == 0) {
@@ -149,21 +149,23 @@ public class ConnectionHandler {
         } catch (XMPPException e) {
 
             // Node was not found
-            System.err.println("Node was not found!");
-
+            System.err.println("Node was not found! I am gonna create one now.");
+            
             if (e.getXMPPError().getCode() == 404) {
-
                 // Node not found
                 try {
                     node = pubsub_man.createNode(node_id);
                     node.sendConfigurationForm(createForm(FormType.submit,
-                            false, true, PublishModel.open, AccessModel.open));
-
+                            true, true, PublishModel.open, AccessModel.open));
                 } catch (XMPPException e1) {
                     // Node could not be created
                     System.err.println("Node could not be created!");
                     return false;
                 }
+            }
+            else {
+                System.err.println("Unknown errorcode: " + e.getXMPPError().getCode());
+                return false;
             }
         }
 
@@ -212,7 +214,7 @@ public class ConnectionHandler {
                     // subscribes automatically
                     node = pubsub_man.createNode(node_id);
                     node.sendConfigurationForm(createForm(FormType.submit,
-                            false, true, PublishModel.open, AccessModel.open));
+                            true, true, PublishModel.open, AccessModel.open));
                     node.addItemEventListener(listener);
                     // a user is automatically subscribed to a node he creates
                     return true;
@@ -363,6 +365,10 @@ public class ConnectionHandler {
         }
         
         for (Subscription curr : subs) {
+            
+            if(curr.getJid() == this.username + "@" + this.hostname)
+                continue;
+            
             try {
                 pubsub_man.getNode(curr.getNode()).addItemEventListener(
                         listener);
