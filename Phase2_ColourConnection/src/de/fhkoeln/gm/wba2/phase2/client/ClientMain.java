@@ -23,7 +23,7 @@ public class ClientMain {
                 } catch (InstantiationException e) {
                 } catch (IllegalAccessException e) {
                 }
-
+                
                 new ConnectionFrame();
             }
         });

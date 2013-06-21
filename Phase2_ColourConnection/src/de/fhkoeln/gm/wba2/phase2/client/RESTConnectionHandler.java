@@ -106,7 +106,7 @@ public class RESTConnectionHandler {
         
         ClientResponse cresp;
         try {
-            cresp = service.path("/user").type(MediaType.APPLICATION_XML).entity(new_user).post(ClientResponse.class, marshall(new_user));
+            cresp = service.path("/user").type(MediaType.APPLICATION_XML).entity(new_user).post(ClientResponse.class, JAXBTools.marshall(new_user));
         }
         catch(ClientHandlerException che) {
             return false;
@@ -488,7 +488,7 @@ public class RESTConnectionHandler {
         
         ClientResponse cresp;
         try {
-            cresp = service.path("/colour").type(MediaType.APPLICATION_XML).entity(c).post(ClientResponse.class, marshall(c));
+            cresp = service.path("/colour").type(MediaType.APPLICATION_XML).entity(c).post(ClientResponse.class, JAXBTools.marshall(c));
         }
         catch(ClientHandlerException che) {
             return false;
@@ -501,7 +501,9 @@ public class RESTConnectionHandler {
         return false;
     }
     
-    public boolean createColourpalette(List<String> ccc) {
+    public String createColourpalette(List<String> ccc) {
+        
+        String location = null;
         
         ColourPalette cp = new ColourPalette();
         Ref ru = new Ref();
@@ -532,17 +534,19 @@ public class RESTConnectionHandler {
         
         ClientResponse cresp;
         try {
-            cresp = service.path("/colourpalette").type(MediaType.APPLICATION_XML).entity(cp).post(ClientResponse.class, marshall(cp));
+            cresp = service.path("/colourpalette").type(MediaType.APPLICATION_XML).entity(cp).post(ClientResponse.class, JAXBTools.marshall(cp));
+
         }
         catch(ClientHandlerException che) {
-            return false;
+            return null;
         }
         
         if(cresp.getStatus() == 201) {
-            return true;
+            location = cresp.getLocation().toString();
+            location = location.substring(("http://" + this.hostname + ":" + this.port).length());
         }
         
-        return false;
+        return location;
     }
     
     
@@ -581,105 +585,6 @@ public class RESTConnectionHandler {
         }
         
         return f_list.getFollower();
-    }
-    
-    /**
-     * Unmarshall given xml data
-     * 
-     * @param str raw xml data
-     * @param c class used as base to unmarshall the data
-     * @return JAXBElement
-     */
-    private Object unmarshall(String str, Class<?> c) {
-        
-        Object element = null;
-        
-        try {
-            JAXBContext context = JAXBContext.newInstance(c);
-            Unmarshaller um = context.createUnmarshaller();
-            element = um.unmarshal(new StreamSource(new StringReader(str)), c).getValue();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        
-        return element;
-    }
-    
-    /**
-     * Marshall a xml structure (JAXBElement)
-     * 
-     * @param instance instance of a JAXBElement
-     * @return marshalled structure
-     */
-    private String marshall(Object instance) {
-        
-        if(instance == null)
-            return null;
-        
-        String str = null;
-        
-        ObjectFactory of = new ObjectFactory();
-        JAXBElement<?> jaxbe = null;
-        
-        switch(instance.getClass().getSimpleName()) {
-            case "Colour":
-                jaxbe = of.createColour((Colour)instance);
-                break;
-            case "UserList":
-                jaxbe = of.createUsers((UserList)instance);
-                break;
-            case "ColourPalette":
-                jaxbe = of.createColourpalette((ColourPalette)instance);
-                break;
-            case "ColourPaletteList":
-                jaxbe = of.createColourpalettes((ColourPaletteList)instance);
-                break;
-            case "Followers":
-                jaxbe = of.createFollowers((Followers)instance);
-                break;
-            case "FavouriteColourPaletteList":
-                jaxbe = of.createFavouriteColourpalettes((FavouriteColourPaletteList)instance);
-                break;
-            case "FavouriteColourPalette":
-                jaxbe = of.createFavouriteColourpalette((FavouriteColourPalette)instance);
-                break;
-            case "FavouriteColourList":
-                jaxbe = of.createFavouriteColours((FavouriteColourList)instance);
-                break;
-            case "FavouriteColour":
-                jaxbe = of.createFavouriteColour((FavouriteColour)instance);
-                break;
-            case "Comment":
-                jaxbe = of.createComment((Comment)instance);
-                break;
-            case "Comments":
-                jaxbe = of.createComments((Comments)instance);
-                break;
-            case "User":
-                jaxbe = of.createUser((User)instance);
-                break;
-            case "ColourList":
-                jaxbe = of.createColours((ColourList)instance);
-                break;
-            default:
-                return null;
-        }
-        
-        try {
-            JAXBContext context = JAXBContext.newInstance(instance.getClass());
-            Marshaller m = context.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            
-            ByteArrayOutputStream string_out = new ByteArrayOutputStream();
-            
-            m.marshal(jaxbe, string_out);
-            
-            str = string_out.toString();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
-        
-        return str;
     }
     
     /**

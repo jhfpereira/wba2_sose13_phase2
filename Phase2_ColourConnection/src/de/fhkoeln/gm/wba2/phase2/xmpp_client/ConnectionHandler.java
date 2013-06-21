@@ -157,6 +157,7 @@ public class ConnectionHandler {
                     node = pubsub_man.createNode(node_id);
                     node.sendConfigurationForm(createForm(FormType.submit,
                             true, true, PublishModel.open, AccessModel.open));
+                    node.unsubscribe(this.username + "@" + this.hostname);
                 } catch (XMPPException e1) {
                     // Node could not be created
                     System.err.println("Node could not be created!");
@@ -366,8 +367,8 @@ public class ConnectionHandler {
         
         for (Subscription curr : subs) {
             
-            if(curr.getJid() == this.username + "@" + this.hostname)
-                continue;
+//            if(curr.getJid() == this.username + "@" + this.hostname)
+//                continue;
             
             try {
                 pubsub_man.getNode(curr.getNode()).addItemEventListener(

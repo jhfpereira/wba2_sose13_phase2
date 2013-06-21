@@ -1,6 +1,5 @@
 package de.fhkoeln.gm.wba2.phase2.client;
 
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JList;
@@ -18,8 +17,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.swing.JLabel;
@@ -52,11 +52,15 @@ public class ClientFrame extends JFrame {
     private ConnectionHandler ch;
     private RESTConnectionHandler rch;
     
+    private int newNotificationsNum = 0;
     private int[] create_colour_val = {0, 0, 0};
     private String mode;
     
     private JLabel lblStatus;
     
+    private List<ColourPalette> newColourpalettesList;
+    private JList new_colourpalettes;
+    private DefaultListModel<String> newColourpalettesListmodel;
     private DefaultListModel<String> colourListmodel;
     private List<ColourRef> colourList;
     private DefaultListModel<String> colourpaletteListmodel;
@@ -133,6 +137,7 @@ public class ClientFrame extends JFrame {
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
+        newColourpalettesListmodel = new DefaultListModel<>();
         colourListmodel = new DefaultListModel<>();
         colourpaletteListmodel = new DefaultListModel<>();
         favColourListmodel = new DefaultListModel<>();
@@ -140,11 +145,12 @@ public class ClientFrame extends JFrame {
         followerListmodel = new DefaultListModel<>();
         creationsListmodel = new DefaultListModel<>();
         
-        colourList = new ArrayList();
-        colourpaletteList = new ArrayList();
-        favColourList = new ArrayList();
-        favColourpaletteList = new ArrayList();
-        userList = new ArrayList();
+        newColourpalettesList = new ArrayList<ColourPalette>();
+        colourList = new ArrayList<ColourRef>();
+        colourpaletteList = new ArrayList<Ref>();
+        favColourList = new ArrayList<FavouriteColour>();
+        favColourpaletteList = new ArrayList<FavouriteColourPalette>();
+        userList = new ArrayList<Ref>();
         followerList = new ArrayList<>();
         creationsList = new ArrayList<>();
         
@@ -180,67 +186,87 @@ public class ClientFrame extends JFrame {
         contentPane.add(tabbedPane);
         
         p_overview = new JPanel();
-        tabbedPane.addTab("Overview", null, p_overview, null);
+        tabbedPane.addTab("Überblick", null, p_overview, null);
         p_overview.setLayout(null);
-        
-        p_explore = new JPanel();
-        tabbedPane.addTab("Explore", null, p_explore, null);
-        p_explore.setLayout(null);
         
         tabbedPane.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                JPanel chosen = (JPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
-                
-                colour_view.setVisible(false);
-                
-                for(int i = 0; i < colourpalette_view.length; i++) {
-                    colourpalette_view[i].setVisible(false);
-                }
-                
-                outColourCreator.setText("");
-                outColourCreated.setText("");
-                
-                all_colours.clearSelection();
-                all_colourpalettes.clearSelection();
-                all_favcolours.clearSelection();
-                all_favcolourpalettes.clearSelection();
-                
-                boolean colour_mode = false;
-                boolean favourite_mode = false;
-                
-                if(chosen.equals(p_explore)) {
-                    mode = "explore";
-                    colour_mode = true;
-                    favourite_mode = false;
-                }
-                else if (chosen.equals(p_favourites)) {
-                    mode = "favourites";
-                    colour_mode = false;
-                    favourite_mode = true;
-                }
-                else if(chosen.equals(p_follower)) {
-                    mode = "follower";
-                    lblBenutzername.setVisible(true);
-                    outBenutzername.setVisible(true);
-                    lblBenutzerRegistriertAm.setVisible(true);
-                    outBenutzerRegistiertAm.setVisible(true);
-                }
-                else if(chosen.equals(p_creations)) {
-                    mode = "creations";
-                    colour_mode = true;
-                    favourite_mode = false;
-                }
-                
-                btnFavResource.setVisible(colour_mode);
-                btnFollowUser.setVisible(colour_mode);
-                btnUnFavResource.setVisible(favourite_mode);
-                btnUnFollowUser.setVisible(favourite_mode);
-            
-                lblErzeuger.setVisible(colour_mode || favourite_mode);
-                lblErstelltAm.setVisible(colour_mode || favourite_mode);
+                updatedTabbedPane();
             }
         });
+        
+        JScrollPane newColourpalettesSP = new JScrollPane();
+        newColourpalettesSP.setBounds(54, 54, 160, 263);
+        p_overview.add(newColourpalettesSP);
+        
+        new_colourpalettes = new JList(newColourpalettesListmodel);
+        newColourpalettesSP.setViewportView(new_colourpalettes);
+        
+        new_colourpalettes.addListSelectionListener(new ListSelectionListener() {
+            
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                JList list = (JList) e.getSource();
+                int index = list.getSelectedIndex();
+                
+                if(index >= 0) {
+                    show_mode_colour = false;
+                    
+                    /* show colourpalette colour views and hide colour view*/
+                    for(int i = 0; i < colourpalette_view.length; i++) {
+                        colourpalette_view[i].setVisible(true);
+                    }
+                    
+                    colour_view.setVisible(false);
+                    
+                    ColourPalette selected_cp = newColourpalettesList.get(newColourpalettesList.size() - index - 1);
+                    
+                    Ref cpref = new Ref();
+                    cpref.setRef("/colourpalette/" + selected_cp.getId().toString());
+                    
+                    ColourPalette cp = rch.getColourPalette(cpref);
+                    
+                    if(cp != null) {
+                        
+                        /* show creatorname */
+                        User u = rch.getUser(cp.getCreator());
+                        if(u != null) {
+                            outColourCreator.setText(u.getUsername());
+                        }
+                        else {
+                            outColourCreator.setText("");
+                        }
+                        
+                        /* show date of creation */
+                        outColourCreated.setText(getFormattedDate(cp.getDateOfCreation()));
+                        
+                        
+                        /* set colours */
+                        
+                        List<ColourRef> crlist = cp.getUsedColours().getColour();
+                        
+                        for(int i = 0; i < colourpalette_view.length; i++) {
+                            if(i < crlist.size()) {
+                                ColourWrapper cw = new ColourWrapper(crlist.get(i).getId());
+                                colourpalette_view[i].setBackground(new Color(cw.getRed(), cw.getGreen(), cw.getBlue()));
+                            }
+                            else {
+                                colourpalette_view[i].setBackground(contentPane.getBackground());
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        JLabel lblNeueFarbpaletten = new JLabel("Farbpaletten mit Lieblingsfarben oder von gefolgten Benutzern");
+        lblNeueFarbpaletten.setBounds(54, 25, 349, 16);
+        p_overview.add(lblNeueFarbpaletten);
+        
+        p_explore = new JPanel();
+        tabbedPane.addTab("Entdecken", null, p_explore, null);
+        p_explore.setLayout(null);
         
         JScrollPane allColoursSP = new JScrollPane();
         allColoursSP.setBounds(54, 54, 126, 243);
@@ -366,7 +392,7 @@ public class ClientFrame extends JFrame {
         lblFarbpaletten.setBounds(220, 25, 75, 16);
         p_explore.add(lblFarbpaletten);
         
-        btnToPalette = new JButton("Zu Palette");
+        btnToPalette = new JButton("Zur Palette");
         btnToPalette.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int index = all_colours.getSelectedIndex();
@@ -381,6 +407,8 @@ public class ClientFrame extends JFrame {
                     green_slider.setValue(cw.getGreen());
                     blue_slider.setValue(cw.getBlue());
                     
+                    tabbedPane.setSelectedIndex(2);
+                    updatedTabbedPane();
                     //create_colour_view.setBackground(new_c);
                 }
             }
@@ -424,17 +452,17 @@ public class ClientFrame extends JFrame {
                         
                         for(ColourRef cref: favColourList) {
                             if(cref.getId().equalsIgnoreCase(ccode)) {
-                                lblStatus.setText("Colour is already set as a favourite!");
+                                lblStatus.setText("Farbe ist bereits eine Lieblingsfarbe!");
                                 return;
                             }
                         }
                         
                         if(ch.subscribeToNode(ccode) && rch.setColourFavourite(ccode)) {
-                            lblStatus.setText("\""+ ccode +"\" was set as a favourite colour!");
+                            lblStatus.setText("\""+ ccode +"\" wurde als Lieblingsfarbe gesetzt!");
                             refreshFavouriteList();
                         }
                         else {
-                            lblStatus.setText("Colour could not be set as a favourite!");
+                            lblStatus.setText("Farbe konnte nicht als Lieblingsfarbe gesetzt werden!");
                         }
                     }
                 }
@@ -450,17 +478,17 @@ public class ClientFrame extends JFrame {
                             
                             for(Ref cref: favColourpaletteList) {
                                 if(cref.getId().toString().equalsIgnoreCase(cpid)) {
-                                    lblStatus.setText("Colourpalette is already set as a favourite!");
+                                    lblStatus.setText("Farbpalette ist bereits als Lieblingspalette festgelegt!");
                                     return;
                                 }
                             }
                             
                             if(rch.setColourPaletteFavourite(cpid)) {
                                 refreshFavouriteList();
-                                lblStatus.setText("\""+ cpid +"\" was set as a favourite colourpalette!");
+                                lblStatus.setText("\""+ cpid +"\" wurde als neue Lieblinsgfabplatte hinzugefügt!");
                             }
                             else {
-                                lblStatus.setText("Colourpalette could not be set as a favourite!");
+                                lblStatus.setText("Farbpalette konnte nicht als Lieblingsfarbplaette hinzugefügt werden!");
                             }
                         }
                     }
@@ -473,17 +501,17 @@ public class ClientFrame extends JFrame {
                             
                             for(Ref cref: favColourpaletteList) {
                                 if(cref.getId().toString().equalsIgnoreCase(cpid)) {
-                                    lblStatus.setText("Colourpalette is already set as a favourite!");
+                                    lblStatus.setText("Farbpalette ist bereits als Lieblingspalette festgelegt!!");
                                     return;
                                 }
                             }
                             
                             if(rch.setColourPaletteFavourite(cpid)) {
                                 refreshFavouriteList();
-                                lblStatus.setText("\""+ cpid +"\" was set as a favourite colourpalette!");
+                                lblStatus.setText("\""+ cpid +"\" wurde als neue Lieblinsgfabplatte hinzugefügt!");
                             }
                             else {
-                                lblStatus.setText("Colourpalette could not be set as a favourite!");
+                                lblStatus.setText("Farbpalette konnte nicht als Lieblingsfarbplaette hinzugefügt werden!");
                             }
                         }
                     }
@@ -507,11 +535,11 @@ public class ClientFrame extends JFrame {
                         String ccode = favColourListmodel.get(index);
                         
                         if(ch.unsubscribeToNode(ccode) && rch.unsetColourFavourite(ccode)) {
-                            lblStatus.setText("\""+ ccode +"\" is not a favourite anymore!");
+                            lblStatus.setText("\""+ ccode +"\" ist keine Lieblingsfarbe mehr!");
                             refreshFavouriteList();
                         }
                         else {
-                            lblStatus.setText("\""+ ccode +"\" is still a favourite!");
+                            lblStatus.setText("\""+ ccode +"\" ist immer noch eine Lieblingsfarbe!");
                         }
                     }
                 }
@@ -524,10 +552,10 @@ public class ClientFrame extends JFrame {
                         
                         if(rch.unsetColourPaletteFavourite(cpid)) {
                             refreshFavouriteList();
-                            lblStatus.setText("\""+ cpid +"\" was set as a favourite colourpalette!");
+                            lblStatus.setText("\""+ cpid +"\" wurde als Lieblingsfarbpalette hizugefügt!");
                         }
                         else {
-                            lblStatus.setText("Colourpalette could not be set as a favourite!");
+                            lblStatus.setText("Farbpalette konnte nicht als Lieblingsfarbplaette hinzugefügt werden!");
                         }
                     }
                 }
@@ -574,10 +602,10 @@ public class ClientFrame extends JFrame {
                     return;
 
                 if(ch.subscribeToNode("user" + u.getId().toString()) && rch.followUser(u)) {
-                    lblStatus.setText("User \"" + u.getUsername() + "\" is being followed!");
+                    lblStatus.setText("User \"" + u.getUsername() + "\" wird nun gefplgt!");
                 }
                 else {
-                    lblStatus.setText("User \"" + u.getUsername() + "\" is already being followed!");
+                    lblStatus.setText("User \"" + u.getUsername() + "\" wird bereits gefolgt!");
                 }
                 
             }
@@ -612,10 +640,10 @@ public class ClientFrame extends JFrame {
                     return;
 
                 if(ch.unsubscribeToNode("user" + u.getId().toString()) && rch.unfollowUser(u)) {
-                    lblStatus.setText("User \"" + u.getUsername() + "\" is being unfollowed!");
+                    lblStatus.setText("User \"" + u.getUsername() + "\" wird gefolgt!");
                 }
                 else {
-                    lblStatus.setText("User \"" + u.getUsername() + "\" is not being followed!");
+                    lblStatus.setText("User \"" + u.getUsername() + "\" wird bereits gefolgt!");
                 }
                 
             }
@@ -633,7 +661,7 @@ public class ClientFrame extends JFrame {
         
         
         p_create = new JPanel();
-        tabbedPane.addTab("Create", null, p_create, null);
+        tabbedPane.addTab("Erstellen", null, p_create, null);
         p_create.setLayout(null);
         
         red_slider = new JSlider(0, 255);
@@ -699,11 +727,11 @@ public class ClientFrame extends JFrame {
                 String new_colour = cw.getHexCode();
                 
                 if(rch.createColour(new_colour)) {
-                    lblStatus.setText("\"" + new_colour +"\" was created!");
+                    lblStatus.setText("\"" + new_colour +"\" wurde erzeugt!");
                     refreshBaseList();
                 }
                 else {
-                    lblStatus.setText("\"" + new_colour +"\" could not be created!");
+                    lblStatus.setText("\"" + new_colour +"\" konnte nicht erzeugt werden!");
                 }
             }
         });
@@ -719,7 +747,7 @@ public class ClientFrame extends JFrame {
                 }
                 
                 if(create_colourpalette_colours.size() == 8) {
-                    lblStatus.setText("No more colours allowed in the colourpalette!");
+                    lblStatus.setText("Es sind keine weiteren Farben in einer Farbpalette erlaubt!");
                     return;
                 }
                 
@@ -727,7 +755,7 @@ public class ClientFrame extends JFrame {
                 
                 for(int i = 0; i < create_colourpalette_colours.size(); i++) {
                     if(create_colourpalette_colours.get(i).equalsIgnoreCase(c_code)) {
-                        lblStatus.setText("\"" + c_code + "\" is already present in the colourpalette!");
+                        lblStatus.setText("\"" + c_code + "\" existiert bereits in der Farbpalette!");
                         return;
                     }
                 }
@@ -766,12 +794,42 @@ public class ClientFrame extends JFrame {
         btnCreateColourpalette.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(create_colourpalette_colours.size() < 2) {
-                    lblStatus.setText("A colourpalette has to contain two or more colours to be created!");
+                    lblStatus.setText("Ein Farbpalette muss aus mindestens 2 Farben bestehen!");
                     return;
                 }
                 
-                if(rch.createColourpalette(create_colourpalette_colours)) {
-                    lblStatus.setText("Colourpalette was created!");
+                String location = rch.createColourpalette(create_colourpalette_colours);
+                if(location != null) {
+                    lblStatus.setText("Farbpalette wurde erzeugt!");
+                    
+                    Ref cpref = new Ref();
+                    cpref.setRef(location);
+                    
+                    ColourPalette cp = rch.getColourPalette(cpref);
+                    
+                    if(cp != null) {
+                        
+                        String marshalled_cp = JAXBTools.marshall(cp);
+                        
+                        // ugly
+                        marshalled_cp = marshalled_cp.substring(marshalled_cp.indexOf("\n"));
+                        
+                        /* publish to colourcode-topics */
+                        for(String c: create_colourpalette_colours) {
+                            if(!ch.publishWithPayload(c, marshalled_cp)) {
+                                lblStatus.setText("Konnte nicht unter den Farbcodes veröffentlichen!");
+                                return;
+                            }
+                        }
+                        
+                        /* publish to creator */
+                        if(!ch.publishWithPayload("user" + cp.getCreator().getId().toString(), marshalled_cp)) {
+                            lblStatus.setText("Konnte nicht unter einem Benutzernamen veröffentllichen!");
+                            return;
+                        }
+                        
+                        lblStatus.setText(lblStatus.getText() + " Das Veröffentlichen war erfolgreich!");
+                    }
                     
                     create_colourpalette_colours.clear();
                     for(int i = 0; i < create_colourpalette_view.length; i++) {
@@ -781,7 +839,7 @@ public class ClientFrame extends JFrame {
                     refreshBaseList();
                 }
                 else {
-                    lblStatus.setText("Colourpalette could not be created!");
+                    lblStatus.setText("Farbpalette konnte nicht erzeugt werden!");
                 }
             }
         });
@@ -789,7 +847,7 @@ public class ClientFrame extends JFrame {
         p_create.add(btnCreateColourpalette);
         
         p_favourites = new JPanel();
-        tabbedPane.addTab("Favourites", null, p_favourites, null);
+        tabbedPane.addTab("Favoriten", null, p_favourites, null);
         p_favourites.setLayout(null);
         
         
@@ -920,11 +978,11 @@ public class ClientFrame extends JFrame {
         
         
         p_creations = new JPanel();
-        tabbedPane.addTab("Creations", null, p_creations, null);
+        tabbedPane.addTab("Erzeugnisse", null, p_creations, null);
         p_creations.setLayout(null);
         
         JLabel lblBenutzerCreations = new JLabel("Benutzer");
-        lblBenutzerCreations.setBounds(38, 22, 51, 16);
+        lblBenutzerCreations.setBounds(54, 25, 51, 16);
         p_creations.add(lblBenutzerCreations);
         
         cb_creations_user = new JComboBox();
@@ -938,11 +996,11 @@ public class ClientFrame extends JFrame {
                 }
             }
         });
-        cb_creations_user.setBounds(38, 50, 132, 28);
+        cb_creations_user.setBounds(54, 50, 132, 28);
         p_creations.add(cb_creations_user);
         
         JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setBounds(38, 118, 132, 224);
+        scrollPane1.setBounds(54, 118, 132, 224);
         p_creations.add(scrollPane1);
         
         jl_creations = new JList(creationsListmodel);
@@ -995,11 +1053,11 @@ public class ClientFrame extends JFrame {
         scrollPane1.setViewportView(jl_creations);
         
         p_follower = new JPanel();
-        tabbedPane.addTab("Follower", null, p_follower, null);
+        tabbedPane.addTab("Folger", null, p_follower, null);
         p_follower.setLayout(null);
         
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(38, 118, 132, 224);
+        scrollPane.setBounds(54, 118, 132, 224);
         p_follower.add(scrollPane);
         
         JList jl_follower = new JList(followerListmodel);
@@ -1059,15 +1117,15 @@ public class ClientFrame extends JFrame {
                 }
             }
         });
-        cb_user.setBounds(38, 50, 132, 28);
+        cb_user.setBounds(54, 50, 132, 28);
         p_follower.add(cb_user);
         
         JLabel lblFolger = new JLabel("Folger");
-        lblFolger.setBounds(38, 90, 51, 16);
+        lblFolger.setBounds(54, 90, 51, 16);
         p_follower.add(lblFolger);
         
         JLabel lblBenutzer = new JLabel("Benutzer");
-        lblBenutzer.setBounds(38, 22, 51, 16);
+        lblBenutzer.setBounds(54, 25, 51, 16);
         p_follower.add(lblBenutzer);
         
         lblBenutzername = new JLabel("Benutzername");
@@ -1122,7 +1180,7 @@ public class ClientFrame extends JFrame {
         
         
         lblStatus = new JLabel("Ready!");
-        lblStatus.setBounds(60, 540, 500, 16);
+        lblStatus.setBounds(60, 540, 680, 16);
         contentPane.add(lblStatus);
         
         
@@ -1233,7 +1291,114 @@ public class ClientFrame extends JFrame {
         refreshUserList();
         refreshFollowerList();
     }
+
     
+    private void refreshNewColourpalettes() {
+        
+        newColourpalettesListmodel.removeAllElements();
+        
+        for(ColourPalette cp: newColourpalettesList) {
+            newColourpalettesListmodel.add(0, "/colourpalette/" + cp.getId());
+        }
+        
+        refreshLists();
+    }
+    
+    public void receivedNewCPNotification(ColourPalette cp) {
+        
+        newNotificationsNum += 1;
+        
+        String overview_name = tabbedPane.getTitleAt(0);
+        
+        int index = overview_name.indexOf("(");
+        
+        if(index > 0) {
+            overview_name = overview_name.substring(0, index - 2);
+        }
+        
+        tabbedPane.setTitleAt(0, overview_name + " (" + newNotificationsNum + ")");
+        
+        newColourpalettesList.add(cp);
+        refreshNewColourpalettes();
+        lblStatus.setText("Eine neue Farbpalette mit einer deiner Lieblingsfarben wurde erzeugt, oder von jemanden den du folgst!");
+    }
+    
+    
+    public void receivedNewUNotification(ColourPalette cp) {
+        System.out.println("USER - " + cp.getCreator().getId().toString());
+    }
+    
+    
+    private void updatedTabbedPane() {
+        JPanel chosen = (JPanel) tabbedPane.getComponentAt(tabbedPane.getSelectedIndex());
+        
+        colour_view.setVisible(false);
+        
+        for(int i = 0; i < colourpalette_view.length; i++) {
+            colourpalette_view[i].setVisible(false);
+        }
+        
+        outColourCreator.setText("");
+        outColourCreated.setText("");
+        
+        new_colourpalettes.clearSelection();
+        all_colours.clearSelection();
+        all_colourpalettes.clearSelection();
+        all_favcolours.clearSelection();
+        all_favcolourpalettes.clearSelection();
+        
+        boolean overview_mode = false;
+        boolean colour_mode = false;
+        boolean favourite_mode = false;
+        
+        if(chosen.equals(p_overview)) {
+            mode = "overview";
+            colour_mode = false;
+            favourite_mode = false;
+            
+            newNotificationsNum = 0;
+            String overview_name = tabbedPane.getTitleAt(tabbedPane.getSelectedIndex());
+            
+            int index = overview_name.indexOf("(");
+            
+            if(index > 0) {
+                overview_name = overview_name.substring(0, index - 1);
+            }
+            
+            tabbedPane.setTitleAt(0, overview_name);
+            overview_mode = true;
+        }
+        else if(chosen.equals(p_explore)) {
+            mode = "explore";
+            colour_mode = true;
+            favourite_mode = false;
+        }
+        else if (chosen.equals(p_favourites)) {
+            mode = "favourites";
+            colour_mode = false;
+            favourite_mode = true;
+        }
+        else if(chosen.equals(p_follower)) {
+            mode = "follower";
+            lblBenutzername.setVisible(true);
+            outBenutzername.setVisible(true);
+            lblBenutzerRegistriertAm.setVisible(true);
+            outBenutzerRegistiertAm.setVisible(true);
+        }
+        else if(chosen.equals(p_creations)) {
+            mode = "creations";
+            colour_mode = true;
+            favourite_mode = false;
+        }
+        
+        btnFavResource.setVisible(colour_mode);
+        btnFollowUser.setVisible(colour_mode);
+        btnUnFavResource.setVisible(favourite_mode);
+        btnUnFollowUser.setVisible(favourite_mode);
+    
+        lblErzeuger.setVisible(overview_mode || colour_mode || favourite_mode);
+        lblErstelltAm.setVisible(overview_mode || colour_mode || favourite_mode);
+    }
     
     private String getFormattedDate(XMLGregorianCalendar xgc) {
         
@@ -1257,6 +1422,6 @@ public class ClientFrame extends JFrame {
         
         refreshLists();
         
-        this.ch.addItemListener(new ItemLoggingListener());
+        this.ch.addItemListener(new ItemLoggingListener(this));
     }
 }
