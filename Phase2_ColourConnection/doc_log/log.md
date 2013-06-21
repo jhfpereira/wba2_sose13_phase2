@@ -17,7 +17,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 * [2013-05-26 | Benutzerauthentifizierung bezogen auf XMPP](#2013_05_26)  
 * [2013-06-01 | XMPP und XML-Stanzas](#2013_06_01)  
 * [2013-06-03 | **Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client**](#2013_06_03)  
-* [2013-06-17 | **Meilenstein 6 - Client - Entwicklung**](#2013_06_17)  
+* [2013-06-21 | Fertigstellung des finalen Clients](#2013_06_21)  
 
 
 
@@ -155,12 +155,13 @@ Neben dem `Service Discovery`, habe ich mich näher mit dem Aufbau von Streams u
 
 
 <a name="2013_06_03"></a>**2013-06-03** | Meilenstein 4 + 5 - Konzeption asynchrone Kommunikation + XMPP - Client  
-
+Die Präsentation der Erebnisse verlief gut. Obwohl mein XMPP-CLient noch kleine Probleme hatte, konnten diese beim Präsenztermin noch behoben werden. Problematisch war, dass ein Benutzer, der veröffentlicht ebenfalls eine Benachrichtigung erhielt, somit im System ebenfalls Abonnent dieses Topics war, über den er veröffentlicht hat. Dies geschah wohl dadurch, er den entsprechenden Node direkt vor dem Veröffentlichen erzeugt hat und somit mit dem Node gekoppelt wurde.
+Als nächstes steht die Umsetzung des finalen Clienten an. Dazu werden ich auf die Codebasis des XMPP-Clients aufbauen, da diese schon mit Swing umgesetzt und die dafür geschriebene Verbindungschnittstelle modular konzipiert wurde, wodurch sie wiederverwendet werden kann. Für die Kommunikation mit dem REST Endpoint muss ich mich aber noch einlesen.
 
 <a href="#top">^ top</a>  
 
 
-<a name="2013_06_17"></a>**2013-06-17** | Meilenstein 6 - Client - Entwicklung
-
+<a name="2013_06_21"></a>**2013-06-17** | Fertigstellung des finalen Clients
+Der Client wurde in seinen wichtigen Funktionen fertig umgesetzt. Die synchrone Anbindung zum REST Endpoint sowie die asynchrone Benachrichtigung durch den XMPP-Server funktionieren nun problemlos. Einzig die Kommentarfunktion wurde nicht implementiert, da sie zu unnötiger Implementierungsarbeit geführt hätte. Die Kommunikation mit dem RESTful Webservice wird schon an der Auflistung der Farben und Paletten gezeigt, sowie dem Erzeugen dieser. 
 
 <a href="#top">^ top</a>
