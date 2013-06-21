@@ -687,7 +687,7 @@ public Response getUsers(@DefaultValue("") @QueryParam("username") String userna
 
 ###<a name="xmpp_server_publish_subscribe_pubsub"></a>6.2 Publish-Subscribe
 Publish-Subscribe ist ein Pattern, welches es ermöglicht Nachrichten zwischen mehreren Entitäten auszutauschen, ohne eine direkte Verbindung zwischen diesen aufbauen zu müssen.
-Auf der einen Seite gibt es es den Abonnierer (Subscriber), der bestimmte `Topics` / Themen abonniert, für die er Interesse hegt. Auf der anderen Seite gibt dann noch den Veröffentlicher (Publisher), der Nachrichten zu einem bestimmten `Topic` / Thema veröffentlicht.
+Auf der einen Seite gibt es es den Abonnierer (Subscriber), der bestimmte `Topics` / Themen abonniert, für die er Interesse hegt. Auf der anderen Seite gibt es dann noch den Veröffentlicher (Publisher), der Nachrichten zu einem bestimmten `Topic` / Thema veröffentlicht.
 Zwischen beiden existiert nun ein Vermittler (Message Broker; auch Event Dispatcher genannt) \[[1](#ref_1)\], welcher die Nachricht an die Empfänger/Abonnierer des betroffenen `Topics` weiterleitet.  
 
 
@@ -724,7 +724,7 @@ Obwohl alle drei Stanza-Typen unterschiedliche Semantiken besitzen, teilen sie s
 
 **Service Discovery**  
 Im `XEP-0030 Service Discovery` ist eine Erweiterung beschrieben, die es ermöglicht Informationen zu einer im System existierenden Entität zu "entdecken". Hierbei ist es möglich zei Typen von Informationen zu einer Entität zu beziehen.  
-Zum einen können die Identifizierungsmerkmale, Möglichkeiten sowie Funktionen bzw. Protokolle, die sie unterstützen, bezogen werden, zum anderen können auch alle `Items` erfragt werden, die in Beziehung mit dieser Enität stehen.  
+Zum einen können die Identifizierungsmerkmale, Möglichkeiten und Funktionen bzw. Protokolle, die sie unterstützen, bezogen werden. Zum anderen können auch alle `Items` erfragt werden, die in Beziehung mit dieser Enität stehen.  
 In dieser Phase 2 sind die Möglichkeiten des "Service Discovery" in Hinblick auf die im XEP-0060 beschriebene "Publish-Subscribe"-Erweiterung, sehr interessant, da es Benutzern erlaubt sich existierende Leafs bzw. Topics (im System als Entitäten betrachetet) auflisten zu lassen, samt allen ihren Eigenschaften\[[4](#ref_4)\].  
 
 
@@ -758,8 +758,7 @@ Eine Benachrichtigung erfüllt nur die Aufgabe, einen Benutzer über die Existen
 Beides läuft darauf hinaus, dass ein Benutzer immer nur über eine neue Palette informiert wird (Lieblingsfarbe wurde in der Palette verwendet, oder abonnierter Benutzer hat eine neue Palette erzeugt).
 Da man über eine abonnierte Farbe, speziell dem Farbcode als `Topic` nicht direkt die neue Farbpalette referenziert, muss die ID der neuen Farbpalette als Payload in der Benachrichtigung mitgereicht werden.
 Somit setzt man auf einen Fat Ping, anstatt eines Light Ping. Auch wenn ein abonnierter Benutzer eine neue Farbpalette erzeugt hat, sollen die Subscriber bzw. Follower über diese mittels ihrer ID benachrichtigt werden.
-Es sollen nicht die kompletten Informationen der Farbpalette mitgereicht werden, sondern nur eine Referenz. Hierbei kann man auf das im XML-Schema definierte Element `colourpalettes` setzten, welches nur dazu verwendet wird, um eine Liste von Referenzen zu Farbpaletten-Ressourcen zu liefern.
-In diesem Fall, würde `colourpalettes` nur ein einziges Element führen, welches auf die Ressource der neu erstellten Farbpalette zeigt. Bei Interesse kann die Client-Software dann mit der mitgereichten Referenz die kompletten Informationen der Farbpalette nachträglich über den RESTful Webservice erfragen.
+Es sollen alle Informationen zu der Farbpalette in der asynchronen Benachrichtigung mitgreicht werden. Was der Client nur noch beim RESTful Webservice anfordern muss, sind die Informationen über den Ersteller der Palette.
 
 <a href="#top">^ top</a>
 
