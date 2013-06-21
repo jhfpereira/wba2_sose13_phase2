@@ -57,8 +57,8 @@ Um dem Projekt zusätzlich eine leichte Note eines sozialen Netzwerks zu verleih
 ##<a name="szenarien"></a>2. Szenarien
 
 ###<a name="szenarien_farbe_erstellen"></a>2.1 Erstellung einer Farbe
-BenutzerIn A bemerkt, dass das die Platform noch über sehr wenige Farbeinträge verfügt. Er/Sie entscheidet sich einige Einträge für bekannte Farben zu erstellen.
-Dazu gibt er/sie zu einer Farbe dessen Farbcode ein oder wählt sie über einen Farbwähler aus. Mit dem Absenden des Fabcodes wird auf der Platform ein eindeutiger Eintrag für diese Farbe erzeugt.
+BenutzerIn A bemerkt, dass das die Plattform noch über sehr wenige Farbeinträge verfügt. Er/Sie entscheidet sich einige Einträge für bekannte Farben zu erstellen.
+Dazu gibt er/sie zu einer Farbe dessen Farbcode ein oder wählt sie über einen Farbwähler aus. Mit dem Absenden des Fabcodes wird auf der Plattform ein eindeutiger Eintrag für diese Farbe erzeugt.
 Der Eintrag wird mit dem Namen des Erzeugers verknüpft.
 
 **Sequenz-Diagramm**
@@ -76,10 +76,10 @@ Erst jetzt kann die Farbe als Lieblingsfarbe des/der Benutzers/in gesetzt werden
 
 ###<a name="szenarien_farbpalette_erstellen"></a>2.3 Farbpalette erstellen
 BenutzerIn B möchte eine neue Farbpalette erstellen und legt mindestens 3 Farben fest, da es die Mindestanzahl der Farben einer Farbpalette entspricht.
-Für alle drei Farben wird der jeweilige Farbcode eingegeben oder über einen Farbwähler ausgewählt. Nach dem Zusammenstellen der Farbpalette, wird sie der Platform bekannt gemacht. Die Farbpalette wird mit dem Benutezrnamen des Erzeugers verknüpft und erhält eine eindeutige Identifizierungsnummer.
+Für alle drei Farben wird der jeweilige Farbcode eingegeben oder über einen Farbwähler ausgewählt. Nach dem Zusammenstellen der Farbpalette, wird sie der Plattform bekannt gemacht. Die Farbpalette wird mit dem Benutzernamen des Erzeugers verknüpft und erhält eine eindeutige Identifizierungsnummer.
 Wenn zu einer der verwendeten Farben noch kein Eintrag existiert, wird dieser automatisch erzeugt und mit dem Namen des Benutzers verknüpft.
-Die Platform überprüft, gleichzeitig zum Erstellen der Farbpalette, ob eine der Farben die Lieblingsfarbe mehrerer BenutzerInnen ist und informiert diese über die soeben erzeugte Farbpalette, die deren Lieblingsfarbe verwendet.
-In diesem Fall ergab die Überprüfung der verwendeten Faben, dass eine der Farben gleichzeitig die Lieblingsfarbe von BenutzerIn A ist. BenutzerIn A erhält eine Meldung bezüglich der neuen Farbpalette.
+Die Plattform überprüft, gleichzeitig zum Erstellen der Farbpalette, ob eine der Farben die Lieblingsfarbe mehrerer BenutzerInnen ist und informiert diese über die soeben erzeugte Farbpalette, die deren Lieblingsfarbe verwendet.
+In diesem Fall ergab die Überprüfung der verwendeten Farben, dass eine der Farben gleichzeitig die Lieblingsfarbe von BenutzerIn A ist. BenutzerIn A erhält eine Meldung bezüglich der neuen Farbpalette.
 
 **Sequenz-Diagramm**
 ![Create colour palette](images/create_colour_palette.png)
@@ -114,7 +114,7 @@ BenutzerIn A vermutet, dass BenutzerIn B neben einer ihrer Lieblingspaletten auc
 
 
 ###<a name="szenarien_anderen_benutzer_abonnieren"></a>2.8. Anderen Benutzer abonnieren
-Benutzer A ist von den von BenutzerIn B erzeugeten Paletten so sehr begeistert, dass sie auch in Zukunft über Farbpaletten von BenutzerIn B benachrichtig werden will.
+Benutzer A ist von den von BenutzerIn B erzeugten Paletten so sehr begeistert, dass sie auch in Zukunft über Farbpaletten von BenutzerIn B benachrichtigt werden will.
 Deshalb abonniert sie alle Erzeugnisse von BenutzerIn B. 
 
 **Sequenz-Diagramm**
@@ -129,12 +129,12 @@ Deshalb abonniert sie alle Erzeugnisse von BenutzerIn B.
 
 ###<a name="uri_ressourcen_design_ressourcen"></a>3.1. Ressourcen
 Zu aller erst ist es wichtig zu wissen, dass für Farbe-Ressourcen ihr direkter Farbcode (HTML-Farbcode) als ID verwendet werden. Die Idee dahinter ist die, dass dadurch die API besser zu verstehen und zu überblicken ist. Für sich ist ein Farbcode eindeutig und wird über mehrere Bereiche hinweg als Identifizierungsmerkmal für eine Farbe verwendet.
-Für jede Farbpalette muss aber hingegen eine neue eindeutige ID vergeben werden, da sie nur umständlich anhand ihrere natürlichen Merkmale identifiziert werden kann.  
+Für jede Farbpalette muss aber hingegen eine neue eindeutige ID vergeben werden, da sie nur umständlich anhand ihrer natürlichen Merkmale identifiziert werden kann.  
 Anhand der zuvor erstellten Szenarien kann man schon einige grundlegende Ressourcen festlegen.
 Darunter fallen die Ressourcen `user`, `colour` sowie `colourpalette`.
 Basierend auf diesen drei Ressourcen bilden sich weitere abgewandelte Ressourcen aber auch untergeordnete Ressourcen.
 Als abgewandelte Ressourcen werden die Listen gezählt. Über die Ressource `users` würde man zu einer Liste aller exitierenden Benutzer gelangen. Eine Listen-Ressource ist an dem angehangenen `s` zu erkennen.
-Zu der `users`-Ressource würden sich somit noch die beiden weiteren Listen-Ressourcen `colours` und `colourpalettes` hinzugesellen.  
+Zu der `users`-Ressource würden sich somit noch die beiden weiteren Listen-Ressourcen `colours` und `colourpalettes` hinzu gesellen.  
 Da es ganz hilfreich sein kann sich alle von einem Benutzer erstellten Farbpaletten geben zu lassen, wird der Ressource `user` die Unterressource `creations` vergeben, die sich auf einen bestimmten Benutzer bezieht. Folgende URI bietet sich an `/user/<user_id>/creations`. Das `s` gibt wieder an, dass es sich um eine Listen-Ressource handelt.  
 Um eine Farbe als Favorit zu setzen, würde es sich weniger anbieten dafür eine eigene First-Level-Ressource einzuführen. Es macht viel mehr Sinn das Setzen einer Lieblingsfarbe mit dem entsprechenden Benutzer zu verbinden bzw. die Verbindung zu belassen.
 Hierzu wird der `user`-Ressource eine untergeordnete Ressource mit dem Namen `favouritecolour` bzw. `favouritecolour` gegeben.
@@ -566,9 +566,9 @@ Nach Betrachtung der HTTP-Operationen, wurde sich für die folgenden Statuscodes
 Das Diagramm zeigt die im src-Baum existierenden Klassen (JAXB-Klassen nicht betrachtet, da sie generiert werden).  
 Der Haupteinstieg befindet sich in der Klasse `RestWebserviceMain`. Hier wird der HTTP-Server Grizzly gestartet und Jersey initialisiert. Der Pfeil in Richtung `RequestLayer` deutet an, dass die Ressourcen-Klassen von Jersey (Name des Packages, wo Jersy nach entsprechenden Klassen suchen soll, wird als Initialisierungsparameter mitgereicht) gefunden und für das "Matchen" der Request-URIs eingebunden werden.  
 Die `RequestLayer`-Gruppe enthält alle von Jersey gefundenen Klassen, die sich um die Abwicklung der Requests kümmern. In diesen werden die gesendeten Daten abgefangen und dem DataHandler weitergereicht. Sie entscheiden auch darüber was für ein Response auf ein Request an ein Client zurückgesandt wird. Wichtig ist hierbei der Statuscode (200, 201, 404, etc.), der auf der Clientseite als Fehlercode verwendet werden soll, um auf bestimmte Fehler entsprechend reagieren zu können.  
-Die Klasse `DataHandler` kümmert sich um das marshallen bzw. unmarshallen aller XML-Dokumente, aber auch um das Einbetten von neuen Datensätzen bzw. Löschen dieser in der datentragenden XML-Struktur, die alle vom System bekannten Daten führt. Wird ein bestimmter Datensatz von einer Klasse aus der `RequestLayer`-Gruppe angefordert, kümmert sich die `DataHandler` darum diesen speziellen Datensatz aus der XML-Struktur zu extrahieren und in eine Struktur umzubetten, die für die Übertragung der Daten vorgesehen ist.
+Die Klasse `DataHandler` kümmert sich um das marshallen bzw. unmarshallen aller XML-Dokumente, aber auch um das Einbetten von neuen Datensätzen bzw. Löschen dieser in der Datentragenden XML-Struktur, die alle vom System bekannten Daten führt. Wird ein bestimmter Datensatz von einer Klasse aus der `RequestLayer`-Gruppe angefordert, kümmert sich die `DataHandler` darum diesen speziellen Datensatz aus der XML-Struktur zu extrahieren und in eine Struktur umzubetten, die für die Übertragung der Daten vorgesehen ist.
 Das Besondere an der `DataHandler`-Klasse ist, dass es von ihr nur eine einzige Instanz zu jedem Zeitpunkt geben kann. Hier sei das das Stichwort `Singleton-Pattern` gennant. Der Vorteil hierbei ist der, dass sich nicht mehrere unnötige Instanzen der Klasse im Speicher befinden, da alle Objekte so oder so immer auf den selben Datenbestand zugreifen würden. Somit wären mehrere Instanzen unnötig.  
-Zuletzt gibt es noch die Klasse `Config`, die nur statische Attribute besitzt. In ihr sind Daten wie der `Hostname` un die verwendete `Portnummer` angegeben. Diese Daten sind für das Aufbauen eines URI-Strings, aber auch für die Initialisierung des Grizzly-Servers nötig. Deshalb auch die beiden Verbindungen aus beiden Richtungen hin zur `Config`-Klasse.
+Zuletzt gibt es noch die Klasse `Config`, die nur statische Attribute besitzt. In ihr sind Daten wie der `Hostname` und die verwendete `Portnummer` angegeben. Diese Daten sind für das Aufbauen eines URI-Strings, aber auch für die Initialisierung des Grizzly-Servers nötig. Deshalb auch die beiden Verbindungen aus beiden Richtungen hin zur `Config`-Klasse.
 
 <a href="#top">^ top</a>
 
