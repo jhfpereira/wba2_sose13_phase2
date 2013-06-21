@@ -34,6 +34,8 @@ Web-basierte Anwendungen 2: Verteilte Systeme
         6.2.4 [Eigenschaften einer Benachrichtigung](#xmpp_server_publish_subscribe_pubsub_eigenschaften_benachrichtigung)  
     6.3 [Java, Openfire und Smack\(x\)](#xmpp_server_publish_subscribe_java_openfire_smackx)  
 7. [Benutzerauthentifizierung](#benutzerauthentifizierung)  
+8. [Client](#client)  
+    8.1 [Aufbau](#client_aufbau)  
 
 [Literatur](#literatur)  
 
@@ -849,6 +851,41 @@ Obwohl es nun möglich wäre einen dieser Authentifizierungsverfahren einzusetze
 Deshalb wird sich der Client nur um die Anmeldung am XMPP-Server kümmern, um die PubSub-Funktionalität des XMPP-Servers nutzen zu können. Der Zugriff auf den Datenbestand des RESTful Webservice geschieht ohne Zugriffskontrolle. Es wird aber davon ausgegangen, dass ein Benutzer nur auf seine eigenen Daten zugreift und nicht versucht Datensätze anderer Benutzer zu verändern bzw. zu löschen. Der RESTful-Webservice dient hier einzig und allein der Demonstration einer synchronen Kommunikation und der Anwendung des REST-Architekturstils.
 
 <a href="#top">^ top</a>
+
+
+##<a name="client"></a>8. Client
+Der finale Client ist der Client, der ausschließtlich für die Benutzung durch einen Benutzer geacht ist, damit dieser Farben und Fabpaletten erzeugen und ebenfalls favorisieren kann. Hinzu kommt ebenfalls die Möglichkeit andere Benutzer zu folgen.
+Es war am Anfang vorgesehen, dass über den Client ebenfalls Kommentare zu Farben und Farbpaletten geschrieben werden können. Dies wurde aber im Verlauf der ENtwicklung des CLients aber bewusst vernachlässigt, da es unnötige Implementierungsarbeit bedeuten wurde. Die Kommunikation zwischen Client, REST Endpoint und dem XMPP-Server wird schon durch die Erstellung und Favorisierung von Farben und Farbpaletten schon gut genug deutlich.
+Im Prinzip würde ein zusätzliches Label und ein Textfeld ausreichen, um den Client um die Möglichkeit der Kommentarausgabe und -erstellung ausreichen. Bei jedem Klick auf eine Farbe oder einer Farbpalette nnerhalb einer List, würden vom RESTful Webservice die zur Farbe oder Palette zugehörigen Kommentare bezogen werden. 
+
+<a href="#top">^ top</a>
+
+
+###<a name="client_aufbau"></a>8.1 Aufbau
+Der Client setzt sich grundsätzlich aus zwei Frames zusammen, die nacheinander angezeigt werden.
+Der erste Frame wird beim Start alleine angezeigt, und gibt dem Benutzer ein Formular, um sich mit seinen Anmeldedaten anzumelden, oder sich vorher zu registrieren.
+Nach erfolgreicher Authentifizierung mit dem XMPP-Server und der Überprüfung, ob der RESTful Webservice läuft, wird der Benutzer zum Haupt-Frame weitergeleitet und der Anmelde-Frame wird unsichtbar gesetzt.
+Dadurch, dass dem Benutzer auf möglichst wenig Platz viele Informationen gezeigt werden sollen, wurde sich dafür entscheiden Tabbed-Panes einzusetzen. Über Reiter ist es möglich auf verschiedenen "Unterseiten" zu wechseln.
+Jede "Unterseite" bietet dem Benutzer eine bestimmte Funktionalität. Es gibt 6 unterschiedliche Bereiche.  
+  
+* Überblick
+* Entdecken
+* Erstellen
+* Favoriten
+* Erzeugnisse
+* Folger
+
+*Überblick* ist dafür gedacht, dass wenn der Client über eine neue Farbpalette beanchrichtigt wird, diese in der vorhandenen Liste eingereicht wird. Klickt der Benutzer auf die Farbpalette, werden im rechten Bereich des Fensters die Bestandteile der Farbpalette angezeigt, samt dem Namen des Erzeugers und wann die Palette erzeugt wurde.  
+*Entdecken* ermöglicht dem Benutzer neue Farben und Farbpaletten zu entdecken, sie zu favorisieren, oder den Erzeuger zu folgen. Speziell für Farben ist es möglich, dass wenn eine ausgewählt ist, sie zur Erstellung einer neuen Farbpalette herangezogen werden kann. Dazu reicht ein Klick auf den Button `Zur Palette`. Es wird dann automatisch zum Unterpunkt `Erstellen` gewechselt, wo die Farbe weiterverwendet oder leicht angepasst werden kann.  
+*Erstellen* dient dem Erstellen und veröffentlichen von Farben oder Farbpaletten. Dazu kann mit den vorgegebenen Reglern, die die Grundfarben `Rot`, `Grün` und `Blau` representieren, eine Farbe eingestellt werden, die dann über den Button `Erzeuge Farbe` dem System bekannt geamcht werden kann, sofern sie nicht schon bekannt ist. Alternativ kann die eingestellte Farbe aber auch direkt als Teilfarbe einer Farbpalette hinzugefügt werden. Dazu reicht ein Klick auf den Button rechts neben der Farbdarstellung.
+Es können so nacheinander unterschiedliche Farben hinzugefügt. Eine Farbpalette besteht aus mindestens 2 und maximal aus 10 Farben. Ist die Grenze unter- oder überschritten, wird der Benutzer darauf in der Statusausgabe darauf hingewiesen.  
+Unter *Favoriten* werden alle vom Benutzer favorisierten Farben und Farbpaletten aufgelistet. Hier ist es auch möglich eine Farbe oder Palette wieder als Favorit zu verwerfen. Sollte einer der Erzeuger von einem gefolgt werden, kann hier der Erzeuger ebenfalls "entfolgt" werden. 
+Will man sich die Erzeugnisse eines bestimmten Benutzer anzeigen lassen, kann man dazu den Unterbereich *Erzeugnisse* nutzen. Über eine Combobox kann der jeweilige Benutzer ausgewählt werden worauf direkt die darunter liegende Liste mit allen seinen Erzeugnissen gefüllt wird. Auch hier kann man sich mit einem Klick auf einen der Einträge nähere Informationen zu diesem anzeigen lassen.  
+Zuletzt ist es dem Benutzer auch möglich, sich anzeigen zu lassen, welcher Benutzer wen folgt bzw. von wem ein Benutzer gefolgt wird. Auch hier kann über eine Combobox ein Benutzer ausgewählt werden, worauf die darunter liegende Liste mit allen Benutzernamen gefüllt wird, die diesen ausgewählten Benutzer folgen. Wählt man einen der Folger aus, werden einem alle Infroamtionen über diesen Benutzer angezeigt, samt dem Datum und Uhrzeit seit wann er den anderen Benutzer folgt.
+
+<a href="#top">^ top</a>
+
+
 
 
 ##<a name="literatur"></a>Literatur
