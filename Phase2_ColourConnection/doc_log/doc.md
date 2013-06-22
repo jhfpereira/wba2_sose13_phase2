@@ -524,10 +524,10 @@ Dies ist sinnvoll, da somit die grundlegende Idee einer Ressource gestärkt wird
 
 
 ##<a name="restful_webservice"></a>5. RESTful Webservice  
-Schon in Punkt 3 wird auf das Thema `Resource` leicht eingegangen. Konkret in die Erstellung, dem Löschen und dem Zurückgeben einer Resource, oder allgemein der Verwaltung dieser.  
-Der RESTful Webservice soll nun über die zuvor in Punkt 4 ausgearbeiteten HTTP-Operationen den Zugriff auf dieser Resourcen ermöglichen. Das bedeutet, dass die HTTP-Operationen in konkreten Code überführt, oder besser gesagt, Handler erzeugt werden müssen, die eingehende Requests im Sinne von z.B. "GET /user/1" erkennen und die damit symbolisierte Operation auf den Bestand der Resourcen ausführt.  
+Schon in Punkt 3 wird auf das Thema `Resource` leicht eingegangen. Konkret in die Erstellung, dem Löschen und dem Zurückgeben einer Ressource, oder allgemein der Verwaltung dieser.  
+Der RESTful Webservice soll nun über die zuvor in Punkt 4 ausgearbeiteten HTTP-Operationen den Zugriff auf dieser Ressourcen ermöglichen. Das bedeutet, dass die HTTP-Operationen in konkreten Code überführt, oder besser gesagt, Handler erzeugt werden müssen, die eingehende Requests im Sinne von z.B. "GET /user/1" erkennen und die damit symbolisierte Operation auf den Bestand der Ressourcen ausführt.  
 Für die Umsetzung des RESTful Webservice wird auf Jersey als Referenzimplementation von JAX-RS (Java API for Restful Web Services) und Grizzly als HTTP-Server gesetzt. Jersey ermöglicht auf der Seite des Servers die Abbildung eines Requests (abhängig von dem HTTP-Verb, URI und akzeptierten MIME-Types) auf Java-eigene Klassen bzw. Methoden. Vor allem das Abgreifen von Path- und Query-Parametern gestaltet die Umsetzung des Webservice einfacher.
-Im Falle von Path-Parametern werden zu einer Resource relevante eindeutige Identifizierungsinformationen (evtl. eine ID) im Pfad eingebettet (`localhost/user/1`, wobei 1 die Identifizierungsinformation darstellt). Query-Parameter werden hingegen im Bereich des Query-Strings mitgereicht, wobei hier die Reihenfolge der Parameter keine Rolle spielt, da der mitgereichte Wert über einen zusätzlichen Schlüssel identifiziert wird (`...?key=value`).  
+Im Falle von Path-Parametern werden zu einer Ressource relevante eindeutige Identifizierungsinformationen (evtl. eine ID) im Pfad eingebettet (`localhost/user/1`, wobei 1 die Identifizierungsinformation darstellt). Query-Parameter werden hingegen im Bereich des Query-Strings mitgereicht, wobei hier die Reihenfolge der Parameter keine Rolle spielt, da der mitgereichte Wert über einen zusätzlichen Schlüssel identifiziert wird (`...?key=value`).  
 Doch zu aller erst werden mit dem Programm `xcj` aus dem entwickelten XML-Schema die nötigen Java-Klassen generiert, um sie zum marshallen und unmarshallen der übertragenden Daten zu nutzen. Jersey und JAXB werden somit zusammen eingesetzt, zumal sie beide sehr gut miteinander arbeiten.
 
 <a href="#top">^ top</a>
@@ -552,9 +552,9 @@ Nach Betrachtung der HTTP-Operationen, wurde sich für die folgenden Statuscodes
 | Statuscode | Bedeutung | Einsatz |
 | :---: | :---: | :--- |
 | **200** | OK | Rückgabe einer Ressource bzw. von Daten (Benutzer-, Farb-, Farbpaletteninformationen usw.) |  
-| **201** | Created | Die Erstellung einer Ressource war erfolgreich und der Ort der neuen Resource wird im Header mitgegeben |  
+| **201** | Created | Die Erstellung einer Ressource war erfolgreich und der Ort der neuen Ressource wird im Header mitgegeben |  
 | **204** | No Content | Ressource wird aktualisiert oder gelöscht; keine nennenswerten Daten als Rückgabe |  
-| **404** | Not Found | Resource nicht gefunden; Sammelcode für wenn ein HTTP-Operation nicht erfolgreich war |  
+| **404** | Not Found | Ressource nicht gefunden; Sammelcode für wenn ein HTTP-Operation nicht erfolgreich war |  
   
 
 <a href="#top">^ top</a>
@@ -641,7 +641,7 @@ public boolean deleteUserFollower(String user_id, String follower_id) {
 Diese Methode, die über die gleichnamige Methode `deleteUserFollower` der Klasse `UserResource` aufgerufen wird, kümmert sich zum einen darum den Eintrag zu finden,
 der die Verbindung zwischen den beiden Benutzern verdeutlicht und zum anderen auch darum diesen Eintrag dann zu löschen, sofern er ihn findet.
 Wurde der Eintrag erfolgreich gelöscht, wird der Inhalt der XML-Struktur mit dem gesamten Datenbestand marshalled. Somit enthält die XML-Dokumenten-Instanz ("Datenbankdatei") ebenfalls den momentan aktuellen Stand.
-Zuletzt wird `true` zurückgegeben, um der aufrufenden Methode mittzuteilen, dass das Löschen erfolgreich war. War es nicht erfolgreich, wird dementsprechend `false` zurückgegeben.
+Zuletzt wird `true` zurückgegeben, um der aufrufenden Methode mitzuteilen, dass das Löschen erfolgreich war. War es nicht erfolgreich, wird dementsprechend `false` zurückgegeben.
 
 <a href="#top">^ top</a>
 
@@ -728,7 +728,7 @@ Obwohl alle drei Stanza-Typen unterschiedliche Semantiken besitzen, teilen sie s
 **Service Discovery**  
 Im `XEP-0030 Service Discovery` ist eine Erweiterung beschrieben, die es ermöglicht Informationen zu einer im System existierenden Entität zu "entdecken". Hierbei ist es möglich zei Typen von Informationen zu einer Entität zu beziehen.  
 Zum einen können die Identifizierungsmerkmale, Möglichkeiten und Funktionen bzw. Protokolle, die sie unterstützen, bezogen werden. Zum anderen können auch alle `Items` erfragt werden, die in Beziehung mit dieser Enität stehen.  
-In dieser Phase 2 sind die Möglichkeiten des "Service Discovery" in Hinblick auf die im XEP-0060 beschriebene "Publish-Subscribe"-Erweiterung, sehr interessant, da es Benutzern erlaubt sich existierende Leafs bzw. Topics (im System als Entitäten betrachetet) auflisten zu lassen, samt allen ihren Eigenschaften\[[4](#ref_4)\].  
+In dieser Phase 2 sind die Möglichkeiten des "Service Discovery" in Hinblick auf die im XEP-0060 beschriebene "Publish-Subscribe"-Erweiterung, sehr interessant, da es Benutzern erlaubt sich existierende Leafs bzw. Topics (im System als Entitäten betrachtet) auflisten zu lassen, samt allen ihren Eigenschaften\[[4](#ref_4)\].  
 
 
 <a href="#top">^ top</a>
@@ -736,8 +736,8 @@ In dieser Phase 2 sind die Möglichkeiten des "Service Discovery" in Hinblick au
 
 ####<a name="xmpp_server_publish_subscribe_pubsub_leafs"></a>6.2.2 Leafs \(Topics\)
 Unter Leafs sind die Topics zu verstehen, die man abonnieren kann und unter denen man veröffentlicht.
-Ein Benutzer kann somit interesse für ein Topics / Thema bekannt geben und erhält jedes Mal eine asynchrone Benachrichtigung, wenn jemand etwas über diesen Topic / Thema veröffentlicht.
-Unter Openfire bzw. Smack(x), wird ein Topic über ein `LeafNode` repräsentiert. Ein `LeafNode` wird dann über den eindeutigen Topic-Bezeichner "addressiert". Neben dem `LeafNode`, gibt es auch den Typen `CollectionNode`, welches, wie der Name schon andeutet, erlaubt eine Kollektion von Nodes zu erstellen.
+Ein Benutzer kann somit Interesse für ein Topics / Thema bekannt geben und erhält jedes Mal eine asynchrone Benachrichtigung, wenn jemand etwas über diesen Topic / Thema veröffentlicht.
+Unter Openfire bzw. Smack(x), wird ein Topic über ein `LeafNode` repräsentiert. Ein `LeafNode` wird dann über den eindeutigen Topic-Bezeichner "adressiert". Neben dem `LeafNode`, gibt es auch den Typen `CollectionNode`, welches, wie der Name schon andeutet, erlaubt eine Kollektion von Nodes zu erstellen.
 Eine Besonderheit hierbei ist nun, dass die `CollectionNode`, wie `LeafNode`, über ein Topic-Bezeichner verfügt und somit ebenfalls abonniert werden kann. Es ergibt sich somit die Möglichkeit eine Gruppe von Topics bzw. `LeafNodes` über einen übergeordnetes `Node` zu abonnieren. Es besteht ebenfalls die Möglichkeit `CollectionNodes` ineinander zu verschachteln.
 Einfacher ausgedrückt: Ein `CollectionNode` kann merhere `LeafNode`s aber auch mehrere `CollectionNode`s enthalten.  
 Als `Topics` werden die Farbcodes der Farben eingeführt, da sie eindeutig sind. Ein Farbcode bestimmt immer genau nur eine Farbe.  
@@ -748,10 +748,10 @@ Als weitere Möglichkeit würde es sich sogar ebenfalls anbieten `Topics` spezie
 
 ####<a name="xmpp_server_publish_subscribe_pubsub_publisher_subscriber"></a>6.2.3 Publisher und Subscriber
 Dadurch, dass ein Benutzer Farben als Favoriten setzen, aber auch Farbpaletten erstellen kann, ist er Publisher (Farbpalette erstellen) und Subscriber (Farbe als Lieblingsfarbe setzen) in einem.
-Durch diese Gegebenheit, wird ein Benutzer über die eigens erstellte Farbpalette asynchron beanchrichtigt, wenn eine eigene Lieblingsfarbe verwendet wurde.
+Durch diese Gegebenheit, wird ein Benutzer über die eigens erstellte Farbpalette asynchron benachrichtigt, wenn eine eigene Lieblingsfarbe verwendet wurde.
 Zudem darf es einem Benutzer nicht erlaubt sein sich selbst zu folgen bzw. zu abonnieren, da dies unnötig ist.  
 Durch die Besonderheit, dass ein Benutzer ein Publisher ist, müsste dieser sich auch um das Veröffentlichen (publishen) von Items selbst kümmern bzw. müsste der Client sich darum kümmern. Man könnte nun auf die Idee kommen, dass der REST-Endpoint einfach die Rolle des Publishers einnimmt und der Benutzer nur indirekt über diesen veröffentlicht. Der Nachteil hierbei ist aber, dass der Enpoint ebenfalls zusätzlich ein Account auf dem XMPP-Server und somit eine JID. Problematisch könnte zudem der Aufbau bzw. die Aufrechterhaltung der Verbindung zwischen RESTful Endpoint und dem XMPP-Server werden. Der Enpoint müsste bei jedem relevanten Request immer überprüfen, ob die Verbindung steht und er noch angemeldet ist. 
-Es würde sich somit eher anbieten, dass der Client direkt veröffentlicht. Dadurch, dass eine Verbindung direkt von Anfang an zwischen Client und XMPP-Server existiert, um Topics bzw. Farbecodes abonnieren zu können. Der RESTful Webservice müsste zudem immer über die aktuellste Adresse und Port des XMPP-Servers verfügen. Entweder man gibt diese Daten direkt im Code an, oder gibt sie bei jedem Start des Webservices erneut als Paramater an. Beide Hernagehensweisen wären umständlich, weshalb sich dafür entschieden, die Kommunikation mit dem XMPP-Server komplett dem Client zu überlassen.
+Es würde sich somit eher anbieten, dass der Client direkt veröffentlicht. Dadurch, dass eine Verbindung direkt von Anfang an zwischen Client und XMPP-Server existiert, um Topics bzw. Farbecodes abonnieren zu können. Der RESTful Webservice müsste zudem immer über die aktuellste Adresse und Port des XMPP-Servers verfügen. Entweder man gibt diese Daten direkt im Code an, oder gibt sie bei jedem Start des Webservices erneut als Paramater an. Beide Herangehensweisen wären umständlich, weshalb sich dafür entschieden, die Kommunikation mit dem XMPP-Server komplett dem Client zu überlassen.
 
 
 <a href="#top">^ top</a>
@@ -771,7 +771,7 @@ Es sollen alle Informationen zu der Farbpalette in der asynchronen Benachrichtig
 Um mittels Java mit dem Openfire-Server kommunizieren zu können, wurde auf die von `ignite realtime` ebenfalls entwickelte Smack(x) Client-Bibliothek gesetzt.
 Der Vorteil an Smack ist, dass es als eine Art abstrahierende Schichte oberhalb der manuellen Konstruktion von Stanzas gesehen werden kann. Smack kümmert sich intern um die Umsetzung und der direkten Kommunikation mit dem XMPP-Server (in diesem Fall Openfire).  
 Smack kommt von Haus aus mit den grundlegenden Funktionen eines XMPP-Servers zurecht. In einigen Fällen geht die Client-Bibliothek soweit, dass von Releas zu Releas mehr `XEP`s unterstützt werden. Interessant ist hierbei die Unterstützung von `XEP-0060 Publish-Subscribe`, auf die in Phase 2 verstärkt gesetzt wird.  
-Mit der Unterstüzung von `XEP-0060` wurde eine Klasse mit dem Namen `PubSubManager` eingeführt, um leichter `LeafNodes` und `LeafNodeCollections` zu erstellen und über sie `Items` zu veröffentlichen und sie natürlich auch abonnieren zu können. Als Beispiel sei folgender Code gegeben:  
+Mit der Unterstützung von `XEP-0060` wurde eine Klasse mit dem Namen `PubSubManager` eingeführt, um leichter `LeafNodes` und `LeafNodeCollections` zu erstellen und über sie `Items` zu veröffentlichen und sie natürlich auch abonnieren zu können. Als Beispiel sei folgender Code gegeben:  
 
 ```java
 /**
@@ -805,8 +805,8 @@ public boolean connect(String hostname, int port) {
 Die Instanzvariable `xmpp_conn` ist vom Typ XMPPConnection und dient als Verbindungs-Handler. Über sie ist es möglich Informationen über die momentane Verbindung zu erhalten, aber auch ein Vorgang zur Benutzeranmeldung zu initiieren.  
 Als Konstruktorparameter nimmt `XMPPConnection` eine Instanz der Klasse `ConnectionConfiguration`, die wiederum die Informationen über den Hostnamen und den Port verfügt, die für die Verbindungsherstellung nötig sind.  
 Nach erfolgtem Verbindungsaufbau mittels `xmpp_conn.connect()`, wird eine neue Instanz des `PubSubManager`s erzeugt, wobei zum einen der zuvor eingerichtete Verbindungs-Handler plus der Angabe über die Publish-Subscribe-Schnittstelle des XMPP-Servers.
-Die Publish-Subscribe-Schnittstelle bzw. die Adresse der Schnittstelle lautet für gewöhnlich immer `pubsub.<hostname>`. Es ist wichtig, dass diese Zusatinformation der PubSubManager-Instanz bekannt gegeben wird, da es sonst zu unerklärlichen Fehler- sowie Warnmeldungen führt.
-Nach einem erfolgreichen Verbindungsuafbau und dem Einrichten des Publish-Subscribe-Managers, können nun über die Instanz der `PubSubManager`-Klasse neue `LeafNodes` oder `LeafNodeCollections` erstellt, gelöscht, geholt, abonniert oder über sie `Items` veröffentlicht werden.  
+Die Publish-Subscribe-Schnittstelle bzw. die Adresse der Schnittstelle lautet für gewöhnlich immer `pubsub.<hostname>`. Es ist wichtig, dass diese Zusatzinformation der PubSubManager-Instanz bekannt gegeben wird, da es sonst zu unerklärlichen Fehler- sowie Warnmeldungen führt.
+Nach einem erfolgreichen Verbindungsaufbau und dem Einrichten des Publish-Subscribe-Managers, können nun über die Instanz der `PubSubManager`-Klasse neue `LeafNodes` oder `LeafNodeCollections` erstellt, gelöscht, geholt, abonniert oder über sie `Items` veröffentlicht werden.  
 Bei der Erstellung eines neuen `LeafNodes` ist es wichtig darauf zu achten, wie ein Node konfiguriert wird. Erst mit der richtigen Konfiguration verhalten sich Nodes so wie man es will. Als Beispiel seien die Methoden `setPublishModel` und `setAccessModel` der Klasse `ConfigureForm` zu erwähnen.
 Über die Klasse `ConfigureForm` kann die Konfiguration zu einem Node zuerst zusammengesetzt werden und im späteren Verlauf diesem Node zugewiesen werden. Bezüglich der erwähnten Methoden ist zu sagen, dass die die über sie gesetzten Werte ausschlaggebend dafür sind, wer alles auf ein Node zugreifen, aber viel wichtiger noch, über diesen Knoten `Items` veröffentlichen darf.
 Zum Beispiel ist es unter `ColourConnection` wichtig, dass alle Benutzer über einen bestimmten Node `Items` veröffentlichen können. Gibt man diese Bedingung in der Konfiguration nicht explizit an, dann ist es standardmäßig nur den Nodeerzeugern erlaubt über diesen Node zu veröffentlichen. 
@@ -844,7 +844,7 @@ Diese Variante der Benutzerauthentifizierung ist recht simpel und eignet sich ni
 Die Zweite Variante mit dem Namen `Digest Access Authentication` geht einen leicht anderen weg und ist in manchen Aspekten sogar etwas sicherer. Anstatt das Passwort im Klartext zu übertragen, wird aus diesem, dem Benutzernamen, einer vom Server zufällig erzeugten Zeichenfolge, der HTTP-Methode und der angezielten URI auf der Seite des Clienten, eine Prüfsumme errechnet. 
 Anstelle des Passworts wird nun diese Prüfsumme an den Server verschickt, der dann auf seiner Seite ebenfalls die Prüfsumme bildet (der Server muss über das Passwort im Klartext verfügen) und diese mit der vom Clienten gesendeten auf Übereinstimmung überprüft. Gibt es eine Übereinstimmung, kann davon ausgegangen werden, dass der Benutzer autorisiert ist diesen Request abzusetzen.
 Die zusätzliche Sicherheit gegenüber der `Basic Authentication`-Methode besteht nun hierbei darin, dass mit dem Einsatz einer zufällig vom Server generierten Zeichenfolge (`Nonce`) gewährleistet wird, dass nur der Benutzer authentifiziert wird, der auch den Authentifizierungsantrag gestellt hat und somit der Antrag nicht von einem Unbefugten "entführt" wurde.
-Der Einsatz eines `Nonce` ist ebenfalls im Bereich der Prevention von `CSRF` (Cross-Site-Request-Forgery) sehr beliebt, wo ebenfalls gilt, dass ein Server nur auf eine Anfrage korrekt reagiert, wenn mit dem Request der gegebene `Nonce` mitgeschickt wird.  
+Der Einsatz eines `Nonce` ist ebenfalls im Bereich der Prävention von `CSRF` (Cross-Site-Request-Forgery) sehr beliebt, wo ebenfalls gilt, dass ein Server nur auf eine Anfrage korrekt reagiert, wenn mit dem Request der gegebene `Nonce` mitgeschickt wird.  
 
 Erwähnenswert ist noch, dass neben `Digest Access Authentication` ein ähnliches Verfahren mit dem Namen `Keyed-Hash Message Authentication Code` (HMAC) existiert. Der Unterschied liegt hierbei aber darin, dass `HMAC` eingesetzt wird, um auszuschließen, dass die übertragenen Daten verfälscht wurden \[[6](#ref_6)\].  
 
@@ -855,9 +855,9 @@ Deshalb wird sich der Client nur um die Anmeldung am XMPP-Server kümmern, um di
 
 
 ##<a name="client"></a>8. Client
-Der finale Client ist der Client, der ausschließtlich für die Benutzung durch einen Benutzer geacht ist, damit dieser Farben und Fabpaletten erzeugen und ebenfalls favorisieren kann. Hinzu kommt ebenfalls die Möglichkeit andere Benutzer zu folgen.
-Es war am Anfang vorgesehen, dass über den Client ebenfalls Kommentare zu Farben und Farbpaletten geschrieben werden können. Dies wurde aber im Verlauf der ENtwicklung des CLients aber bewusst vernachlässigt, da es unnötige Implementierungsarbeit bedeuten wurde. Die Kommunikation zwischen Client, REST Endpoint und dem XMPP-Server wird schon durch die Erstellung und Favorisierung von Farben und Farbpaletten schon gut genug deutlich.
-Im Prinzip würde ein zusätzliches Label und ein Textfeld ausreichen, um den Client um die Möglichkeit der Kommentarausgabe und -erstellung ausreichen. Bei jedem Klick auf eine Farbe oder einer Farbpalette nnerhalb einer List, würden vom RESTful Webservice die zur Farbe oder Palette zugehörigen Kommentare bezogen werden. 
+Der finale Client ist der Client, der ausschließtlich für die Benutzung durch einen Benutzer gedacht ist, damit dieser Farben und Fabpaletten erzeugen und ebenfalls favorisieren kann. Hinzu kommt ebenfalls die Möglichkeit andere Benutzer zu folgen.
+Es war am Anfang vorgesehen, dass über den Client ebenfalls Kommentare zu Farben und Farbpaletten geschrieben werden können. Dies wurde aber im Verlauf der Entwicklung des Clients aber bewusst vernachlässigt, da es unnötige Implementierungsarbeit bedeuten wurde. Die Kommunikation zwischen Client, REST Endpoint und dem XMPP-Server wird schon durch die Erstellung und Favorisierung von Farben und Farbpaletten schon gut genug deutlich.
+Im Prinzip würde ein zusätzliches Label und ein Textfeld ausreichen, um den Client um die Möglichkeit der Kommentarausgabe und -erstellung zu erweitern. Bei jedem Klick auf eine Farbe oder einer Farbpalette innerhalb einer List, würden vom RESTful Webservice die zur Farbe oder Palette zugehörigen Kommentare bezogen werden. 
 
 <a href="#top">^ top</a>
 
