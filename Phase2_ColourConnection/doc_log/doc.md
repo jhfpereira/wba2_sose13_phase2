@@ -36,6 +36,7 @@ Web-basierte Anwendungen 2: Verteilte Systeme
 7. [Benutzerauthentifizierung](#benutzerauthentifizierung)  
 8. [Client](#client)  
     8.1 [Aufbau](#client_aufbau)  
+9. [Inbetriebnahme](#inbetriebnahme)  
 
 [Literatur](#literatur)  
 
@@ -886,6 +887,12 @@ Zuletzt ist es dem Benutzer auch möglich, sich unter **Folger** anzeigen zu las
 <a href="#top">^ top</a>
 
 
+##<a name="inbetriebnahme"></a>9. Inbetriebnahme
+Zu aller erst sollte der Openfire-Server gestartet werden. Hiernach sollte die im Paket bzw. Unterpaketen `de.fhkoeln.gm.wba2.phase2.rest_webservice` befindliche Klasse `RestWebserviceMain.java` ausgeführt werden. Hiermit wird der RESTful Webservice gestartet, der nun auf dem Port `9988` horcht. Die Portnummer sowie der Hostname können in der im selben Paket befindlichen Klasse `Config.java` angepasst werden. Zuletzt wird der Client über die Klasse `ClientMain.java` gestartet werden, die sich im Paket `de.fhkoeln.gm.wba2.phase2.client` befindet.
+Man könnte den Clienten auch als erstes starten, müsste aber im Login-Frame solange warten, bis der XMPP-Server und der Restful Webservice gestartet wurden. Erst dann kann ein neuer Benutzer registriert und angemeldet werden. Sind sie noch nicht gestartet oder nicht erreichbar, wird eine entsprechende Fehlermeldung ausgegeben.  
+Wichtig ist es zudem, dass der XMPP-Server und der RESTful Webservice auf dem selben Server laufen, da der Client dies so annimmt.
+
+<a href="#top">^ top</a>
 
 
 ##<a name="literatur"></a>Literatur
