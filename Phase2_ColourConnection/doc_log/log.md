@@ -161,7 +161,7 @@ Als nächstes steht die Umsetzung des finalen Clienten an. Dazu werden ich auf d
 <a href="#top">^ top</a>  
 
 
-<a name="2013_06_21"></a>**2013-06-17** | Fertigstellung des finalen Clients
+<a name="2013_06_21"></a>**2013-06-17** | Fertigstellung des finalen Clients  
 Der Client wurde in seinen wichtigen Funktionen fertig umgesetzt. Die synchrone Anbindung zum REST Endpoint sowie die asynchrone Benachrichtigung durch den XMPP-Server funktionieren nun problemlos. Einzig die Kommentarfunktion wurde nicht implementiert, da sie zu unnötiger Implementierungsarbeit geführt hätte. Die Kommunikation mit dem RESTful Webservice wird schon an der Auflistung der Farben und Paletten gezeigt, sowie dem Erzeugen dieser. 
 
 <a href="#top">^ top</a>
