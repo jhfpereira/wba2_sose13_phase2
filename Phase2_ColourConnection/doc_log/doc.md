@@ -59,7 +59,7 @@ Um dem Projekt zusätzlich eine leichte Note eines sozialen Netzwerks zu verleih
 
 ###<a name="szenarien_farbe_erstellen"></a>2.1 Erstellung einer Farbe
 BenutzerIn A bemerkt, dass das die Plattform noch über sehr wenige Farbeinträge verfügt. Er/Sie entscheidet sich einige Einträge für bekannte Farben zu erstellen.
-Dazu gibt er/sie zu einer Farbe dessen Farbcode ein oder wählt sie über einen Farbwähler aus. Mit dem Absenden des Fabcodes wird auf der Plattform ein eindeutiger Eintrag für diese Farbe erzeugt.
+Dazu gibt er/sie zu einer Farbe dessen Farbcode ein oder wählt sie über einen Farbwähler aus. Mit dem Absenden des Farbcodes wird auf der Plattform ein eindeutiger Eintrag für diese Farbe erzeugt.
 Der Eintrag wird mit dem Namen des Erzeugers verknüpft.
 
 **Sequenz-Diagramm**
@@ -652,6 +652,7 @@ Die Methode `getUsers` ist die einzige Methode mit der es möglich ist, anhand e
 ob ein User mit einem bestimmten Namen existiert. Dazu wird der URI der Query-Parameter `username` mit dem entsprechendne Benutzernamen aufgebaut. Als Beispiel `GET /users?username=Horst`.
 Wird kein Query-Parameter angegeben, dann weiß die Methode, dass die Einträge nicht gefiltert werden soll und liefert eine Liste aller dem System bekannten Benutzer.
 
+Die Methode `getUsers` aus ***src/de/fhkoeln/gm/wba2/phase2/rest_webservice/resources/UsersResource.java***
 
 ```java
 /**
@@ -773,6 +774,8 @@ Der Vorteil an Smack ist, dass es als eine Art abstrahierende Schichte oberhalb 
 Smack kommt von Haus aus mit den grundlegenden Funktionen eines XMPP-Servers zurecht. In einigen Fällen geht die Client-Bibliothek soweit, dass von Releas zu Releas mehr `XEP`s unterstützt werden. Interessant ist hierbei die Unterstützung von `XEP-0060 Publish-Subscribe`, auf die in Phase 2 verstärkt gesetzt wird.  
 Mit der Unterstützung von `XEP-0060` wurde eine Klasse mit dem Namen `PubSubManager` eingeführt, um leichter `LeafNodes` und `LeafNodeCollections` zu erstellen und über sie `Items` zu veröffentlichen und sie natürlich auch abonnieren zu können. Als Beispiel sei folgender Code gegeben:  
 
+Die Methode `connect` aus ***src/de/fhkoeln/gm/wba2/phase2/xmpp_client/ConnectionHandler.java***
+
 ```java
 /**
  * Establish a connection to the xmpp server
@@ -855,7 +858,7 @@ Deshalb wird sich der Client nur um die Anmeldung am XMPP-Server kümmern, um di
 
 
 ##<a name="client"></a>8. Client
-Der finale Client ist der Client, der ausschließtlich für die Benutzung durch einen Benutzer gedacht ist, damit dieser Farben und Fabpaletten erzeugen und ebenfalls favorisieren kann. Hinzu kommt ebenfalls die Möglichkeit andere Benutzer zu folgen.
+Der finale Client ist der Client, der ausschließtlich für die Benutzung durch einen Benutzer gedacht ist, damit dieser Farben und Farbpaletten erzeugen und ebenfalls favorisieren kann. Hinzu kommt ebenfalls die Möglichkeit andere Benutzer zu folgen.
 Es war am Anfang vorgesehen, dass über den Client ebenfalls Kommentare zu Farben und Farbpaletten geschrieben werden können. Dies wurde aber im Verlauf der Entwicklung des Clients aber bewusst vernachlässigt, da es unnötige Implementierungsarbeit bedeuten wurde. Die Kommunikation zwischen Client, REST Endpoint und dem XMPP-Server wird schon durch die Erstellung und Favorisierung von Farben und Farbpaletten schon gut genug deutlich.
 Im Prinzip würde ein zusätzliches Label und ein Textfeld ausreichen, um den Client um die Möglichkeit der Kommentarausgabe und -erstellung zu erweitern. Bei jedem Klick auf eine Farbe oder einer Farbpalette innerhalb einer List, würden vom RESTful Webservice die zur Farbe oder Palette zugehörigen Kommentare bezogen werden. 
 
