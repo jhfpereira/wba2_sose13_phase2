@@ -37,8 +37,6 @@ import de.fhkoeln.gm.wba2.phase2.jaxb.Follower;
 import de.fhkoeln.gm.wba2.phase2.jaxb.Ref;
 import de.fhkoeln.gm.wba2.phase2.jaxb.User;
 import de.fhkoeln.gm.wba2.phase2.xmpp_client.ConnectionHandler;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import javax.swing.JSlider;
 import javax.swing.JComboBox;
 
@@ -1339,8 +1337,8 @@ public class ClientFrame extends JFrame {
 
     private void refreshUserList() {
         userList.clear();
-        cb_user.removeAll();
-        cb_creations_user.removeAll();
+        cb_user.removeAllItems();
+        cb_creations_user.removeAllItems();
 
         userList = rch.getAllUsers();
 
@@ -1389,7 +1387,7 @@ public class ClientFrame extends JFrame {
         int index = overview_name.indexOf("(");
 
         if (index > 0) {
-            overview_name = overview_name.substring(0, index - 2);
+            overview_name = overview_name.substring(0, index - 1);
         }
 
         tabbedPane.setTitleAt(0, overview_name + " (" + newNotificationsNum
